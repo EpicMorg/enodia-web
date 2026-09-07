@@ -466,12 +466,24 @@ this blindly if it's been a while. As of writing:
    `astro build` then `cloudflare/wrangler-action@v4` running
    `command: pages deploy <dist> --project-name=<name>` (Decided item 5
    — `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` repo secrets, done
-   2026-09-07) rather than GitHub Pages' native deploy action or the
-   deprecated `cloudflare/pages-action`. **Repo secrets confirmed set**,
-   2026-09-07 (`gh secret list` shows both `CLOUDFLARE_ACCOUNT_ID` and
-   `CLOUDFLARE_API_TOKEN` present on `enodia-web`) — the three workflow
-   files themselves are still not written, that's what's actually left
-   here.
+   2026-09-07, confirmed via `gh secret list`) rather than GitHub Pages'
+   native deploy action or the deprecated `cloudflare/pages-action`.
+
+   **`deploy-docs.yml` written, 2026-09-07**
+   (`.github/workflows/deploy-docs.yml`): triggers on push to
+   `master`/`develop` scoped to `apps/docs/**` via a `paths` filter, plus
+   `workflow_dispatch`; `actions/checkout@v7` + `actions/setup-node@v7`
+   (Node 24, `npm ci` with lockfile caching) + `npm run build`, then
+   `cloudflare/wrangler-action@v4` with `workingDirectory: apps/docs` and
+   `command: pages deploy dist --project-name=enodia-docs`. Action major
+   versions (`@v7`/`@v7`/`@v4`) checked live against each repo's actual
+   latest tags before writing this, not assumed off memory — `@v5` for
+   checkout/setup-node would have been stale. **Not yet run** — no push
+   to `master`/`develop` touching `apps/docs/**` has happened since this
+   file was added, so the deploy hasn't actually been exercised end to
+   end yet; don't assume it works until a real run is observed.
+   `deploy-landing.yml`/`deploy-get.yml` still don't exist (their apps
+   don't exist yet either).
 3. DNS/custom domains for `enodia.sh`, `get.enodia.sh`, `docs.enodia.sh`:
    confirmed via Cloudflare's own Pages docs that manually creating the
    CNAME *before* the domain is attached in the Pages dashboard causes a
