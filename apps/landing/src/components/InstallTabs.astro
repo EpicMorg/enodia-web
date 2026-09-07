@@ -31,6 +31,7 @@
 
 <style>
 	.install-tabs {
+		position: relative;
 		margin: 0 0 2rem;
 	}
 
@@ -49,14 +50,20 @@
 		border-bottom: none;
 		border-radius: 6px 6px 0 0;
 		color: var(--muted);
-		background: var(--code-bg);
+		background: var(--bg);
 		position: relative;
 		top: 1px;
 	}
 
+	/* Active tab shares the panel's background (var(--code-bg)) so it
+	   visually reads as "connected" to the content below it - inactive
+	   tabs use the page background instead, so they recede. Getting
+	   this backwards (as an earlier version did) makes the *inactive*
+	   tab look selected, since it then matches the panel instead. */
 	.install-tabs input:checked + label {
 		color: var(--fg);
-		background: var(--bg);
+		font-weight: 600;
+		background: var(--code-bg);
 	}
 
 	.install-tabs label + input {
