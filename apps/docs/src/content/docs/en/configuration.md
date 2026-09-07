@@ -270,6 +270,11 @@ render:
   # compact (default) | lifecycle | drift | fleet
   default_view: fleet
 
+export:
+  # json (default) | prometheus | html - used whenever `export` itself
+  # is run without --format
+  default_format: html
+
 html:
   # inline (default, fully offline) | cdn (loads Bootstrap/Bootswatch)
   assets: cdn
@@ -290,6 +295,7 @@ html:
 ```
 
 `render.default_view` applies to `check`'s `--view` whenever the flag
-itself wasn't passed. `html.*` only matters for
+itself wasn't passed. `export.default_format` does the same for
+`export`'s `--format`. `html.*` only matters for
 `export --format html` — see [Reporting](/en/reporting/) for what each
 field actually changes.

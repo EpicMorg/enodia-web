@@ -15,6 +15,21 @@ curl -fsSL https://get.enodia.sh/unix | sh   # Linux/macOS
 irm https://get.enodia.sh/windows | iex      # Windows
 ```
 
+`enodia` is runnable immediately afterward in that same PowerShell
+window — the installer patches the current session's `PATH` directly,
+not just the persisted registry value a fresh terminal would pick up.
+
+:::tip[Also works in Termux (Android)]
+The same Unix one-liner works unmodified — every release binary is a
+fully static Go build (no libc dependency at all, confirmed via
+`readelf`: no dynamic section, no interpreter), so it only needs a
+compatible Linux kernel, not glibc specifically, and Android's kernel
+qualifies. The install script itself falls back to `$PREFIX/bin` when
+the usual install directory isn't writable and there's no `sudo` to
+retry with — exactly Termux's situation — so no environment variable
+override is needed either.
+:::
+
 Or a package, if you'd rather your package manager track updates:
 
 ```bash
