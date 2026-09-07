@@ -24,7 +24,7 @@ enodia export --format html -o report.html
 
 Prometheus textfile, рассчитанный на
 [textfile-коллектор `node_exporter`](https://github.com/prometheus/node_exporter)
-— пиши его туда, куда `node_exporter` настроен сканировать, по
+— пишите его туда, куда `node_exporter` настроен сканировать, по
 расписанию, как любую другую textfile-метрику.
 
 ## `--format html`

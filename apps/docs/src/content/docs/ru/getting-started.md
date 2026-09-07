@@ -1,18 +1,22 @@
 ---
 title: Начало работы
-description: Установи enodia и запусти первую проверку.
+description: Установите enodia и запустите первую проверку.
 ---
 
 ## Установка
 
-:::caution[Релиза с тегом ещё нет]
-enodia в статусе pre-1.0. Когда появится релиз, каждый будет нести
-пакеты `.deb`, `.rpm`, `.apk` и Arch-овский `.pkg.tar.zst`
-(linux/amd64+arm64), сырые архивы под все поддерживаемые платформы и
-образ контейнера. До тех пор — сборка из исходников, см. ниже.
-:::
+Самый простой путь — одна команда, сама подберёт нужный бинарник под
+вашу ОС/архитектуру:
 
-Когда релизы появятся, установка будет выглядеть так:
+```bash
+curl -fsSL https://get.enodia.sh/unix | sh   # Linux/macOS
+```
+
+```powershell
+irm https://get.enodia.sh/windows | iex      # Windows
+```
+
+Либо пакет, если хотите, чтобы обновления отслеживал пакетный менеджер:
 
 ```bash
 sudo dpkg -i enodia_linux_amd64.deb                # Debian/Ubuntu
@@ -21,26 +25,24 @@ apk add --allow-untrusted enodia_linux_amd64.apk   # Alpine
 sudo pacman -U enodia_linux_amd64.pkg.tar.zst      # Arch
 ```
 
+Каждый пакет ставит бинарник в `/usr/bin/enodia`, man-страницы в
+`/usr/share/man/man1/` и создаёт отдельного непривилегированного
+системного пользователя `enodia` — для запуска ничего из этого не
+требует root. Нужный файл — на странице
+[последнего релиза](https://github.com/EpicMorg/enodia/releases/latest).
+
+Либо контейнер:
+
 ```bash
 docker run --rm \
   -v /etc/enodia:/config:ro \
   ghcr.io/epicmorg/enodia:1 check --config /config/config.yaml
 ```
 
-либо сырые install-скрипты, когда их опубликуют:
+### Сборка из исходников
 
-```bash
-curl -sSL https://raw.githubusercontent.com/EpicMorg/enodia/master/install.sh | sh   # Linux/macOS
-```
-
-```powershell
-irm https://raw.githubusercontent.com/EpicMorg/enodia/master/install.ps1 | iex        # Windows
-```
-
-### Сборка из исходников (работает уже сейчас)
-
-Нужен Go — точную версию, на которую сейчас рассчитана enodia, смотри в
-`go.mod`.
+Нужен Go — точную версию, на которую сейчас рассчитана enodia, смотрите
+в `go.mod`.
 
 ```bash
 git clone https://github.com/EpicMorg/enodia.git
@@ -49,7 +51,7 @@ go build -o enodia ./cmd/enodia
 ./enodia version
 ```
 
-### Поддерживаемые платформы (когда появится релиз)
+### Поддерживаемые платформы
 
 | ОС | Архитектура | Минимальная версия |
 |---|---|---|
@@ -61,10 +63,11 @@ go build -o enodia ./cmd/enodia
 сверху. Сборка из исходников более новым Go поднимает минимум для macOS
 ещё выше — это решение тулчейна, а не проекта.
 
-## Твой первый конфиг
+## Ваш первый конфиг
 
-Создай `enodia.yaml` рядом с бинарником (или в любом из мест, перечисленных
-в [Конфигурации](/ru/configuration/#расположение-файлов)):
+Создайте `enodia.yaml` рядом с бинарником (или в любом из мест,
+перечисленных в
+[Конфигурации](/ru/configuration/#расположение-файлов)):
 
 ```yaml title="enodia.yaml"
 schemaVersion: 1
@@ -74,7 +77,7 @@ targets:
     address: https://gitlab.example.com
 ```
 
-Затем запусти:
+Затем запустите:
 
 ```bash
 enodia check
@@ -86,9 +89,9 @@ gitlab-main  gitlab   ...
 ```
 
 `check` без `--from` собирает данные и оценивает их за один прогон —
-enodia достучится до твоего таргета, затем до интернета за данными
-жизненного цикла. Если у таргета есть сеть только до твоей
-инфраструктуры (закрытый контур), а не до интернета — раздели фазы:
+enodia достучится до вашего таргета, затем до интернета за данными
+жизненного цикла. Если у таргета есть сеть только до вашей
+инфраструктуры (закрытый контур), а не до интернета — разделите фазы:
 
 ```bash
 # внутри закрытого контура - интернет не нужен
