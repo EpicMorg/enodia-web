@@ -1,8 +1,19 @@
-# enodia-docs
+# enodia-web
 
-Documentation site for [EpicMorg/enodia](https://github.com/EpicMorg/enodia)
-(service inventory and lifecycle/EOL monitoring), built with
-[Astro](https://astro.build/) + [Starlight](https://starlight.astro.build/).
+Web presence for [EpicMorg/enodia](https://github.com/EpicMorg/enodia)
+(service inventory and lifecycle/EOL monitoring): the `enodia.sh` landing
+page, the `get.enodia.sh` install-script proxy, and the `docs.enodia.sh`
+documentation site — three separate static surfaces on three separate
+subdomains, one monorepo. Docs are built with
+[Astro](https://astro.build/) + [Starlight](https://starlight.astro.build/);
+landing and get are plain Astro for consistency (see "Decided" below for
+why all three are Astro rather than mixing tooling).
+
+Renamed from `enodia-docs` on 2026-09-07, once the scope grew from "just
+a docs site" to "everything under `*.enodia.{sh,run}`" — see git history
+on the `enodia-docs` name for the docs-only-scoped decisions that predate
+the rename; nothing in them was reversed, they just got a home alongside
+two siblings.
 
 ## Status: not yet scaffolded
 
@@ -39,79 +50,142 @@ made ahead of time so a future session doesn't start from zero.
 
 ## Decided
 
-1. **Engine: Astro + Starlight**, not Docusaurus. Starlight's locales are
-   plain subdirectories (`src/content/docs/en/`, `src/content/docs/ru/`)
-   inside one Astro content collection, routed normally — both locales
-   are live in a single `astro dev` process, which directly fixes the
-   localhost-preview problem above. Starlight is pre-1.0 (`0.42.x` as of
-   2026-09-07) but ~2 years in production, maintained by the Astro core
-   team, frequent releases, no forced major-version coupling like
-   Docusaurus's upcoming TS6 requirement. Astro itself (the underlying
-   framework, currently 7.x) and Starlight (the docs theme/framework
-   built on top of it, a separate npm package `@astrojs/starlight`) are
-   two different things with independent version numbers — don't confuse
-   an Astro release announcement with a Starlight one.
-2. **Domain: `docs.enodia.sh`**. The user owns both `enodia.sh` (primary)
-   and `enodia.run` (spare/backup — `enodia.run` gets a path-preserving
-   301 to `enodia.sh` via a Cloudflare Bulk Redirect, not a single-URL
-   Page Rule, so shared links to specific `.run` paths don't break; kept
-   deliberately non-duplicated content-wise). Both domains are purchased
-   and, as of 2026-09-07, both added as Cloudflare zones with registrar
-   nameservers switched over — see "Cloudflare dashboard setup notes"
-   below for the live redirect topology now in place.
-3. **Hosting: Cloudflare Pages**, as a deliberate experiment against
-   rehlds.dev's GitHub Pages setup (an A/B across the user's two docs
-   projects — easy to redeploy to GitHub Pages if this doesn't work out,
-   nothing about Starlight's output is Cloudflare-specific). Reasoning
-   beyond "let's try it": the user's own self-hosted server (behind a
-   Cloudflare proxy) has a known, specific RU/RKN-related failure mode —
-   ISP-level filtering on the path from Cloudflare's edge to their origin
-   IP truncated proxied responses to exactly the first 38KB for about six
-   months. Cloudflare Pages serves static assets directly from
-   Cloudflare's own edge with no origin fetch at request time at all
-   (confirmed against Cloudflare's own Pages docs), so that specific
-   failure mode doesn't apply — there's no origin to reach. Both domains
-   are on Cloudflare's free plan; Pages' free tier fits that.
-   `enodia.run` may also get deployed to Pages in parallel as a second,
-   lower-stakes experiment — not a firm commitment, just an idea the user
-   floated.
-4. **Build/deploy: GitHub Actions**, not Cloudflare's own git integration
+1. **Engine: Astro + Starlight** for the docs app, not Docusaurus.
+   Starlight's locales are plain subdirectories (`src/content/docs/en/`,
+   `src/content/docs/ru/`) inside one Astro content collection, routed
+   normally — both locales are live in a single `astro dev` process,
+   which directly fixes the localhost-preview problem above. Starlight
+   is pre-1.0 (`0.42.x` as of 2026-09-07) but ~2 years in production,
+   maintained by the Astro core team, frequent releases, no forced
+   major-version coupling like Docusaurus's upcoming TS6 requirement.
+   Astro itself (the underlying framework, currently 7.x) and Starlight
+   (the docs theme/framework built on top of it, a separate npm package
+   `@astrojs/starlight`) are two different things with independent
+   version numbers — don't confuse an Astro release announcement with a
+   Starlight one.
+2. **Repo structure: one monorepo, three independent Astro apps**,
+   decided 2026-09-07 when the scope grew from "just docs" to landing +
+   get + docs (hence the rename to `enodia-web`):
+
+   ```
+   enodia-web/
+   ├── apps/
+   │   ├── landing/   → enodia.sh (root, brew.sh-style one-pager)
+   │   ├── get/        → get.enodia.sh (landing + install-script proxy)
+   │   └── docs/        → docs.enodia.sh (Astro + Starlight, en/ru)
+   └── .github/workflows/
+       ├── deploy-landing.yml   (paths: apps/landing/**)
+       ├── deploy-get.yml       (paths: apps/get/**)
+       └── deploy-docs.yml      (paths: apps/docs/**)
+   ```
+
+   Each `apps/*` is its own Astro project (own `package.json`,
+   `astro.config.mjs`) deployed to its own Cloudflare Pages project — one
+   monorepo does *not* collapse into one build or one deploy, since
+   `enodia.sh`, `get.enodia.sh`, and `docs.enodia.sh` are three different
+   custom domains and a single Pages deployment can't serve different
+   content per subdomain. The point of the monorepo is one PR history and
+   one place to work, not a shared build. **`landing` and `get` are plain
+   Astro** (`output: 'static'`, no Starlight) chosen deliberately over
+   hand-written HTML for tooling uniformity across all three surfaces —
+   same locale-subfolder convention (`en/`/`ru/`) as docs, even though
+   landing/get are a couple of simple pages, so translating any of the
+   three doesn't need a different mental model. GitHub Actions workflows
+   are path-filtered per app so touching one doesn't rebuild/redeploy the
+   other two.
+3. **Domain: `docs.enodia.sh`** for the docs app specifically (landing
+   sits at bare `enodia.sh`, get at `get.enodia.sh` — see items 8-9). The
+   user owns both `enodia.sh` (primary) and `enodia.run` (spare/backup —
+   `enodia.run` gets a path-preserving 301 to `enodia.sh` via a
+   Cloudflare Bulk Redirect, not a single-URL Page Rule, so shared links
+   to specific `.run` paths don't break; kept deliberately
+   non-duplicated content-wise). Both domains are purchased and, as of
+   2026-09-07, both added as Cloudflare zones with registrar nameservers
+   switched over — see "Cloudflare dashboard setup notes" below for the
+   live redirect topology now in place.
+4. **Hosting: Cloudflare Pages** (all three apps), as a deliberate
+   experiment against rehlds.dev's GitHub Pages setup (an A/B across the
+   user's two docs projects — easy to redeploy to GitHub Pages if this
+   doesn't work out, nothing about Astro's output is Cloudflare-specific
+   for `landing`/`docs`; `get` leans on Cloudflare Pages Functions
+   specifically, see item 9). Reasoning beyond "let's try it": the user's
+   own self-hosted server (behind a Cloudflare proxy) has a known,
+   specific RU/RKN-related failure mode — ISP-level filtering on the path
+   from Cloudflare's edge to their origin IP truncated proxied responses
+   to exactly the first 38KB for about six months. Cloudflare Pages
+   serves static assets directly from Cloudflare's own edge with no
+   origin fetch at request time at all (confirmed against Cloudflare's
+   own Pages docs), so that specific failure mode doesn't apply — there's
+   no origin to reach. Both domains are on Cloudflare's free plan; Pages'
+   free tier fits that. `enodia.run` may also get deployed to Pages in
+   parallel as a second, lower-stakes experiment — not a firm commitment,
+   just an idea the user floated.
+5. **Build/deploy: GitHub Actions**, not Cloudflare's own git integration
    — build with `astro build`, deploy the output via Cloudflare's
-   `cloudflare/pages-action` (or `wrangler pages deploy`). Keeps the
-   pipeline consistent with the parent `enodia` repo's own CI approach
-   (everything through Actions, nothing configured only in a vendor
-   dashboard).
-5. **Languages: `en` + `ru`.**
-6. **Docs content license: CC-BY-4.0** — separate from enodia's own
-   AGPL-3.0-or-later, which fits code, not prose.
-7. **Root landing page**: a plain static one-pager (no Starlight sidebar,
-   no docs chrome) in the style of brew.sh — install one-liner(s), a
-   short pitch, links out to the real docs and to GitHub. Exactly where
-   this lives (`enodia.sh` root vs `docs.enodia.sh` root before the docs
-   proper) wasn't pinned down — ask if it matters when the time comes.
-8. **`get.enodia.sh`** is a related but *separate* piece of infrastructure,
-   not part of this docs site: a subdomain modeled on `get.docker.com`/
-   `sh.rustup.rs` — its root serves a small landing page with two
-   copy-pasteable one-liners (Unix via `curl`, Windows via `irm`/`iex`),
-   and two specific paths transparently proxy enodia's real
-   `install.sh`/`install.ps1` from GitHub (likely a Cloudflare Worker
-   doing a plain fetch-and-return against `raw.githubusercontent.com`,
-   since `get.enodia.sh` will live on the same Cloudflare account/zone as
-   everything else here) — so the one-liners never have to name
-   `raw.githubusercontent.com` directly and don't take an extra redirect
-   hop. Not started; not decided which repo the Worker script itself
-   should live in (this one, a new one, or something under
-   `EpicMorg/enodia` proper) — ask.
-9. **Search: Pagefind** (Starlight's own zero-config default) — not
-   Algolia DocSearch, even though the user's other project (rehlds.dev,
-   `docusaurus.config.ts`'s `themeConfig.algolia`) uses that. Deliberate:
-   DocSearch needs an external Algolia account/crawl and an OSS-program
-   application; Pagefind is a build-time static index with nothing
-   external to configure, matching the same "fewer moving parts" reason
-   Docusaurus itself got dropped. `@astrojs/starlight-docsearch` exists if
-   this is ever reconsidered, but there's no reason to reach for it now.
-10. **Sitemap: `@astrojs/sitemap`** (official Astro integration, `3.7.4`
-    as of 2026-09-07) — needs `site:` set in `astro.config.mjs` plus
+   `cloudflare/pages-action` (or `wrangler pages deploy`), one workflow
+   per app (item 2) so each of the three Cloudflare Pages projects gets
+   its own `projectName` and its own trigger. Keeps the pipeline
+   consistent with the parent `enodia` repo's own CI approach (everything
+   through Actions, nothing configured only in a vendor dashboard).
+6. **Languages: `en` + `ru`**, across all three apps for consistency
+   (item 2), even where `landing`/`get` only need a couple of strings
+   translated.
+7. **Docs content license: CC-BY-4.0** — scoped to the `docs` app's
+   prose specifically, separate from enodia's own AGPL-3.0-or-later
+   (code) and distinct from `landing`/`get`'s copy (marketing/infra text,
+   not "documentation" in the licensed sense — no separate license
+   decided for those, ask if it comes up).
+8. **Root landing page — location resolved: `apps/landing`**, deployed to
+   bare `enodia.sh`. A plain static one-pager (no Starlight sidebar, no
+   docs chrome) in the style of brew.sh — install one-liner(s), a short
+   pitch, links out to the real docs and to GitHub.
+9. **`get.enodia.sh` — `apps/get`, Cloudflare Pages + Pages Functions**,
+   decided 2026-09-07 (supersedes the earlier "likely a Cloudflare
+   Worker, not decided which repo" note). Modeled on `get.docker.com`/
+   `sh.rustup.rs`: root serves a small static landing page with two
+   copy-pasteable one-liners —
+
+   ```
+   curl -fsSL https://get.enodia.sh/unix | sh
+   irm https://get.enodia.sh/windows | iex
+   ```
+
+   — and two routes proxy enodia's real install scripts from GitHub
+   (`raw.githubusercontent.com/EpicMorg/enodia/master/install.sh` and
+   `.../master/install.ps1`, **`master` branch**, matching D17 in the
+   parent repo's own release tooling): `/unix` (covers Mac + Linux — one
+   script handles OS/arch itself via `uname`, per the parent repo's D17,
+   nothing to branch on server-side) and `/windows`. Implemented as
+   **Cloudflare Pages Functions** (`apps/get/functions/unix.ts`,
+   `apps/get/functions/windows.ts`) rather than a standalone Cloudflare
+   Worker — a Pages Function is the same edge runtime, colocated in the
+   same repo/app/deploy as the static landing page, needs no separate
+   Workers & Pages → Custom Domain step (just the one Pages custom domain
+   `get.enodia.sh`, same flow as `docs.enodia.sh`), and closes the
+   "which repo does the Worker live in" question by not having a
+   separate Worker at all. Each function does a plain fetch-and-return
+   against `raw.githubusercontent.com` so the one-liners never have to
+   name that host directly and don't take an extra redirect hop. **Edge
+   cache: 10 minutes** (`Cache-Control: public, max-age=600` on the
+   Function's response, or `caches.default` with a matching TTL) — an
+   explicit, deliberate value, not "no cache" and not the fetched file's
+   own origin cache headers passed through as-is; don't change this
+   without asking, it was a considered choice on staleness-vs-load
+   tradeoff (10 minutes is fine for an install script that changes on
+   releases, not every commit).
+10. **Search: Pagefind** (Starlight's own zero-config default, `docs` app
+    only) — not Algolia DocSearch, even though the user's other project
+    (rehlds.dev, `docusaurus.config.ts`'s `themeConfig.algolia`) uses
+    that. Deliberate: DocSearch needs an external Algolia account/crawl
+    and an OSS-program application; Pagefind is a build-time static index
+    with nothing external to configure, matching the same "fewer moving
+    parts" reason Docusaurus itself got dropped. `@astrojs/starlight-docsearch`
+    exists if this is ever reconsidered, but there's no reason to reach
+    for it now.
+11. **Sitemap: `@astrojs/sitemap`** (official Astro integration, `3.7.4`
+    as of 2026-09-07, `docs` app primarily — `landing`/`get` are single
+    static pages each, a sitemap there is low-value but cheap to add if
+    it matters later) — needs `site:` set in `astro.config.mjs` plus
     `integrations: [sitemap()]`, and has a dedicated `i18n: {
     defaultLocale, locales }` option that generates per-locale URLs and
     `hreflang` alternates automatically, which matters here (en+ru).
@@ -122,11 +196,13 @@ made ahead of time so a future session doesn't start from zero.
     all — verify by hand at implementation time whether plain
     `@astrojs/sitemap` needs any extra Starlight-side wiring, don't
     assume either way from this note alone.
-11. **robots.txt: a plain static `public/robots.txt` file**, not an
-    integration. Neither community option (`astro-robots-txt`, stale
+12. **robots.txt: a plain static `public/robots.txt` file per app**, not
+    an integration. Neither community option (`astro-robots-txt`, stale
     since 2023; `astro-robots`, stale since late 2024) looked maintained
     enough to justify a dependency for something this simple — Astro
-    copies `public/` verbatim to the build output regardless.
+    copies `public/` verbatim to the build output regardless, and each
+    `apps/*` builds/deploys independently (item 2) so each needs its own
+    copy rather than one shared file.
 
 ## Cloudflare dashboard setup notes (verified live, 2026-09-07)
 
@@ -146,9 +222,10 @@ this blindly if it's been a while. As of writing:
   own `@`. The 3 non-root records exist purely so Bulk Redirects has a
   proxied hostname to match against for each subdomain that needs a
   rule — `get.enodia.sh` and `docs.enodia.sh` will eventually stop being
-  CNAMEs-to-@ and become real endpoints (a Worker custom domain and a
-  Pages custom domain respectively — see below), but for now they're
-  placeholders like everything else.
+  CNAMEs-to-@ and become real endpoints (both Cloudflare Pages custom
+  domains — see below, `get` included since it's a Pages project with
+  Pages Functions, not a standalone Worker, per Decided item 9), but for
+  now they're placeholders like everything else.
 - **Bulk Redirects — done and verified live, 2026-09-07**: one account-level
   Redirect List (Rules → Overview → Bulk Redirects), not the legacy Page
   Rules, holding 5 rules — all with **"Preserve path suffix"** on and
@@ -189,17 +266,15 @@ this blindly if it's been a while. As of writing:
   Free-plan item cap is unclear — official docs claim a 10,000 rollout,
   community reports still see a cap of 20 on some accounts; irrelevant
   here, 5 rules fits either way.
-- **`docs.enodia.sh` (Cloudflare Pages)**: don't create the CNAME by hand
-  — Pages project → Custom domains → "Set up a domain" → enter
-  `docs.enodia.sh`, Cloudflare creates the DNS record itself since the
-  zone is already theirs. A manually-created CNAME ahead of this causes a
-  522 until the domain is attached the right way.
-- **`get.enodia.sh` (Cloudflare Worker)**: same shape, different tab —
-  Workers & Pages → (the Worker) → Settings → Domains & Routes → Add
-  Custom Domain → `get.enodia.sh`. This is the currently-recommended
-  mechanism (Cloudflare's own docs say to migrate off the older "Workers
-  Routes" pattern toward Custom Domains for internet-facing Workers); DNS
-  + TLS are handled automatically, same as Pages.
+- **`docs.enodia.sh` and `get.enodia.sh` (both Cloudflare Pages)**: don't
+  create either CNAME by hand — Pages project → Custom domains → "Set up
+  a domain" → enter the hostname, Cloudflare creates the DNS record
+  itself since the zone is already theirs. A manually-created CNAME ahead
+  of this causes a 522 until the domain is attached the right way. `get`
+  gets no separate Workers & Pages → Custom Domain step — it's a Pages
+  project like `docs`, just with a `functions/` directory alongside its
+  static output (Decided item 9), so the exact same Custom domains flow
+  applies to both.
 - **No single "routing" screen**: DNS, Rules, and Workers & Pages are
   three separate top-level dashboard sections — there's no nginx-style
   unified place to see everything at once.
@@ -239,44 +314,73 @@ this blindly if it's been a while. As of writing:
 
 ## Next steps once scaffolding actually starts
 
+Three apps (Decided item 2) — `docs` is the involved one (Starlight,
+i18n, sitemap); `landing` and `get` are much smaller but shouldn't be
+built before checking the shared groundwork below, since all three share
+the Node/Astro-version verification and the "one Pages project per app"
+deploy shape.
+
 1. Verify current Node version requirements for Astro 7.x /
    `@astrojs/starlight` live (`engines`/peer deps) before installing —
    don't assume a number from memory, it was unverified as of writing
    this. This machine had no Node/npm/npx installed at all as of
-   2026-09-07.
-2. Scaffold via `npm create astro@latest -- --template starlight` (or the
-   current equivalent — check Starlight's own getting-started docs for
-   the exact command, it changes across versions) into this directory.
-3. Configure `astro.config.mjs`: `site: 'https://docs.enodia.sh'`, no
-   `base` needed for a custom-domain root deploy (confirmed against
-   Astro's own deploy docs — `base` is only for subpath deploys like
-   `user.github.io/repo`), Starlight's `locales` for `en`/`ru`.
-4. GitHub Actions workflow: `astro build` then `cloudflare/pages-action`
-   (needs a Cloudflare API token + account ID as repo secrets — ask the
-   user to create these, an agent can't do it for them) rather than
-   GitHub Pages' native deploy action.
-5. DNS: **don't** tell the user to manually create a CNAME for
-   `docs.enodia.sh` — confirmed via Cloudflare's own Pages docs that doing
-   so *before* the domain is attached in the Pages dashboard causes a 522.
-   The correct flow: Pages project → Custom domains → "Set up a domain" →
-   enter `docs.enodia.sh` → Cloudflare creates the CNAME itself, since
-   `enodia.sh` is already their zone. Entirely inside their Cloudflare
-   account, outside what an agent can do for them unless they grant API
-   access.
-6. Wire up `@astrojs/sitemap` (`site:` + `integrations: [sitemap()]` +
-   the `i18n` option for en/ru — see "Decided" above) and add a static
-   `public/robots.txt` referencing the sitemap URL. Pagefind needs no
-   wiring at all — it's Starlight's default, active as soon as the site
-   builds.
-7. Populate initial content from enodia's own `README.md` and
-   `docs/*.md` as a starting point — translated/reorganized for a
+   2026-09-07. One check covers all three apps (same Astro major).
+2. Scaffold each app separately, into `apps/landing/`, `apps/get/`,
+   `apps/docs/`:
+   - `apps/docs`: `npm create astro@latest -- --template starlight` (or
+     the current equivalent — check Starlight's own getting-started docs
+     for the exact command, it changes across versions).
+   - `apps/landing` and `apps/get`: plain `npm create astro@latest` (no
+     Starlight), `output: 'static'`.
+3. Configure each `astro.config.mjs`'s `site:` to its own domain
+   (`https://enodia.sh`, `https://get.enodia.sh`,
+   `https://docs.enodia.sh`) — no `base` needed for any of them, all
+   three are custom-domain root deploys, not subpath deploys (confirmed
+   against Astro's own deploy docs — `base` is only for something like
+   `user.github.io/repo`). `apps/docs` additionally gets Starlight's
+   `locales` for `en`/`ru`; `apps/landing`/`apps/get` follow the same
+   `en`/`ru` folder convention by hand (Decided item 2/6) since they
+   don't have Starlight's i18n plumbing to lean on.
+4. `apps/get/functions/unix.ts` and `apps/get/functions/windows.ts`
+   (Cloudflare Pages Functions, Decided item 9): fetch-and-return against
+   `raw.githubusercontent.com/EpicMorg/enodia/master/install.sh` /
+   `install.ps1` respectively, `Cache-Control: public, max-age=600`
+   (10 minutes, deliberate — see item 9, don't change without asking).
+   Verify Pages Functions' exact file-based routing convention live
+   (`functions/<name>.ts` → `/<name>`) against Cloudflare's current docs
+   before assuming the shape, it changes.
+5. Three GitHub Actions workflows (`deploy-landing.yml`, `deploy-get.yml`,
+   `deploy-docs.yml`), each: path-filtered to its own `apps/*/**`,
+   `astro build` then `cloudflare/pages-action` with that app's own
+   `projectName` (needs a Cloudflare API token + account ID as repo
+   secrets — ask the user to create these, an agent can't do it for
+   them) rather than GitHub Pages' native deploy action.
+6. DNS: **don't** tell the user to manually create CNAMEs for
+   `enodia.sh`, `get.enodia.sh`, or `docs.enodia.sh` — confirmed via
+   Cloudflare's own Pages docs that doing so *before* the domain is
+   attached in the Pages dashboard causes a 522. The correct flow, per
+   app/domain: Pages project → Custom domains → "Set up a domain" →
+   enter the hostname → Cloudflare creates the CNAME itself, since both
+   zones are already theirs. Entirely inside their Cloudflare account,
+   outside what an agent can do for them unless they grant API access.
+7. `apps/docs`: wire up `@astrojs/sitemap` (`site:` +
+   `integrations: [sitemap()]` + the `i18n` option for en/ru — see
+   "Decided" above) and add a static `public/robots.txt` referencing the
+   sitemap URL. Pagefind needs no wiring at all — it's Starlight's
+   default, active as soon as the site builds. `apps/landing`/`apps/get`
+   each get their own plain `public/robots.txt` too (Decided item 12),
+   sitemap optional/low-priority for those two (item 11).
+8. `apps/docs`: populate initial content from enodia's own `README.md`
+   and `docs/*.md` as a starting point — translated/reorganized for a
    docs-site structure (sidebar navigation, separate pages per topic)
    rather than copied verbatim, and kept in sync with the parent repo's
    actual current state, not a stale snapshot. Per the user's own
    roadmap, content about install methods (packages, `install.sh`/`.ps1`,
    choco/winget) should reflect what's *actually released* at the time of
    writing, not what's planned — check the parent repo's real state
-   first.
+   first. `apps/landing`'s one-liner(s) and `apps/get`'s landing copy
+   draw from the same source of truth (what's actually released), kept
+   in sync with each other and with `apps/docs`'s install-methods page.
 
 ## Working style
 
