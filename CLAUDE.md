@@ -467,10 +467,11 @@ this blindly if it's been a while. As of writing:
    `command: pages deploy <dist> --project-name=<name>` (Decided item 5
    — `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` repo secrets, done
    2026-09-07) rather than GitHub Pages' native deploy action or the
-   deprecated `cloudflare/pages-action`. Still open: these repo secrets
-   themselves — the user has a working scoped token (item 5) but adding
-   it as `CLOUDFLARE_API_TOKEN`/`CLOUDFLARE_ACCOUNT_ID` in this repo's
-   GitHub settings hasn't been confirmed done yet, ask before assuming.
+   deprecated `cloudflare/pages-action`. **Repo secrets confirmed set**,
+   2026-09-07 (`gh secret list` shows both `CLOUDFLARE_ACCOUNT_ID` and
+   `CLOUDFLARE_API_TOKEN` present on `enodia-web`) — the three workflow
+   files themselves are still not written, that's what's actually left
+   here.
 3. DNS/custom domains for `enodia.sh`, `get.enodia.sh`, `docs.enodia.sh`:
    confirmed via Cloudflare's own Pages docs that manually creating the
    CNAME *before* the domain is attached in the Pages dashboard causes a
