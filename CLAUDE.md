@@ -100,6 +100,65 @@ made ahead of time so a future session doesn't start from zero.
    hop. Not started; not decided which repo the Worker script itself
    should live in (this one, a new one, or something under
    `EpicMorg/enodia` proper) — ask.
+9. **Search: Pagefind** (Starlight's own zero-config default) — not
+   Algolia DocSearch, even though the user's other project (rehlds.dev,
+   `docusaurus.config.ts`'s `themeConfig.algolia`) uses that. Deliberate:
+   DocSearch needs an external Algolia account/crawl and an OSS-program
+   application; Pagefind is a build-time static index with nothing
+   external to configure, matching the same "fewer moving parts" reason
+   Docusaurus itself got dropped. `@astrojs/starlight-docsearch` exists if
+   this is ever reconsidered, but there's no reason to reach for it now.
+10. **Sitemap: `@astrojs/sitemap`** (official Astro integration, `3.7.4`
+    as of 2026-09-07) — needs `site:` set in `astro.config.mjs` plus
+    `integrations: [sitemap()]`, and has a dedicated `i18n: {
+    defaultLocale, locales }` option that generates per-locale URLs and
+    `hreflang` alternates automatically, which matters here (en+ru).
+    Unresolved: `withastro/starlight`'s own package tree has an
+    `integrations/sitemap.ts` file hinting at some internal sitemap
+    glue, but its content couldn't be fetched/confirmed and Starlight's
+    own configuration reference documents no sitemap-specific option at
+    all — verify by hand at implementation time whether plain
+    `@astrojs/sitemap` needs any extra Starlight-side wiring, don't
+    assume either way from this note alone.
+11. **robots.txt: a plain static `public/robots.txt` file**, not an
+    integration. Neither community option (`astro-robots-txt`, stale
+    since 2023; `astro-robots`, stale since late 2024) looked maintained
+    enough to justify a dependency for something this simple — Astro
+    copies `public/` verbatim to the build output regardless.
+
+## Cloudflare dashboard setup notes (verified live, 2026-09-07)
+
+Cloudflare's UI/terminology shifts over time — re-verify before following
+this blindly if it's been a while. As of writing:
+
+- **Zones first**: both `enodia.sh` and `enodia.run` need to actually be
+  added as Cloudflare zones (DNS → Add a domain → point the registrar's
+  nameservers at Cloudflare's) before anything below works — redirects,
+  Pages custom domains, and Worker custom domains all require an active,
+  proxied zone.
+- **`enodia.run` → `enodia.sh` path-preserving redirect**: use **Bulk
+  Redirects** (Rules → Overview → Bulk Redirects in the account-level
+  nav), not the legacy Page Rules. One rule: source `enodia.run`, target
+  `https://enodia.sh`, with both **"Include subdomains"** and **"Preserve
+  path suffix"** toggled on. `enodia.run` needs at least one proxied
+  (orange-cloud) DNS record for the redirect engine to see its traffic at
+  all, even if it points nowhere real. Free-plan item cap is unclear —
+  official docs claim a 10,000 rollout, community reports still see a cap
+  of 20 on some accounts; irrelevant here since only one rule is needed.
+- **`docs.enodia.sh` (Cloudflare Pages)**: don't create the CNAME by hand
+  — Pages project → Custom domains → "Set up a domain" → enter
+  `docs.enodia.sh`, Cloudflare creates the DNS record itself since the
+  zone is already theirs. A manually-created CNAME ahead of this causes a
+  522 until the domain is attached the right way.
+- **`get.enodia.sh` (Cloudflare Worker)**: same shape, different tab —
+  Workers & Pages → (the Worker) → Settings → Domains & Routes → Add
+  Custom Domain → `get.enodia.sh`. This is the currently-recommended
+  mechanism (Cloudflare's own docs say to migrate off the older "Workers
+  Routes" pattern toward Custom Domains for internet-facing Workers); DNS
+  + TLS are handled automatically, same as Pages.
+- **No single "routing" screen**: DNS, Rules, and Workers & Pages are
+  three separate top-level dashboard sections — there's no nginx-style
+  unified place to see everything at once.
 
 ## Explicitly not this repo's concern
 
@@ -152,11 +211,20 @@ made ahead of time so a future session doesn't start from zero.
    (needs a Cloudflare API token + account ID as repo secrets — ask the
    user to create these, an agent can't do it for them) rather than
    GitHub Pages' native deploy action.
-5. DNS: tell the user what Cloudflare DNS record `docs.enodia.sh` needs
-   (a CNAME to the Pages project's `*.pages.dev` hostname, proxied) — this
-   is entirely inside their Cloudflare account, outside what an agent can
-   do for them directly unless they grant API access.
-6. Populate initial content from enodia's own `README.md` and
+5. DNS: **don't** tell the user to manually create a CNAME for
+   `docs.enodia.sh` — confirmed via Cloudflare's own Pages docs that doing
+   so *before* the domain is attached in the Pages dashboard causes a 522.
+   The correct flow: Pages project → Custom domains → "Set up a domain" →
+   enter `docs.enodia.sh` → Cloudflare creates the CNAME itself, since
+   `enodia.sh` is already their zone. Entirely inside their Cloudflare
+   account, outside what an agent can do for them unless they grant API
+   access.
+6. Wire up `@astrojs/sitemap` (`site:` + `integrations: [sitemap()]` +
+   the `i18n` option for en/ru — see "Decided" above) and add a static
+   `public/robots.txt` referencing the sitemap URL. Pagefind needs no
+   wiring at all — it's Starlight's default, active as soon as the site
+   builds.
+7. Populate initial content from enodia's own `README.md` and
    `docs/*.md` as a starting point — translated/reorganized for a
    docs-site structure (sidebar navigation, separate pages per topic)
    rather than copied verbatim, and kept in sync with the parent repo's
