@@ -121,12 +121,39 @@ made ahead of time so a future session doesn't start from zero.
    parallel as a second, lower-stakes experiment — not a firm commitment,
    just an idea the user floated.
 5. **Build/deploy: GitHub Actions**, not Cloudflare's own git integration
-   — build with `astro build`, deploy the output via Cloudflare's
-   `cloudflare/pages-action` (or `wrangler pages deploy`), one workflow
-   per app (item 2) so each of the three Cloudflare Pages projects gets
-   its own `projectName` and its own trigger. Keeps the pipeline
-   consistent with the parent `enodia` repo's own CI approach (everything
-   through Actions, nothing configured only in a vendor dashboard).
+   — build with `astro build`, deploy via **`cloudflare/wrangler-action@v4`**
+   running `command: pages deploy <dist> --project-name=<name>`, one
+   workflow per app (item 2) so each of the three Cloudflare Pages
+   projects gets its own `--project-name` and its own trigger. Keeps the
+   pipeline consistent with the parent `enodia` repo's own CI approach
+   (everything through Actions, nothing configured only in a vendor
+   dashboard).
+
+   **Not `cloudflare/pages-action`** — confirmed live via its GitHub repo
+   (`gh api repos/cloudflare/pages-action/contents/README.md`) that it's
+   deprecated (last release `v1.5.0`, repo archived); Cloudflare's own
+   README there points at `wrangler-action` as the replacement, which now
+   handles both Workers and Pages. Both need the same API token
+   permission (`Account` → `Cloudflare Pages` → `Edit`) and the same two
+   repo secrets, `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` — one
+   token/account-ID pair reused across all three apps' workflows, no need
+   for one per app.
+
+   **Cloudflare Pages project names, decided 2026-09-07**: `enodia-docs`,
+   `enodia-landing`, `enodia-get` (matching each `apps/*` folder, prefixed
+   for clarity since they're separate Pages projects in the same
+   account). **Production branch: `master`** on all three, matching the
+   parent `enodia` repo's own main-branch convention — `develop` pushes
+   produce Pages preview deployments, not production ones.
+
+   **Unverified, don't assume**: whether `wrangler pages deploy
+   --project-name=X` auto-creates the Pages project on first run in a
+   non-interactive CI context, or requires the project to already exist.
+   Cloudflare's own CI-integration guide assumes a project already
+   exists and doesn't say either way. Safer path taken here: create each
+   Pages project by hand (Workers & Pages → Create → Pages → Direct
+   Upload) before wiring its GitHub Actions workflow, rather than relying
+   on unconfirmed auto-create behavior for the first CI run.
 6. **Languages: `en` + `ru`**, across all three apps for consistency
    (item 2), even where `landing`/`get` only need a couple of strings
    translated.
@@ -351,10 +378,13 @@ deploy shape.
    before assuming the shape, it changes.
 5. Three GitHub Actions workflows (`deploy-landing.yml`, `deploy-get.yml`,
    `deploy-docs.yml`), each: path-filtered to its own `apps/*/**`,
-   `astro build` then `cloudflare/pages-action` with that app's own
-   `projectName` (needs a Cloudflare API token + account ID as repo
-   secrets — ask the user to create these, an agent can't do it for
-   them) rather than GitHub Pages' native deploy action.
+   `astro build` then `cloudflare/wrangler-action@v4` running
+   `command: pages deploy <dist> --project-name=<enodia-landing|
+   enodia-get|enodia-docs>` (Decided item 5 — `CLOUDFLARE_API_TOKEN` +
+   `CLOUDFLARE_ACCOUNT_ID` repo secrets, done 2026-09-07; the three Pages
+   projects need creating by hand first, see item 5's "unverified"
+   note) rather than GitHub Pages' native deploy action or the deprecated
+   `cloudflare/pages-action`.
 6. DNS: **don't** tell the user to manually create CNAMEs for
    `enodia.sh`, `get.enodia.sh`, or `docs.enodia.sh` — confirmed via
    Cloudflare's own Pages docs that doing so *before* the domain is
