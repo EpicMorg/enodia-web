@@ -1,0 +1,39 @@
+---
+import Get from '../layouts/Get.astro';
+---
+
+<Get
+	lang="en"
+	title="get.enodia.sh"
+	description="Install enodia with one command."
+>
+	<main>
+		<h1>get.enodia.sh</h1>
+		<p class="tagline">Install enodia with one command.</p>
+		<span class="status">pre-1.0 — no tagged release yet, these will 404 until one ships</span>
+
+		<div class="cmd">
+			<p>macOS / Linux</p>
+			<pre><code>curl -fsSL https://get.enodia.sh/unix | sh</code></pre>
+		</div>
+
+		<div class="cmd">
+			<p>Windows (PowerShell)</p>
+			<pre><code>irm https://get.enodia.sh/windows | iex</code></pre>
+		</div>
+
+		<nav class="links">
+			<a href="https://enodia.sh/">enodia.sh</a>
+			<a href="https://docs.enodia.sh/">Documentation</a>
+			<a href="https://github.com/EpicMorg/enodia">GitHub</a>
+			<a href="/ru/">Русский</a>
+		</nav>
+	</main>
+	<footer>
+		<code>/unix</code> and <code>/windows</code> transparently proxy
+		<a href="https://github.com/EpicMorg/enodia/blob/master/install.sh">install.sh</a>
+		/
+		<a href="https://github.com/EpicMorg/enodia/blob/master/install.ps1">install.ps1</a>
+		 from GitHub.
+	</footer>
+</Get>
