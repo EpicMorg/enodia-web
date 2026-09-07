@@ -12,9 +12,9 @@ export const onRequestGet: PagesFunction = async (context) => {
 
 	const upstream = await fetch(UPSTREAM);
 	if (upstream.status === 404) {
-		// See unix.ts - same "not on master yet" situation, real and expected
-		// pre-release, not a bug.
-		return new Response('enodia has no release yet - install.ps1 is not on master.\n', {
+		// See unix.ts - generic, defensive message, not tied to a specific
+		// (now resolved) root cause.
+		return new Response('install.ps1 not found upstream - check github.com/EpicMorg/enodia.\n', {
 			status: 404,
 			headers: { 'content-type': 'text/plain; charset=utf-8' },
 		});

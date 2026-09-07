@@ -5,14 +5,17 @@ description: Install enodia and run your first check.
 
 ## Installation
 
-:::caution[No tagged release yet]
-enodia is pre-1.0. Once a release exists, each one will carry `.deb`,
-`.rpm`, `.apk`, and Arch's `.pkg.tar.zst` packages (linux/amd64+arm64),
-raw archives for every supported platform, and a container image. Until
-then, build from source — see below.
-:::
+The easiest path — one command, picks the right binary for your OS/arch:
 
-Once releases exist, installation will look like this:
+```bash
+curl -fsSL https://get.enodia.sh/unix | sh   # Linux/macOS
+```
+
+```powershell
+irm https://get.enodia.sh/windows | iex      # Windows
+```
+
+Or a package, if you'd rather your package manager track updates:
 
 ```bash
 sudo dpkg -i enodia_linux_amd64.deb                # Debian/Ubuntu
@@ -21,23 +24,20 @@ apk add --allow-untrusted enodia_linux_amd64.apk   # Alpine
 sudo pacman -U enodia_linux_amd64.pkg.tar.zst      # Arch
 ```
 
+Every package installs the binary at `/usr/bin/enodia`, man pages under
+`/usr/share/man/man1/`, and creates a dedicated, unprivileged `enodia`
+system user — nothing here needs root to run. Grab the right one from
+the [latest release](https://github.com/EpicMorg/enodia/releases/latest).
+
+Or a container:
+
 ```bash
 docker run --rm \
   -v /etc/enodia:/config:ro \
   ghcr.io/epicmorg/enodia:1 check --config /config/config.yaml
 ```
 
-or the raw install scripts, once published:
-
-```bash
-curl -sSL https://raw.githubusercontent.com/EpicMorg/enodia/master/install.sh | sh   # Linux/macOS
-```
-
-```powershell
-irm https://raw.githubusercontent.com/EpicMorg/enodia/master/install.ps1 | iex        # Windows
-```
-
-### Build from source (works today)
+### Build from source
 
 Requires Go — check `go.mod` for the exact version enodia currently
 targets.
@@ -49,7 +49,7 @@ go build -o enodia ./cmd/enodia
 ./enodia version
 ```
 
-### Supported platforms (once a release exists)
+### Supported platforms
 
 | OS | Arch | Minimum version |
 |---|---|---|
