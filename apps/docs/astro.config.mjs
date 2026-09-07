@@ -21,15 +21,44 @@ export default defineConfig({
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/EpicMorg/enodia' }],
 			sidebar: [
 				{
-					label: 'Guides',
-					items: [
-						// Each item here is one entry in the navigation menu.
-						{ label: 'Example Guide', slug: 'guides/example' },
-					],
+					label: 'Getting started',
+					translations: { ru: 'Начало работы' },
+					slug: 'getting-started',
 				},
 				{
-					label: 'Reference',
-					items: [{ autogenerate: { directory: 'reference' } }],
+					label: 'Concepts',
+					translations: { ru: 'Концепции' },
+					slug: 'concepts',
+				},
+				{
+					label: 'Configuration',
+					translations: { ru: 'Конфигурация' },
+					slug: 'configuration',
+				},
+				{
+					label: 'CLI reference',
+					translations: { ru: 'Справочник CLI' },
+					slug: 'cli-reference',
+				},
+				{
+					label: 'Views',
+					translations: { ru: 'Представления' },
+					slug: 'views',
+				},
+				{
+					label: 'Reporting',
+					translations: { ru: 'Отчёты' },
+					slug: 'reporting',
+				},
+				{
+					label: 'Supported products',
+					translations: { ru: 'Поддерживаемые продукты' },
+					slug: 'products',
+				},
+				{
+					label: 'Security',
+					translations: { ru: 'Безопасность' },
+					slug: 'security',
 				},
 			],
 		}),
