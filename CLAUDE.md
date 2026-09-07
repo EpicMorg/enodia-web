@@ -15,26 +15,28 @@ on the `enodia-docs` name for the docs-only-scoped decisions that predate
 the rename; nothing in them was reversed, they just got a home alongside
 two siblings.
 
-## Status: all three apps scaffolded, deployed, and live (2026-09-07)
+## Status: live in production (2026-09-07)
 
 The user decided to start scaffolding ahead of the originally-assumed
 sequencing (enodia GitHub release + choco/winget) rather than wait — that
 condition in earlier revisions of this file no longer gates work here.
 
-**All three apps exist, build, and have a real deployment behind them**
-— `apps/docs` (Astro + Starlight), `apps/landing`, `apps/get` (both plain
-Astro, hand-scaffolded rather than via `create-astro` — see their own
-"Next steps" entries for why). All three Cloudflare Pages projects have
-custom domains attached and `active`, and all three have at least one
-real deployment verified live on the public internet (`curl`, not
-assumed) — but **every deployment so far is a preview deployment**, not
-production: every push has landed on `develop`, and each Pages project's
-`production_branch` is `master` (Decided item 5) — nothing has actually
-reached `master` yet, so `docs.enodia.sh`/`enodia.sh`/`get.enodia.sh`
-themselves are still not serving real content as of this note (they 522
-until a `master` deploy happens — see the "custom domains" note under
-Decided item 5 for why that's expected, not broken). See each app's own
-"Next steps" section below for exactly what's done vs. still open.
+**All three apps exist, are deployed, and are serving real production
+traffic** — `apps/docs` (Astro + Starlight), `apps/landing`, `apps/get`
+(both plain Astro, hand-scaffolded rather than via `create-astro` — see
+their own "Next steps" entries for why). `develop` was merged to
+`master` via [PR #1](https://github.com/EpicMorg/enodia-web/pull/1)
+(merge commit `d8a46e9`, 2026-09-07) at the user's explicit direction —
+each Cloudflare Pages project's `production_branch` is `master`
+(Decided item 5), so this merge is what actually took
+`docs.enodia.sh`/`enodia.sh`/`get.enodia.sh` from a 522 (no production
+deployment had ever landed) to real content. **Verified live post-merge**
+via `curl` against all three production domains, not assumed: `enodia.sh`
+and `docs.enodia.sh` 200 on both locales, `get.enodia.sh` 200 with
+`/unix` correctly returning its "no release yet" 404 (not a generic
+error). See each app's own "Next steps" section below for exactly what's
+done vs. still open — production being live doesn't mean every open item
+below is closed.
 
 Node.js **v24.20.0** ("Krypton", current LTS as of 2026-09-07) is
 installed system-wide under `/usr/local` on this machine (there was no
