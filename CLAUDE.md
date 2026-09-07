@@ -469,10 +469,16 @@ this blindly if it's been a while. As of writing:
   exists yet, so a `curl | sh` line would just fail for anyone who ran
   it. Links to GitHub instead; the source has a comment marking where
   the one-liner goes once a release ships — don't add it before then.
-- `public/robots.txt`, favicon reused from `apps/docs` (generic
-  Starlight-rocket SVG, not an enodia-specific mark — the real logo is
-  `enodia/.github/img/512x256.png`, a PNG; converting it into a proper
-  favicon set wasn't done, still open, low priority).
+- `public/robots.txt`. **Favicon resolved, 2026-09-07** — the real
+  enodia icon (`favicon.ico`, multi-res 16-256px, user-provided,
+  byte-identical to `enodia/build/windows/enodia.ico`) plus
+  `apple-touch-icon.png` (180×180, downscaled from a genuine 512×512
+  source PNG the user provided separately — not an upscale of the ico's
+  256px frame) and `og-image.png` (the 512 source itself) with matching
+  Open Graph/Twitter Card meta tags, replacing the placeholder
+  Starlight-rocket SVG. Source files kept in `assets/` at the repo root
+  (`enodia-256.png`, `enodia-512.png`, `apple-touch-icon.png`) so they
+  don't need re-deriving if a fourth app or a redesign ever needs them.
 - Verified live via local `astro dev`: both `/` (en) and `/ru/` serve
   200.
 - `deploy-landing.yml` written (same shape as `deploy-docs.yml`,
@@ -517,8 +523,8 @@ this blindly if it's been a while. As of writing:
   preview deployment, not just locally. This self-resolves the moment
   `install.sh`/`install.ps1` land on `master`; no redeploy needed here
   when that happens.
-- `public/robots.txt`, same reused favicon as `landing` (same open item:
-  a real enodia-branded favicon isn't done).
+- `public/robots.txt`, same real favicon/apple-touch-icon/og-image setup
+  as `landing` — see its entry above, resolved 2026-09-07.
 - Added `.wrangler/` to **all three** apps' `.gitignore` — local
   `wrangler pages dev` testing (used to verify the Cache API behavior
   above) left Miniflare state files that `git add` picked up; caught and
