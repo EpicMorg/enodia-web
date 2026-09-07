@@ -30,11 +30,45 @@ their own "Next steps" entries for why). `develop` was merged to
 each Cloudflare Pages project's `production_branch` is `master`
 (Decided item 5), so this merge is what actually took
 `docs.enodia.sh`/`enodia.sh`/`get.enodia.sh` from a 522 (no production
-deployment had ever landed) to real content. **Verified live post-merge**
-via `curl` against all three production domains, not assumed: `enodia.sh`
-and `docs.enodia.sh` 200 on both locales, `get.enodia.sh` 200 with
-`/unix` correctly returning its "no release yet" 404 (not a generic
-error). See each app's own "Next steps" section below for exactly what's
+deployment had ever landed) to real content.
+
+**enodia itself shipped a real tagged release the same day** — `1.0.0+0`
+(2026-09-07), verified live end-to-end (not assumed from the parent
+repo's own README, which was momentarily stale — see below): ran the
+real `install.sh` in an isolated directory, it downloaded and checksummed
+a real binary, `enodia version` reported `1.0.0+0`; also confirmed the
+`ghcr.io/epicmorg/enodia:1` multi-arch image manifest and one real
+package asset download. A second merge,
+[PR #2](https://github.com/EpicMorg/enodia-web/pull/2) (merge commit
+`ccfd40e`, 2026-09-07), updated every "no release yet" spot across all
+three apps to match — `apps/get`'s Pages Functions needed no code change
+(they fetch live) but their 404 messages were generalized away from a
+now-resolved-and-therefore-misleading "no release yet" claim;
+`apps/landing`'s and `apps/docs`'s copy got real install one-liners and
+package instructions in place of placeholders. **Note**: enodia's own
+`README.md` on `master` still says "Status: pre-1.0" / "Not published
+yet" as of this writing — that's the *parent* repo's own doc going stale
+after the release, not something to copy into this repo; this repo's
+content was written from live-verified reality, not from that README.
+
+**docs.enodia.sh/ (bare root) no longer 404s** — added
+`redirects: { '/': '/en/' }` to `apps/docs/astro.config.mjs` (portable,
+renders as a meta-refresh page in static output) plus a Cloudflare-native
+`apps/docs/public/_redirects` (`/ /en/ 301`, takes priority at Cloudflare's
+edge over the static fallback) — verified both live: dev server gives a
+real 308, production gives a real 301.
+
+**All RU docs content converted from informal "ты" to formal "Вы"**,
+2026-09-08, per explicit user correction — see the RU-translation
+feedback memory (`feedback_ru_translation_tone.md`) for the standing
+instruction to default to `Вы` in this user's Russian technical writing
+going forward.
+
+**Verified live post-merge** via `curl` against all three production
+domains after both PRs, not assumed: root redirect, real install
+one-liner, `Вы`-form RU text, and `get.enodia.sh` actually serving real
+`install.sh`/`install.ps1` content (not its old 404). See each app's own
+"Next steps" section below for exactly what's
 done vs. still open — production being live doesn't mean every open item
 below is closed.
 
