@@ -174,19 +174,19 @@ targets:
       type: regex          # json | xml | header | plaintext | regex
       key: version          # dotted path (json), tag/XPath-ish path (xml), or header name
       regex: 'v(\d+\.\d+\.\d+)'
-      cleanregex: '^v'      # first capture group wins; note the lowercase spelling
+      clean_regex: '^v'     # first capture group wins - snake_case, see below
       line: 1                # plaintext only - which line to read
 ```
 
-:::caution[Field spelling: `cleanregex`, not `cleanRegex`]
-The parser spec's YAML fields have no explicit tag mapping in enodia's
-source, so YAML's default (lowercase, no word-splitting) applies. Every
-other field happens to be one word already (`type`, `key`, `regex`,
-`line`), so this only bites the multi-word one — write `cleanregex`, all
-lowercase. Confirmed directly against the parser (a `cleanRegex` key is
-rejected as an unknown field), not assumed from either the source
-comments or the project's own internal design notes, which both use
-`cleanRegex` in prose.
+:::caution[Field spelling: `clean_regex`, not `cleanRegex` or `cleanregex`]
+`ParserSpec` now carries explicit `yaml:` tags matching the rest of
+`enodia.yaml`'s own snake_case convention (`ca_file`, `min_version`,
+`allow_insecure_transport`, ...) — `clean_regex` is correct as of
+2026-09-07. Before that fix, the struct had no explicit tags at all, so
+YAML's untagged default (lowercase, no word-splitting) applied and the
+only working spelling was `cleanregex`; a bare `cleanRegex` has never
+worked at any point. Confirmed directly against the parser both times
+this was checked, not assumed from prose.
 :::
 
 ## File locations
