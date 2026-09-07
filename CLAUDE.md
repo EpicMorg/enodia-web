@@ -459,8 +459,8 @@ this blindly if it's been a while. As of writing:
 
 1. ~~Create the three Cloudflare Pages projects~~ **done, 2026-09-07** —
    see Decided item 5's "All three Pages projects created" note. Live at
-   their `*.pages.dev` subdomains already; custom domains still pending
-   (item 3 below).
+   their `*.pages.dev` subdomains, and custom domains (item 3 below) are
+   attached and active too.
 2. Three GitHub Actions workflows (`deploy-landing.yml`, `deploy-get.yml`,
    `deploy-docs.yml`), each: path-filtered to its own `apps/*/**`,
    `astro build` then `cloudflare/wrangler-action@v4` running
@@ -484,19 +484,41 @@ this blindly if it's been a while. As of writing:
    end yet; don't assume it works until a real run is observed.
    `deploy-landing.yml`/`deploy-get.yml` still don't exist (their apps
    don't exist yet either).
-3. DNS/custom domains for `enodia.sh`, `get.enodia.sh`, `docs.enodia.sh`:
-   confirmed via Cloudflare's own Pages docs that manually creating the
-   CNAME *before* the domain is attached in the Pages dashboard causes a
-   522 — the correct flow is Pages project → Custom domains → "Set up a
-   domain" → enter the hostname, Cloudflare creates the CNAME itself.
-   **Update, 2026-09-07**: the earlier "outside what an agent can do
-   unless they grant API access" caveat no longer fully applies — the
-   scoped `CLOUDFLARE_API_TOKEN` from item 5 is live and its
-   `Cloudflare Pages: Edit` permission covers the domains API too
-   (`POST /accounts/{account_id}/pages/projects/{name}/domains`), so this
-   is now doable the same way the three projects themselves were
-   created, if/when the user wants it done that way rather than by hand
-   in the dashboard — ask first, don't just do it.
+3. ~~DNS/custom domains for `enodia.sh`, `get.enodia.sh`,
+   `docs.enodia.sh`~~ **done, 2026-09-07, all three `active`**. Mixed
+   path: `docs.enodia.sh` was attached via the Pages domains API
+   (`POST /accounts/{account_id}/pages/projects/enodia-docs/domains`,
+   same scoped `CLOUDFLARE_API_TOKEN` as item 1's project creation) —
+   hit exactly the conflict Cloudflare's own docs warn about, but in
+   reverse: `docs` already had a CNAME → `@` from the earlier Bulk
+   Redirect placeholder setup (Cloudflare dashboard notes, above), so
+   attaching left it stuck on `verification_data.error_message: "CNAME
+   record not set"` until the user manually repointed that CNAME to
+   `enodia-docs.pages.dev` in the dashboard (my token has no
+   `Zone:DNS:Edit`, deliberately — Pages custom-domain attachment and
+   raw DNS record edits are different permission scopes, and only the
+   former was granted). The user then attached `enodia.sh` →
+   `enodia-landing` and `get.enodia.sh` → `enodia-get` directly in the
+   dashboard themselves (both fresh CNAMEs, no pre-existing-record
+   conflict there). All three sat briefly at `validation_data.status:
+   pending` (certificate issuance, `google` CA, `http` method) before
+   flipping to `active` on a recheck a couple minutes later — this
+   happened for `docs` too even with zero real deployments behind any of
+   the three projects, so **cert-issuance delay is unrelated to whether
+   a project has been deployed yet**, don't read "pending" as "something
+   is wrong" on its own.
+
+   **All three custom domains 522 right now — expected, not a config
+   problem.** Confirmed by curling the raw `*.pages.dev` URLs directly
+   (bypassing the custom domain and this zone's DNS entirely): all three
+   `*.pages.dev` subdomains 522 too. A Cloudflare Pages project with zero
+   successful deployments has nothing to serve, full stop — the custom
+   domain being `active` just means routing/cert are correctly wired to
+   an empty project. Don't debug DNS/domain config on the strength of a
+   522 alone; check whether the project has ever deployed first. Resolves
+   itself the moment each app has a real first deployment (`docs`'s via
+   `deploy-docs.yml`, once it actually runs — still "not yet run" as of
+   this note).
 
 ## Working style
 
