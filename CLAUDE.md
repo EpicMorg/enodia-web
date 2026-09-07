@@ -15,16 +15,26 @@ on the `enodia-docs` name for the docs-only-scoped decisions that predate
 the rename; nothing in them was reversed, they just got a home alongside
 two siblings.
 
-## Status: `apps/docs` scaffolded, `apps/landing` and `apps/get` not yet
+## Status: all three apps scaffolded, deployed, and live (2026-09-07)
 
-As of 2026-09-07 the user decided to start scaffolding ahead of the
-originally-assumed sequencing (enodia GitHub release + choco/winget)
-rather than wait — that condition in earlier revisions of this file no
-longer gates work here. `apps/docs` exists (Astro + Starlight, `npm
-create astro@latest -- --template starlight`, en/ru wired, builds and
-serves both locales — see "Next steps" for exactly what's done vs. still
-open within it). `apps/landing` and `apps/get` are still just folders in
-the plan, not on disk — pick up from "Next steps" below for those two.
+The user decided to start scaffolding ahead of the originally-assumed
+sequencing (enodia GitHub release + choco/winget) rather than wait — that
+condition in earlier revisions of this file no longer gates work here.
+
+**All three apps exist, build, and have a real deployment behind them**
+— `apps/docs` (Astro + Starlight), `apps/landing`, `apps/get` (both plain
+Astro, hand-scaffolded rather than via `create-astro` — see their own
+"Next steps" entries for why). All three Cloudflare Pages projects have
+custom domains attached and `active`, and all three have at least one
+real deployment verified live on the public internet (`curl`, not
+assumed) — but **every deployment so far is a preview deployment**, not
+production: every push has landed on `develop`, and each Pages project's
+`production_branch` is `master` (Decided item 5) — nothing has actually
+reached `master` yet, so `docs.enodia.sh`/`enodia.sh`/`get.enodia.sh`
+themselves are still not serving real content as of this note (they 522
+until a `master` deploy happens — see the "custom domains" note under
+Decided item 5 for why that's expected, not broken). See each app's own
+"Next steps" section below for exactly what's done vs. still open.
 
 Node.js **v24.20.0** ("Krypton", current LTS as of 2026-09-07) is
 installed system-wide under `/usr/local` on this machine (there was no
@@ -204,12 +214,16 @@ Node/npm/npx at all before) — confirmed against Astro 7.x's own
    separate Worker at all. Each function does a plain fetch-and-return
    against `raw.githubusercontent.com` so the one-liners never have to
    name that host directly and don't take an extra redirect hop. **Edge
-   cache: 10 minutes** (`Cache-Control: public, max-age=600` on the
-   Function's response, or `caches.default` with a matching TTL) — an
-   explicit, deliberate value, not "no cache" and not the fetched file's
-   own origin cache headers passed through as-is; don't change this
-   without asking, it was a considered choice on staleness-vs-load
-   tradeoff (10 minutes is fine for an install script that changes on
+   cache: 10 minutes**, implemented via the Cache API
+   (`caches.default.match()`/`.put()`) — a bare `Cache-Control` header on
+   a Function's own response is confirmed **not** enough on its own
+   (Cloudflare's own docs: Workers/Pages Functions run ahead of the edge
+   cache, unlike a plain `fetch()` subrequest's response, which does
+   cache automatically off its headers) — an explicit, deliberate value,
+   not "no cache" and not the fetched file's own origin cache headers
+   passed through as-is; don't change this without asking, it was a
+   considered choice on staleness-vs-load tradeoff (10 minutes is fine
+   for an install script that changes on
    releases, not every commit).
 10. **Search: Pagefind** (Starlight's own zero-config default, `docs` app
     only) — not Algolia DocSearch, even though the user's other project
@@ -432,28 +446,90 @@ this blindly if it's been a while. As of writing:
   writing, not what's planned — check the parent repo's real state
   first.
 
-### `apps/landing` and `apps/get` — not started
+### `apps/landing` — done, 2026-09-07
 
-1. Scaffold both with plain `npm create astro@latest` (no Starlight),
-   `output: 'static'` — same Node/Astro version already confirmed and
-   installed for `docs`, no need to re-verify.
-2. `astro.config.mjs` `site:` to `https://enodia.sh` /
-   `https://get.enodia.sh` respectively — no `base` needed, same
-   custom-domain-root reasoning as `docs`. Both follow the same `en`/`ru`
-   folder convention by hand (Decided item 2/6) since they don't have
-   Starlight's i18n plumbing to lean on.
-3. `apps/get/functions/unix.ts` and `apps/get/functions/windows.ts`
-   (Cloudflare Pages Functions, Decided item 9): fetch-and-return against
-   `raw.githubusercontent.com/EpicMorg/enodia/master/install.sh` /
-   `install.ps1` respectively, `Cache-Control: public, max-age=600`
-   (10 minutes, deliberate — see item 9, don't change without asking).
-   Verify Pages Functions' exact file-based routing convention live
-   (`functions/<name>.ts` → `/<name>`) against Cloudflare's current docs
-   before assuming the shape, it changes.
-4. Each gets its own plain `public/robots.txt` (Decided item 12);
-   `@astrojs/sitemap` optional/low-priority for these two (item 11) —
-   and if added, needs the `i18n` option set by hand (no Starlight
-   auto-wiring for non-Starlight apps).
+- **Hand-scaffolded, not `create-astro`** — a plain Astro app is small
+  enough that writing `package.json`/`astro.config.mjs`/`tsconfig.json`
+  by hand was faster and more predictable than guessing `create-astro`'s
+  non-Starlight template flags. Installed `astro@^7.3.1` (same as
+  `docs`), no Starlight dependency at all.
+- **i18n via Astro's own core `i18n` config** (not Starlight's, not
+  hand-rolled folder routing) — `defaultLocale: 'en'`, `locales: ['en',
+  'ru']`, `routing.prefixDefaultLocale: false`. Deliberately different
+  from `docs`'s symmetric-prefix approach (item 1): the landing root is
+  the one URL people actually type/share (`enodia.sh`, not
+  `enodia.sh/en/`), so English lives unprefixed at `/` and Russian at
+  `/ru/`.
+- **Content pulled from the parent repo's actual README**, not invented
+  — tagline "Know what you are running, and how long it has left." and
+  the pitch paragraph are close paraphrases of `enodia/README.md`'s own
+  wording, not made up. **No install one-liner** — confirmed live
+  (read `install.sh` itself) that it resolves the "latest" binary via
+  GitHub's `/releases/latest/download/` alias, and no tagged release
+  exists yet, so a `curl | sh` line would just fail for anyone who ran
+  it. Links to GitHub instead; the source has a comment marking where
+  the one-liner goes once a release ships — don't add it before then.
+- `public/robots.txt`, favicon reused from `apps/docs` (generic
+  Starlight-rocket SVG, not an enodia-specific mark — the real logo is
+  `enodia/.github/img/512x256.png`, a PNG; converting it into a proper
+  favicon set wasn't done, still open, low priority).
+- Verified live via local `astro dev`: both `/` (en) and `/ru/` serve
+  200.
+- `deploy-landing.yml` written (same shape as `deploy-docs.yml`,
+  `--project-name=enodia-landing`) and **has run successfully** — pushed
+  on `develop`, so it's a preview deployment, confirmed working via curl
+  against `https://develop.enodia-landing.pages.dev/` (200, both
+  locales). Production (`enodia.sh` itself) stays 522 until this reaches
+  `master` — see "Status" above.
+
+### `apps/get` — done, 2026-09-07
+
+- Hand-scaffolded like `landing`, same i18n approach
+  (`prefixDefaultLocale: false`) — root stays unprefixed English, `/ru/`
+  for Russian, so it matches `/unix` and `/windows` also living
+  unprefixed.
+- **`functions/unix.ts` and `functions/windows.ts`** (Cloudflare Pages
+  Functions, file-based routing confirmed live against Cloudflare's
+  current docs: `functions/<name>.ts` → `/<name>`, exactly as assumed).
+  Each fetches `raw.githubusercontent.com/EpicMorg/enodia/master/
+  install.sh` or `install.ps1` and returns it as `text/plain`.
+  **Caching is explicit via the Cache API** (`caches.default.match()` /
+  `.put()` on `Cache-Control: public, max-age=600`, 10 minutes) — **not**
+  just a `Cache-Control` header on the Function's own response, which
+  Cloudflare confirmed (own docs) does *not* get edge-cached
+  automatically the way a plain `fetch()` subrequest's response does;
+  Workers/Pages Functions run ahead of the edge cache. Verified this
+  actually works locally via `wrangler pages dev` (a scratch test
+  function against a real GitHub file: first request MISS + real fetch,
+  second request HIT from cache, byte-identical) before committing —
+  removed the scratch file afterward, never shipped.
+- **Found live, not assumed**: `raw.githubusercontent.com/EpicMorg/
+  enodia/master/install.sh` currently 404s. `install.sh` only exists on
+  enodia's `develop` branch so far (confirmed via the parent repo's own
+  `git log -- install.sh`) — it hasn't reached `master` yet. Kept
+  `master` as the proxy target anyway (per this file's own Decided item
+  9, matching the parent repo's D17-documented long-term URL) rather
+  than pointing at `develop` as a workaround — `develop` is a moving
+  target, not meant for public consumption. Both functions detect this
+  specific case (`upstream.status === 404`) and return a clear,
+  uncached `"enodia has no release yet — install.sh is not on master."`
+  404 instead of a generic proxied error — verified live on the real
+  preview deployment, not just locally. This self-resolves the moment
+  `install.sh`/`install.ps1` land on `master`; no redeploy needed here
+  when that happens.
+- `public/robots.txt`, same reused favicon as `landing` (same open item:
+  a real enodia-branded favicon isn't done).
+- Added `.wrangler/` to **all three** apps' `.gitignore` — local
+  `wrangler pages dev` testing (used to verify the Cache API behavior
+  above) left Miniflare state files that `git add` picked up; caught and
+  unstaged before committing, but worth having the ignore rule for next
+  time regardless of which app someone runs it in.
+- `deploy-get.yml` written and **has run successfully** as a preview
+  deployment — confirmed live: `https://develop.enodia-get.pages.dev/`
+  serves the landing page (200), `/unix` and `/windows` both correctly
+  return the "no release yet" 404 (not a 500, not a generic proxy
+  error). Production (`get.enodia.sh`) stays 522 until `master`, same as
+  the other two apps.
 
 ### Shared CI/DNS steps (all three apps)
 
