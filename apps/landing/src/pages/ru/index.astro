@@ -1,0 +1,34 @@
+---
+import Landing from '../../layouts/Landing.astro';
+---
+
+<Landing
+	lang="ru"
+	title="enodia"
+	description="Знай, что у тебя запущено и сколько ему осталось. Инвентаризация сервисов и мониторинг жизненного цикла/EOL для твоей инфраструктуры."
+>
+	<main>
+		<img class="logo" src="/logo.png" width="72" height="72" alt="" />
+		<h1>enodia</h1>
+		<p class="tagline">Знай, что у тебя запущено, и сколько ему осталось.</p>
+		<span class="status">pre-1.0 — релизов пока нет</span>
+
+		<p class="pitch">
+			enodia опрашивает твои сервисы на предмет версии, сверяет её с
+			календарями жизненного цикла вендоров и показывает, что уже мертво, что
+			умирает и где флот разъехался по версиям. Один раз описал сервисы —
+			дальше enodia сама разберётся.
+		</p>
+
+		<pre><code>git clone https://github.com/EpicMorg/enodia.git</code></pre>
+
+		<nav class="links">
+			<a href="https://docs.enodia.sh/ru/">Документация</a>
+			<a href="https://github.com/EpicMorg/enodia">GitHub</a>
+			<a href="/">English</a>
+		</nav>
+	</main>
+	<footer>
+		enodia распространяется по лицензии <a href="https://github.com/EpicMorg/enodia/blob/master/LICENSE">AGPL-3.0-or-later</a>.
+	</footer>
+</Landing>

@@ -1,0 +1,82 @@
+---
+title: enodia
+description: Know what you are running, and how long it has left.
+---
+
+**enodia** asks your deployed services what version they're running,
+checks those versions against vendor lifecycle calendars, and tells you
+what's already dead, what's dying, and where your fleet has drifted
+apart. You describe your services once — enodia handles the rest.
+
+:::caution[Status: pre-1.0]
+enodia is implemented and used against real production infrastructure —
+collection, evaluation, 29 probes, reporting — but no tagged release
+exists yet, and the config schema may still change before one does. See
+[Getting started](/en/getting-started/) for what actually works today.
+:::
+
+## Why enodia
+
+Most tools cover one half of the problem: they either track upstream
+releases, or they know what you've deployed — rarely both, and none of
+them join it against vendor lifecycle dates.
+
+| Tool | Tracks upstream releases | Knows what you deployed | Lifecycle dates |
+|---|---|---|---|
+| `eol` CLI | — | — | yes |
+| nvchecker | yes | — | — |
+| Renovate / Dependabot | yes (dependencies) | — | — |
+| what's-up-docker | yes (containers only) | containers only | — |
+| Uptime Kuma | — | up/down only | — |
+| **enodia** | yes | **yes** | **yes** |
+
+## A minute of enodia
+
+```yaml title="enodia.yaml"
+schemaVersion: 1
+targets:
+  - id: jira-main
+    product: jira
+    address: https://jira.example.com
+
+  - id: gitlab-main
+    product: gitlab
+    address: https://gitlab.example.com
+    credentials: gitlab-token
+
+credentials:
+  gitlab-token:
+    kind: token-header
+    header: PRIVATE-TOKEN
+    value: "${GITLAB_TOKEN}"
+```
+
+```console
+$ enodia check
+ID           PRODUCT  PATCH   LIFECYCLE  BRANCH     SEVERITY  REASON
+jira-main    jira     behind  active     newer_lts  warn      -
+gitlab-main  gitlab   behind  eol        newer      fail      -
+```
+
+That's the whole loop: describe a target once, run `enodia check`, get
+back three independent facts per target — patch status, lifecycle
+status, and whether a newer branch exists — plus a severity computed
+from policy you control.
+
+## Where to go next
+
+- **[Getting started](/en/getting-started/)** — what actually runs today,
+  and your first `enodia.yaml`.
+- **[Concepts](/en/concepts/)** — the two-phase design, the three
+  verdict axes, and why time is a parameter, not the system clock.
+- **[Configuration](/en/configuration/)** — every field `enodia.yaml`
+  and `credentials.yaml` accept.
+- **[CLI reference](/en/cli-reference/)** — every command, straight from
+  `--help`.
+- **[Supported products](/en/products/)** — all 29 probes.
+
+## The name
+
+Enodia, "she of the wayside", is an epithet of Hecate: torchbearer,
+keeper of crossroads. Fitting for something that lights up what is
+decaying and stands where you choose which way to upgrade.
