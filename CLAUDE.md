@@ -15,15 +15,21 @@ on the `enodia-docs` name for the docs-only-scoped decisions that predate
 the rename; nothing in them was reversed, they just got a home alongside
 two siblings.
 
-## Status: not yet scaffolded
+## Status: `apps/docs` scaffolded, `apps/landing` and `apps/get` not yet
 
-This repository currently contains only this file and a placeholder
-README. Nothing has been generated yet — pick up from "Next steps" below.
-Per the user's own project roadmap (as of 2026-09-07), actual scaffolding
-is likely to happen *after* enodia's GitHub release and Chocolatey/winget
-packages land, not before — check with the user whether that's still the
-sequencing before doing real work here, this file only records decisions
-made ahead of time so a future session doesn't start from zero.
+As of 2026-09-07 the user decided to start scaffolding ahead of the
+originally-assumed sequencing (enodia GitHub release + choco/winget)
+rather than wait — that condition in earlier revisions of this file no
+longer gates work here. `apps/docs` exists (Astro + Starlight, `npm
+create astro@latest -- --template starlight`, en/ru wired, builds and
+serves both locales — see "Next steps" for exactly what's done vs. still
+open within it). `apps/landing` and `apps/get` are still just folders in
+the plan, not on disk — pick up from "Next steps" below for those two.
+
+Node.js **v24.20.0** ("Krypton", current LTS as of 2026-09-07) is
+installed system-wide under `/usr/local` on this machine (there was no
+Node/npm/npx at all before) — confirmed against Astro 7.x's own
+`engines.node: >=22.12.0` via the live npm registry, not assumed.
 
 ## Context
 
@@ -212,17 +218,34 @@ made ahead of time so a future session doesn't start from zero.
 11. **Sitemap: `@astrojs/sitemap`** (official Astro integration, `3.7.4`
     as of 2026-09-07, `docs` app primarily — `landing`/`get` are single
     static pages each, a sitemap there is low-value but cheap to add if
-    it matters later) — needs `site:` set in `astro.config.mjs` plus
-    `integrations: [sitemap()]`, and has a dedicated `i18n: {
-    defaultLocale, locales }` option that generates per-locale URLs and
-    `hreflang` alternates automatically, which matters here (en+ru).
-    Unresolved: `withastro/starlight`'s own package tree has an
-    `integrations/sitemap.ts` file hinting at some internal sitemap
-    glue, but its content couldn't be fetched/confirmed and Starlight's
-    own configuration reference documents no sitemap-specific option at
-    all — verify by hand at implementation time whether plain
-    `@astrojs/sitemap` needs any extra Starlight-side wiring, don't
-    assume either way from this note alone.
+    it matters later) — needs `site:` set in `astro.config.mjs`; the
+    `integrations: [sitemap()]` line and its `i18n` option are **not
+    needed for `apps/docs` and were deliberately left out** — see below,
+    resolved by reading source rather than guessing.
+
+    **Resolved (was "Unresolved" in earlier revisions of this file), via
+    `apps/docs/node_modules/@astrojs/starlight/dist/integrations/sitemap.js`
+    and `dist/index.js` after scaffolding**: Starlight auto-injects its
+    own wrapped `@astrojs/sitemap` instance — pre-configured with the
+    exact `i18n: { defaultLocale, locales }` derived from Starlight's own
+    `locales`/`defaultLocale` config — *whenever the user hasn't already
+    added an `@astrojs/sitemap`-named integration themselves*
+    (`if (!allIntegrations.find(({ name }) => name === "@astrojs/sitemap"))`
+    in `dist/index.js`). `@astrojs/sitemap` is already a direct dependency
+    of `@astrojs/starlight` (`^3.7.3`), so it doesn't even need installing
+    separately for `apps/docs`. Verified end-to-end after scaffolding:
+    `astro build` with only `site:` + Starlight's `locales`/`defaultLocale`
+    set (no `sitemap()` in `integrations` at all) produced
+    `dist/sitemap-0.xml` with correct `hreflang="en"`/`hreflang="ru"`
+    alternate links on every URL, with zero manual `i18n` mapping. Only
+    reach for adding `@astrojs/sitemap` explicitly to `integrations` if
+    `apps/docs` ever needs sitemap options Starlight's auto-wiring doesn't
+    expose (custom `changefreq`, `priority`, a `filter`, …) — doing so
+    turns Starlight's auto-injection off, so the `i18n` option would then
+    need setting by hand to keep the hreflang alternates.
+    `apps/landing`/`apps/get` aren't Starlight sites, so if they ever get
+    a sitemap it's the plain integration, added by hand, no such
+    auto-wiring available.
 12. **robots.txt: a plain static `public/robots.txt` file per app**, not
     an integration. Neither community option (`astro-robots-txt`, stale
     since 2023; `astro-robots`, stale since late 2024) looked maintained
@@ -339,36 +362,82 @@ this blindly if it's been a while. As of writing:
     reviewed by the portmgr team — same review gate as `homebrew-core`,
     no lighter path.
 
-## Next steps once scaffolding actually starts
+## Next steps
 
-Three apps (Decided item 2) — `docs` is the involved one (Starlight,
-i18n, sitemap); `landing` and `get` are much smaller but shouldn't be
-built before checking the shared groundwork below, since all three share
-the Node/Astro-version verification and the "one Pages project per app"
-deploy shape.
+### `apps/docs` — done so far (2026-09-07)
 
-1. Verify current Node version requirements for Astro 7.x /
-   `@astrojs/starlight` live (`engines`/peer deps) before installing —
-   don't assume a number from memory, it was unverified as of writing
-   this. This machine had no Node/npm/npx installed at all as of
-   2026-09-07. One check covers all three apps (same Astro major).
-2. Scaffold each app separately, into `apps/landing/`, `apps/get/`,
-   `apps/docs/`:
-   - `apps/docs`: `npm create astro@latest -- --template starlight` (or
-     the current equivalent — check Starlight's own getting-started docs
-     for the exact command, it changes across versions).
-   - `apps/landing` and `apps/get`: plain `npm create astro@latest` (no
-     Starlight), `output: 'static'`.
-3. Configure each `astro.config.mjs`'s `site:` to its own domain
-   (`https://enodia.sh`, `https://get.enodia.sh`,
-   `https://docs.enodia.sh`) — no `base` needed for any of them, all
-   three are custom-domain root deploys, not subpath deploys (confirmed
-   against Astro's own deploy docs — `base` is only for something like
-   `user.github.io/repo`). `apps/docs` additionally gets Starlight's
-   `locales` for `en`/`ru`; `apps/landing`/`apps/get` follow the same
-   `en`/`ru` folder convention by hand (Decided item 2/6) since they
-   don't have Starlight's i18n plumbing to lean on.
-4. `apps/get/functions/unix.ts` and `apps/get/functions/windows.ts`
+- Node.js v24.20.0 installed (satisfies Astro 7.x's live-confirmed
+  `engines.node: >=22.12.0` — see "Status" above).
+- Scaffolded via `npm create astro@latest apps/docs -- --template
+  starlight --install --no-git --typescript strict --no-ai --yes`.
+  Installed versions: Astro `7.3.1`, `@astrojs/starlight` `0.42.0`
+  (matches what "Decided" item 1 expected as of the same date).
+- `astro.config.mjs`: `site: 'https://docs.enodia.sh'`,
+  `defaultLocale: 'en'`, `locales: { en: {...}, ru: {...} }` (no `root`
+  locale — matches item 1's "plain subdirectories" decision), title
+  `'enodia'`, social link to `github.com/EpicMorg/enodia`. **No**
+  `@astrojs/sitemap` in `integrations` — deliberate, see item 11's
+  resolved note above.
+- Scaffold's example content moved from `src/content/docs/` straight
+  into `src/content/docs/en/` (fixed one relative image path this broke,
+  `../../assets/houston.webp` → `../../../assets/houston.webp`). No
+  `ru/` content created yet — Starlight auto-generates a fallback
+  `/ru/*` page for anything untranslated, confirmed live
+  (`astro build` produced `/ru/index.html` etc. with zero `ru` source
+  files present) — real `ru/` translations are still open, see below.
+- `public/robots.txt` added, pointing at
+  `https://docs.enodia.sh/sitemap-index.xml`.
+- Verified live end-to-end: `astro build` succeeds, produces
+  `dist/sitemap-index.xml` + `dist/sitemap-0.xml` with correct
+  `hreflang="en"`/`hreflang="ru"` alternates, Pagefind index builds
+  automatically (7 pages found, no config needed). `astro dev` serves
+  `/en/` and `/ru/` simultaneously from one process — the original
+  Docusaurus pain point (Context, above) confirmed actually fixed, not
+  just theoretically fixed by the engine choice.
+- Committed to `develop` (`feat(docs): scaffold apps/docs`); not yet
+  pushed/PR'd as of this writing — check git log before assuming either
+  way.
+
+### `apps/docs` — still open
+
+- Root `docs.enodia.sh/` (no locale prefix) currently 404s — there's no
+  `root` locale, by design (item 1), but a `/` → `/en/` redirect (or
+  equivalent) for convenience wasn't decided either way — ask if it
+  matters before adding one.
+- The `Entry docs → 404 was not found` build warning is a known, benign
+  quirk of the default Starlight scaffold (no dedicated `404.md`
+  content entry) — Starlight still emits a working `dist/404.html`
+  regardless; cosmetic, not investigated further.
+- Real `ru/` translations (currently English-only; Starlight's fallback
+  covers the gap functionally but every `ru/*` page shows an
+  untranslated-content notice).
+- Sidebar/nav content is still the scaffold's placeholder "Example
+  Guide"/"Reference" pages — real content population is its own
+  step, below.
+- No GitHub Actions deploy workflow yet, no Cloudflare Pages project
+  created yet for `docs` — see the shared CI/DNS steps below, which
+  cover all three apps together.
+- Populate initial content from enodia's own `README.md` and
+  `docs/*.md` as a starting point — translated/reorganized for a
+  docs-site structure (sidebar navigation, separate pages per topic)
+  rather than copied verbatim, and kept in sync with the parent repo's
+  actual current state, not a stale snapshot. Per the user's own
+  roadmap, content about install methods (packages, `install.sh`/`.ps1`,
+  choco/winget) should reflect what's *actually released* at the time of
+  writing, not what's planned — check the parent repo's real state
+  first.
+
+### `apps/landing` and `apps/get` — not started
+
+1. Scaffold both with plain `npm create astro@latest` (no Starlight),
+   `output: 'static'` — same Node/Astro version already confirmed and
+   installed for `docs`, no need to re-verify.
+2. `astro.config.mjs` `site:` to `https://enodia.sh` /
+   `https://get.enodia.sh` respectively — no `base` needed, same
+   custom-domain-root reasoning as `docs`. Both follow the same `en`/`ru`
+   folder convention by hand (Decided item 2/6) since they don't have
+   Starlight's i18n plumbing to lean on.
+3. `apps/get/functions/unix.ts` and `apps/get/functions/windows.ts`
    (Cloudflare Pages Functions, Decided item 9): fetch-and-return against
    `raw.githubusercontent.com/EpicMorg/enodia/master/install.sh` /
    `install.ps1` respectively, `Cache-Control: public, max-age=600`
@@ -376,16 +445,26 @@ deploy shape.
    Verify Pages Functions' exact file-based routing convention live
    (`functions/<name>.ts` → `/<name>`) against Cloudflare's current docs
    before assuming the shape, it changes.
-5. Three GitHub Actions workflows (`deploy-landing.yml`, `deploy-get.yml`,
+4. Each gets its own plain `public/robots.txt` (Decided item 12);
+   `@astrojs/sitemap` optional/low-priority for these two (item 11) —
+   and if added, needs the `i18n` option set by hand (no Starlight
+   auto-wiring for non-Starlight apps).
+
+### Shared CI/DNS steps (all three apps)
+
+1. Create the three Cloudflare Pages projects by hand first
+   (`enodia-docs`, `enodia-landing`, `enodia-get`; production branch
+   `master` — Decided item 5), since it's unconfirmed whether
+   `wrangler pages deploy` auto-creates a missing project non-interactively
+   in CI.
+2. Three GitHub Actions workflows (`deploy-landing.yml`, `deploy-get.yml`,
    `deploy-docs.yml`), each: path-filtered to its own `apps/*/**`,
    `astro build` then `cloudflare/wrangler-action@v4` running
-   `command: pages deploy <dist> --project-name=<enodia-landing|
-   enodia-get|enodia-docs>` (Decided item 5 — `CLOUDFLARE_API_TOKEN` +
-   `CLOUDFLARE_ACCOUNT_ID` repo secrets, done 2026-09-07; the three Pages
-   projects need creating by hand first, see item 5's "unverified"
-   note) rather than GitHub Pages' native deploy action or the deprecated
-   `cloudflare/pages-action`.
-6. DNS: **don't** tell the user to manually create CNAMEs for
+   `command: pages deploy <dist> --project-name=<name>` (Decided item 5
+   — `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` repo secrets, done
+   2026-09-07) rather than GitHub Pages' native deploy action or the
+   deprecated `cloudflare/pages-action`.
+3. DNS: **don't** tell the user to manually create CNAMEs for
    `enodia.sh`, `get.enodia.sh`, or `docs.enodia.sh` — confirmed via
    Cloudflare's own Pages docs that doing so *before* the domain is
    attached in the Pages dashboard causes a 522. The correct flow, per
@@ -393,24 +472,6 @@ deploy shape.
    enter the hostname → Cloudflare creates the CNAME itself, since both
    zones are already theirs. Entirely inside their Cloudflare account,
    outside what an agent can do for them unless they grant API access.
-7. `apps/docs`: wire up `@astrojs/sitemap` (`site:` +
-   `integrations: [sitemap()]` + the `i18n` option for en/ru — see
-   "Decided" above) and add a static `public/robots.txt` referencing the
-   sitemap URL. Pagefind needs no wiring at all — it's Starlight's
-   default, active as soon as the site builds. `apps/landing`/`apps/get`
-   each get their own plain `public/robots.txt` too (Decided item 12),
-   sitemap optional/low-priority for those two (item 11).
-8. `apps/docs`: populate initial content from enodia's own `README.md`
-   and `docs/*.md` as a starting point — translated/reorganized for a
-   docs-site structure (sidebar navigation, separate pages per topic)
-   rather than copied verbatim, and kept in sync with the parent repo's
-   actual current state, not a stale snapshot. Per the user's own
-   roadmap, content about install methods (packages, `install.sh`/`.ps1`,
-   choco/winget) should reflect what's *actually released* at the time of
-   writing, not what's planned — check the parent repo's real state
-   first. `apps/landing`'s one-liner(s) and `apps/get`'s landing copy
-   draw from the same source of truth (what's actually released), kept
-   in sync with each other and with `apps/docs`'s install-methods page.
 
 ## Working style
 
