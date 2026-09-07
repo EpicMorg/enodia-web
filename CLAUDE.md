@@ -417,34 +417,70 @@ this blindly if it's been a while. As of writing:
   pushed/PR'd as of this writing — check git log before assuming either
   way.
 
-### `apps/docs` — still open
+### `apps/docs` — real content written, 2026-09-07
 
-- Root `docs.enodia.sh/` (no locale prefix) currently 404s — there's no
-  `root` locale, by design (item 1), but a `/` → `/en/` redirect (or
-  equivalent) for convenience wasn't decided either way — ask if it
-  matters before adding one.
-- The `Entry docs → 404 was not found` build warning is a known, benign
-  quirk of the default Starlight scaffold (no dedicated `404.md`
-  content entry) — Starlight still emits a working `dist/404.html`
-  regardless; cosmetic, not investigated further.
-- Real `ru/` translations (currently English-only; Starlight's fallback
-  covers the gap functionally but every `ru/*` page shows an
-  untranslated-content notice).
-- Sidebar/nav content is still the scaffold's placeholder "Example
-  Guide"/"Reference" pages — real content population is its own
-  step, below.
-- No GitHub Actions deploy workflow yet, no Cloudflare Pages project
-  created yet for `docs` — see the shared CI/DNS steps below, which
-  cover all three apps together.
-- Populate initial content from enodia's own `README.md` and
-  `docs/*.md` as a starting point — translated/reorganized for a
-  docs-site structure (sidebar navigation, separate pages per topic)
-  rather than copied verbatim, and kept in sync with the parent repo's
-  actual current state, not a stale snapshot. Per the user's own
-  roadmap, content about install methods (packages, `install.sh`/`.ps1`,
-  choco/winget) should reflect what's *actually released* at the time of
-  writing, not what's planned — check the parent repo's real state
-  first.
+Eight topic pages per language (`getting-started`, `concepts`,
+`configuration`, `cli-reference`, `views`, `reporting`, `products`,
+`security`) plus `index`, in both `en/` and `ru/` — 18 content files
+total, replacing the Starlight scaffold's placeholder "Example
+Guide"/"Reference" pages entirely (sidebar in `astro.config.mjs`
+restructured to match, each item with a `translations: { ru: ... }`
+label).
+
+**Sourced from the real parent repo, not memory**: the parent `enodia`
+repo was built locally from its `develop` branch (`go build
+./cmd/enodia`, Go 1.26 toolchain auto-fetched — this machine only had
+1.24 installed) specifically to get authoritative `--help` text for
+every command and the real `enodia products` table, rather than
+transcribing README prose alone. The config schema (`enodia.yaml`,
+`credentials.yaml`, `settings.yaml`) was written by reading
+`internal/config`'s actual Go structs and their `yaml:` tags directly.
+
+**Two things found in the process, worth knowing for future work here**:
+
+- **enodia's own `master` branch is currently an empty skeleton** — no
+  `cmd/`, no `internal/`, just license/contributing boilerplate (17
+  files, 2 commits: "Initial commit" and "History start"). All real code
+  lives on `develop` and hasn't been merged yet. This is *why*
+  `raw.githubusercontent.com/.../master/install.sh` 404s (see `apps/get`
+  above) — it's not just "no release," `master` doesn't have the file at
+  all yet, independent of tagging. Worth surfacing to the user before
+  either repo goes further: this doc site's content and `apps/get`'s
+  proxy both currently describe/reference a `master` that doesn't yet
+  contain the thing they're pointing at.
+- **The generic probe's `cleanRegex` field is actually spelled
+  `cleanregex`** (all lowercase) in real YAML — confirmed empirically via
+  a throwaway `go test` against `internal/config` (removed afterward, no
+  changes left in the parent repo). `probe.ParserSpec` has no explicit
+  `yaml:` tags, so yaml.v3's untagged default (lowercase, no
+  word-splitting) applies; a literal `cleanRegex` key is rejected as
+  unknown. enodia's own `docs/DECISIONS.md` (D3) and `docs/CLAUDE.md`
+  both write `cleanRegex` in prose — that's a real discrepancy in the
+  *parent* repo's own docs, not something to silently "fix" by matching
+  their spelling here. Documented the verified-correct lowercase spelling
+  in `configuration.md` with an explicit callout; flag the discrepancy to
+  the user for enodia's own repo, don't just carry it forward.
+
+**Installation content stays honest about current state** (no tagged
+release → packages/install-scripts documented as "once published,"
+build-from-source as what actually works today) — consistent with
+`apps/get`'s Functions already handling the same "no release yet" case
+live.
+
+**Verified, not assumed**: every internal cross-reference link across
+all 18 files — including every Cyrillic anchor — checked
+programmatically against the real built HTML (URL-decoded fragment
+compared against actual heading `id`s extracted from `dist/`), zero
+broken links found. Sidebar translation (`ru:` labels actually rendering
+in Russian) confirmed live via the dev server, not just assumed from the
+config shape.
+
+**Still open**: root `docs.enodia.sh/` (no locale prefix) still 404s —
+no `root` locale, by design (item 1), and whether a `/` → `/en/`
+redirect is wanted was never decided — ask before adding one. The
+`Entry docs → 404 was not found` build warning (benign Starlight
+scaffold quirk, `dist/404.html` still works) is unchanged, still
+cosmetic.
 
 ### `apps/landing` — done, 2026-09-07
 
