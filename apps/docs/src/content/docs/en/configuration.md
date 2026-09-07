@@ -225,10 +225,12 @@ worth failing loudly over, since it usually means the wrong file (or
 none) is about to be used. Run `enodia config path` to see which file
 would actually be picked up.
 
-**`settings.yaml`** — same idea, with two differences: it also checks a
-plain `settings.` name (not just `enodia.settings.`), and finding
-nothing at all is **not** an error — every field just falls back to its
-built-in default, since this file is entirely optional:
+**`settings.yaml`** — same idea, with a few differences: it also checks a
+plain `settings.` name (not just `enodia.settings.`), it additionally
+checks the directory the running executable lives in (not just the
+current directory — see below), and finding nothing at all is **not**
+an error — every field just falls back to its built-in default, since
+this file is entirely optional:
 
 1. `./enodia.settings.yaml`
 2. `./enodia.settings.yml`
@@ -238,10 +240,23 @@ built-in default, since this file is entirely optional:
 6. `./.enodia.settings.yml`
 7. `./.settings.yaml`
 8. `./.settings.yml`
-9. `$XDG_CONFIG_HOME/enodia/settings.yaml` (`~/.config/enodia/settings.yaml` if `$XDG_CONFIG_HOME` is unset)
-10. `$XDG_CONFIG_HOME/enodia/settings.yml`
-11. `/etc/enodia/settings.yaml`
-12. `/etc/enodia/settings.yml`
+9. `<directory containing the running executable>/settings.yaml`
+10. `<same>/settings.yml`
+11. `$XDG_CONFIG_HOME/enodia/settings.yaml` (`~/.config/enodia/settings.yaml` if `$XDG_CONFIG_HOME` is unset)
+12. `$XDG_CONFIG_HOME/enodia/settings.yml`
+13. `/etc/enodia/settings.yaml`
+14. `/etc/enodia/settings.yml`
+
+Step 9-10 is distinct from the current directory (steps 1-8): a portable
+install (unzip anywhere, no package manager) runs from whatever
+directory the operator happens to be standing in, which on Windows in
+particular is essentially never the install directory itself
+(`install.ps1` defaults to `%LOCALAPPDATA%\enodia`, added to `PATH` — the
+whole point of `PATH` is that the current directory stops mattering).
+This step is deliberately limited to `settings.yaml` — it's optional
+display preferences, so a wrong or hijacked one in a shared install
+directory is a cosmetic problem at worst. `enodia.yaml` carries
+credentials and does not get an equivalent step.
 
 ## `settings.yaml`
 
