@@ -448,18 +448,23 @@ transcribing README prose alone. The config schema (`enodia.yaml`,
   either repo goes further: this doc site's content and `apps/get`'s
   proxy both currently describe/reference a `master` that doesn't yet
   contain the thing they're pointing at.
-- **The generic probe's `cleanRegex` field is actually spelled
-  `cleanregex`** (all lowercase) in real YAML — confirmed empirically via
-  a throwaway `go test` against `internal/config` (removed afterward, no
-  changes left in the parent repo). `probe.ParserSpec` has no explicit
-  `yaml:` tags, so yaml.v3's untagged default (lowercase, no
-  word-splitting) applies; a literal `cleanRegex` key is rejected as
-  unknown. enodia's own `docs/DECISIONS.md` (D3) and `docs/CLAUDE.md`
-  both write `cleanRegex` in prose — that's a real discrepancy in the
-  *parent* repo's own docs, not something to silently "fix" by matching
-  their spelling here. Documented the verified-correct lowercase spelling
-  in `configuration.md` with an explicit callout; flag the discrepancy to
-  the user for enodia's own repo, don't just carry it forward.
+- **The generic probe's field is `clean_regex`** (snake_case) — found
+  as `cleanregex` (no underscore, untagged yaml.v3 default) on
+  2026-09-07, flagged to the user, and **fixed by them the same session**
+  in the parent repo: `probe.ParserSpec` now carries explicit `yaml:`
+  tags matching `enodia.yaml`'s general snake_case convention (`ca_file`,
+  `min_version`, `allow_insecure_transport`, ...). Re-verified empirically
+  after the fix (same throwaway-`go test`-against-`internal/config`
+  technique, removed afterward both times) — `clean_regex` is correct as
+  of this commit; `cleanregex` was only ever correct before the fix, and
+  a bare `cleanRegex` has never worked at any point. `configuration.md`
+  (en/ru) updated to match. One loose end: the parent repo's new comment
+  on `ParserSpec` claims `docs/DECISIONS.md` (D3) and `docs/CLAUDE.md`
+  already document `clean_regex` — they don't, both still say `cleanRegex`
+  (camelCase, confirmed by the same `grep` used for the original finding)
+  — so there's now a second, smaller prose/code mismatch in the parent
+  repo, introduced by the fix itself. Not this repo's problem to fix, but
+  worth a heads-up if it comes up again.
 
 **Installation content stays honest about current state** (no tagged
 release → packages/install-scripts documented as "once published,"
