@@ -277,6 +277,11 @@ render:
   # compact (по умолчанию) | lifecycle | drift | fleet
   default_view: fleet
 
+export:
+  # json (по умолчанию) | prometheus | html - используется, когда сам
+  # export запущен без --format
+  default_format: html
+
 html:
   # inline (по умолчанию, полностью офлайн) | cdn (грузит Bootstrap/Bootswatch)
   assets: cdn
@@ -297,6 +302,7 @@ html:
 ```
 
 `render.default_view` применяется к `--view` команды `check`, когда сам
-флаг не передан. `html.*` имеет значение только для
+флаг не передан. `export.default_format` делает то же самое для
+`--format` команды `export`. `html.*` имеет значение только для
 `export --format html` — см. [Отчёты](/ru/reporting/), что именно меняет
 каждое поле.

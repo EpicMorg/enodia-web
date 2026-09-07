@@ -13,6 +13,12 @@ enodia export --format prometheus
 enodia export --format html -o report.html
 ```
 
+`--format`'s built-in default is `json`, but `settings.yaml`'s
+`export.default_format` overrides that whenever `--format` itself isn't
+passed — an explicit `--format` always wins, the same precedence
+`render.default_view`/`html.view` already use elsewhere. See
+[Configuration](/en/configuration/#settingsyaml).
+
 ## `--format json`
 
 Every observation and every assessment, in full — `--view` is ignored.
@@ -78,6 +84,19 @@ theme is configured, not a hardcoded color enodia maintains per theme:
 </tbody>
 </table>
 ```
+
+### Footer and favicon
+
+Every generated report's footer links back to the project on GitHub,
+plus `enodia.sh` and `docs.enodia.sh` — plain `<a href>`s, not a
+resource fetch, so this doesn't affect the `inline` mode's offline
+guarantee (that's specifically about *loaded* resources, not inert
+hyperlink text). Both modes also get a tab favicon: `inline` embeds a
+small base64 copy of `enodia.sh`'s own `apple-touch-icon.png` directly
+in the file (not the full multi-resolution `favicon.ico`, which would
+add roughly half a megabyte to every report for a tab icon); `cdn` mode
+links the live icons on `enodia.sh` instead, since that mode already
+needs internet access to render at all.
 
 ### Third-party assets
 

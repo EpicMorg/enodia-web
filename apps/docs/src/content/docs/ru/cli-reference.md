@@ -57,7 +57,9 @@ applies instead of the compact default, if set.
 export writes one self-contained file - nothing here serves it; nginx,
 a cron job, or a systemd timer regenerating it is what does.
 
---format selects json, prometheus, or html.
+--format selects json, prometheus, or html. When --format is not passed,
+settings.yaml's export.default_format applies instead, if set; the
+built-in default stays json either way.
 
 --view restricts an html export to one view (compact, lifecycle, drift,
 or fleet) instead of all four stacked sections; ignored by
