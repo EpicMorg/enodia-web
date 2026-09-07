@@ -8,6 +8,11 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'enodia',
+			favicon: '/favicon.ico',
+			head: [
+				{ tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' } },
+				{ tag: 'meta', attrs: { property: 'og:image', content: 'https://docs.enodia.sh/og-image.png' } },
+			],
 			defaultLocale: 'en',
 			locales: {
 				en: { label: 'English', lang: 'en' },
