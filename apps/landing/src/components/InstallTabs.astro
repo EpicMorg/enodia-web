@@ -1,0 +1,91 @@
+---
+// Pure CSS tabs (radio + label + general-sibling selector) - no client JS,
+// works with JavaScript disabled, and keeps this app dependency-free
+// (Starlight's own <Tabs> component isn't available here on purpose -
+// landing/get are plain Astro, see CLAUDE.md Decided item 2).
+---
+
+<div class="install-tabs">
+	<input type="radio" name="os-tab" id="tab-unix" checked />
+	<label for="tab-unix">macOS / Linux</label>
+	<input type="radio" name="os-tab" id="tab-windows" />
+	<label for="tab-windows">Windows</label>
+	<div class="tab-panels">
+		<pre class="panel panel-unix"><code>curl -fsSL https://get.enodia.sh/unix | sh</code></pre>
+		<pre class="panel panel-windows"><code>irm https://get.enodia.sh/windows | iex</code></pre>
+	</div>
+</div>
+
+<script is:inline>
+	// is:inline (not a bundled module) so this runs synchronously right here,
+	// immediately after the radios above exist in the DOM - avoids a flash of
+	// the wrong tab that a deferred/module script would cause. No-JS visitors
+	// keep the static default (macOS / Linux, checked in the markup above).
+	(function () {
+		if (/Win/i.test(navigator.userAgent)) {
+			var win = document.getElementById('tab-windows');
+			if (win) win.checked = true;
+		}
+	})();
+</script>
+
+<style>
+	.install-tabs {
+		position: relative;
+		margin: 0 0 2rem;
+	}
+
+	.install-tabs input[type='radio'] {
+		position: absolute;
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.install-tabs label {
+		display: inline-block;
+		cursor: pointer;
+		padding: 0.45rem 1rem;
+		font-size: 0.85rem;
+		border: 1px solid var(--border);
+		border-bottom: none;
+		border-radius: 6px 6px 0 0;
+		color: var(--muted);
+		background: var(--bg);
+		position: relative;
+		top: 1px;
+	}
+
+	/* Active tab shares the panel's background (var(--code-bg)) so it
+	   visually reads as "connected" to the content below it - inactive
+	   tabs use the page background instead, so they recede. Getting
+	   this backwards (as an earlier version did) makes the *inactive*
+	   tab look selected, since it then matches the panel instead. */
+	.install-tabs input:checked + label {
+		color: var(--fg);
+		font-weight: 600;
+		background: var(--code-bg);
+	}
+
+	.install-tabs label + input {
+		margin-left: 0.25rem;
+	}
+
+	.tab-panels {
+		border: 1px solid var(--border);
+		border-radius: 0 6px 6px 6px;
+		background: var(--code-bg);
+		overflow: hidden;
+	}
+
+	.panel {
+		display: none;
+		margin: 0;
+		border: none;
+		border-radius: 0;
+	}
+
+	#tab-unix:checked ~ .tab-panels .panel-unix,
+	#tab-windows:checked ~ .tab-panels .panel-windows {
+		display: block;
+	}
+</style>
