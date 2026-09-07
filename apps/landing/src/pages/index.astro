@@ -11,7 +11,6 @@ import Landing from '../layouts/Landing.astro';
 		<img class="logo" src="/logo.png" width="72" height="72" alt="" />
 		<h1>enodia</h1>
 		<p class="tagline">Know what you are running, and how long it has left.</p>
-		<span class="status">pre-1.0 — no tagged release yet</span>
 
 		<p class="pitch">
 			enodia asks your deployed services what version they're running, checks
@@ -20,16 +19,11 @@ import Landing from '../layouts/Landing.astro';
 			describe your services once — enodia handles the rest.
 		</p>
 
-		<!--
-			No install one-liner yet on purpose: install.sh pulls from GitHub
-			Releases, and no tagged release exists as of this writing. Publishing
-			a `curl | sh` line here before one ships would just 404 for anyone
-			who ran it. Swap this block in once a real release lands.
-		-->
-		<pre><code>git clone https://github.com/EpicMorg/enodia.git</code></pre>
+		<pre><code>curl -fsSL https://get.enodia.sh/unix | sh</code></pre>
 
 		<nav class="links">
 			<a href="https://docs.enodia.sh/en/">Documentation</a>
+			<a href="https://get.enodia.sh/">Install</a>
 			<a href="https://github.com/EpicMorg/enodia">GitHub</a>
 			<a href="/ru/">Русский</a>
 		</nav>

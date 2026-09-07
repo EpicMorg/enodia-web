@@ -16,13 +16,13 @@ export const onRequestGet: PagesFunction = async (context) => {
 
 	const upstream = await fetch(UPSTREAM);
 	if (upstream.status === 404) {
-		// Confirmed live, 2026-09-07: install.sh exists on the enodia repo's
-		// develop branch but hasn't reached master yet, so this is a real,
-		// expected state pre-release, not a bug here - don't "fix" by
-		// pointing at develop, master is the deliberate long-term target
-		// (see CLAUDE.md Decided item 9). Not cached, so it stops 404ing
-		// the moment install.sh actually lands on master.
-		return new Response('enodia has no release yet - install.sh is not on master.\n', {
+		// Genuinely unexpected as of the 1.0.0 release (2026-09-07):
+		// install.sh has been on master since then. Kept as a defensive,
+		// generic message rather than the earlier "no release yet" wording,
+		// which would itself be misleading if this ever fires again for an
+		// unrelated reason (a rename, master history rewritten, ...). Not
+		// cached, so it stops 404ing the moment the file is back.
+		return new Response('install.sh not found upstream - check github.com/EpicMorg/enodia.\n', {
 			status: 404,
 			headers: { 'content-type': 'text/plain; charset=utf-8' },
 		});

@@ -5,6 +5,9 @@ import starlight from '@astrojs/starlight';
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://docs.enodia.sh',
+	redirects: {
+		'/': '/en/',
+	},
 	integrations: [
 		starlight({
 			title: 'enodia',
