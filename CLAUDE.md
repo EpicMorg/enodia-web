@@ -152,14 +152,19 @@ Node/npm/npx at all before) — confirmed against Astro 7.x's own
    parent `enodia` repo's own main-branch convention — `develop` pushes
    produce Pages preview deployments, not production ones.
 
-   **Unverified, don't assume**: whether `wrangler pages deploy
-   --project-name=X` auto-creates the Pages project on first run in a
-   non-interactive CI context, or requires the project to already exist.
-   Cloudflare's own CI-integration guide assumes a project already
-   exists and doesn't say either way. Safer path taken here: create each
-   Pages project by hand (Workers & Pages → Create → Pages → Direct
-   Upload) before wiring its GitHub Actions workflow, rather than relying
-   on unconfirmed auto-create behavior for the first CI run.
+   **All three Pages projects created, 2026-09-07** — via the Cloudflare
+   API directly (`POST /accounts/{account_id}/pages/projects`, `{"name":
+   ..., "production_branch": "master"}`), not the dashboard, using the
+   scoped API token from item 5 above. Confirmed live via a follow-up
+   `GET .../pages/projects` listing: all three exist with
+   `production_branch: master` — `enodia-docs.pages.dev`,
+   `enodia-landing.pages.dev`, `enodia-get.pages.dev` (each project's
+   `*.pages.dev` subdomain, live before any custom domain is attached).
+   Side effect of doing this via API rather than dashboard: whether
+   `wrangler pages deploy --project-name=X` would have auto-created a
+   missing project in CI was never actually resolved — moot now since
+   all three already exist, but don't assume the answer either way if it
+   comes up again for some fourth project later.
 6. **Languages: `en` + `ru`**, across all three apps for consistency
    (item 2), even where `landing`/`get` only need a couple of strings
    translated.
@@ -452,26 +457,33 @@ this blindly if it's been a while. As of writing:
 
 ### Shared CI/DNS steps (all three apps)
 
-1. Create the three Cloudflare Pages projects by hand first
-   (`enodia-docs`, `enodia-landing`, `enodia-get`; production branch
-   `master` — Decided item 5), since it's unconfirmed whether
-   `wrangler pages deploy` auto-creates a missing project non-interactively
-   in CI.
+1. ~~Create the three Cloudflare Pages projects~~ **done, 2026-09-07** —
+   see Decided item 5's "All three Pages projects created" note. Live at
+   their `*.pages.dev` subdomains already; custom domains still pending
+   (item 3 below).
 2. Three GitHub Actions workflows (`deploy-landing.yml`, `deploy-get.yml`,
    `deploy-docs.yml`), each: path-filtered to its own `apps/*/**`,
    `astro build` then `cloudflare/wrangler-action@v4` running
    `command: pages deploy <dist> --project-name=<name>` (Decided item 5
    — `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` repo secrets, done
    2026-09-07) rather than GitHub Pages' native deploy action or the
-   deprecated `cloudflare/pages-action`.
-3. DNS: **don't** tell the user to manually create CNAMEs for
-   `enodia.sh`, `get.enodia.sh`, or `docs.enodia.sh` — confirmed via
-   Cloudflare's own Pages docs that doing so *before* the domain is
-   attached in the Pages dashboard causes a 522. The correct flow, per
-   app/domain: Pages project → Custom domains → "Set up a domain" →
-   enter the hostname → Cloudflare creates the CNAME itself, since both
-   zones are already theirs. Entirely inside their Cloudflare account,
-   outside what an agent can do for them unless they grant API access.
+   deprecated `cloudflare/pages-action`. Still open: these repo secrets
+   themselves — the user has a working scoped token (item 5) but adding
+   it as `CLOUDFLARE_API_TOKEN`/`CLOUDFLARE_ACCOUNT_ID` in this repo's
+   GitHub settings hasn't been confirmed done yet, ask before assuming.
+3. DNS/custom domains for `enodia.sh`, `get.enodia.sh`, `docs.enodia.sh`:
+   confirmed via Cloudflare's own Pages docs that manually creating the
+   CNAME *before* the domain is attached in the Pages dashboard causes a
+   522 — the correct flow is Pages project → Custom domains → "Set up a
+   domain" → enter the hostname, Cloudflare creates the CNAME itself.
+   **Update, 2026-09-07**: the earlier "outside what an agent can do
+   unless they grant API access" caveat no longer fully applies — the
+   scoped `CLOUDFLARE_API_TOKEN` from item 5 is live and its
+   `Cloudflare Pages: Edit` permission covers the domains API too
+   (`POST /accounts/{account_id}/pages/projects/{name}/domains`), so this
+   is now doable the same way the three projects themselves were
+   created, if/when the user wants it done that way rather than by hand
+   in the dashboard — ask first, don't just do it.
 
 ## Working style
 
