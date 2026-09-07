@@ -16,6 +16,19 @@
 	</div>
 </div>
 
+<script is:inline>
+	// is:inline (not a bundled module) so this runs synchronously right here,
+	// immediately after the radios above exist in the DOM - avoids a flash of
+	// the wrong tab that a deferred/module script would cause. No-JS visitors
+	// keep the static default (macOS / Linux, checked in the markup above).
+	(function () {
+		if (/Win/i.test(navigator.userAgent)) {
+			var win = document.getElementById('tab-windows');
+			if (win) win.checked = true;
+		}
+	})();
+</script>
+
 <style>
 	.install-tabs {
 		margin: 0 0 2rem;
