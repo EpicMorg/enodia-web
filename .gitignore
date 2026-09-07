@@ -1,0 +1,13 @@
+# Node / Docusaurus (added ahead of scaffolding so it's never missed)
+node_modules/
+.docusaurus/
+build/
+.cache-loader/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
