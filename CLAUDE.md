@@ -55,8 +55,10 @@ made ahead of time so a future session doesn't start from zero.
    and `enodia.run` (spare/backup — `enodia.run` gets a path-preserving
    301 to `enodia.sh` via a Cloudflare Bulk Redirect, not a single-URL
    Page Rule, so shared links to specific `.run` paths don't break; kept
-   deliberately non-duplicated content-wise). Both domains are already
-   purchased but not yet configured in Cloudflare as of 2026-09-07.
+   deliberately non-duplicated content-wise). Both domains are purchased
+   and, as of 2026-09-07, both added as Cloudflare zones with registrar
+   nameservers switched over — see "Cloudflare dashboard setup notes"
+   below for the live redirect topology now in place.
 3. **Hosting: Cloudflare Pages**, as a deliberate experiment against
    rehlds.dev's GitHub Pages setup (an A/B across the user's two docs
    projects — easy to redeploy to GitHub Pages if this doesn't work out,
@@ -131,20 +133,62 @@ made ahead of time so a future session doesn't start from zero.
 Cloudflare's UI/terminology shifts over time — re-verify before following
 this blindly if it's been a while. As of writing:
 
-- **Zones first**: both `enodia.sh` and `enodia.run` need to actually be
-  added as Cloudflare zones (DNS → Add a domain → point the registrar's
-  nameservers at Cloudflare's) before anything below works — redirects,
-  Pages custom domains, and Worker custom domains all require an active,
-  proxied zone.
-- **`enodia.run` → `enodia.sh` path-preserving redirect**: use **Bulk
-  Redirects** (Rules → Overview → Bulk Redirects in the account-level
-  nav), not the legacy Page Rules. One rule: source `enodia.run`, target
-  `https://enodia.sh`, with both **"Include subdomains"** and **"Preserve
-  path suffix"** toggled on. `enodia.run` needs at least one proxied
-  (orange-cloud) DNS record for the redirect engine to see its traffic at
-  all, even if it points nowhere real. Free-plan item cap is unclear —
-  official docs claim a 10,000 rollout, community reports still see a cap
-  of 20 on some accounts; irrelevant here since only one rule is needed.
+- **Zones**: both `enodia.sh` and `enodia.run` are added as Cloudflare
+  zones with registrar nameservers pointed at Cloudflare — **done** as of
+  2026-09-07. Prerequisite for everything below (redirects, Pages custom
+  domains, and Worker custom domains all require an active, proxied
+  zone).
+- **DNS records (both zones, identical shape)**: each zone carries 4
+  proxied (orange-cloud) records — `@` (root, currently an A/AAAA record
+  pointing at the user's own existing server — this is temporary
+  scaffolding to give the redirect engine something to intercept, not a
+  final target) and `www` / `get` / `docs`, each a CNAME to that zone's
+  own `@`. The 3 non-root records exist purely so Bulk Redirects has a
+  proxied hostname to match against for each subdomain that needs a
+  rule — `get.enodia.sh` and `docs.enodia.sh` will eventually stop being
+  CNAMEs-to-@ and become real endpoints (a Worker custom domain and a
+  Pages custom domain respectively — see below), but for now they're
+  placeholders like everything else.
+- **Bulk Redirects — done and verified live, 2026-09-07**: one account-level
+  Redirect List (Rules → Overview → Bulk Redirects), not the legacy Page
+  Rules, holding 5 rules — all with **"Preserve path suffix"** on and
+  **"Include subdomains"** off (explicit per-hostname rules were chosen
+  over one wildcard `Include subdomains` rule):
+
+  | Source | Target | Notes |
+  |---|---|---|
+  | `enodia.run` (bare) | `https://enodia.sh` | canonical cross-domain redirect |
+  | `www.enodia.sh` | `http://enodia.sh` | scheme note below |
+  | `www.enodia.run` | `http://enodia.run` | deliberate double-hop, see below |
+  | `get.enodia.run` | `http://get.enodia.sh` | scheme note below |
+  | `docs.enodia.run` | `http://docs.enodia.sh` | scheme note below |
+
+  **`www.enodia.run` is a deliberate two-hop redirect**, not a shortcut
+  directly to `enodia.sh`: it lands on `enodia.run` first, which then
+  matches the bare-domain rule above and redirects again to `enodia.sh`.
+  Confirmed working end-to-end via `curl --resolve` (bypassing local/ISP
+  DNS cache by resolving through `1.1.1.1` first) — both hops preserve
+  path and query string correctly.
+
+  **Four of the five targets use `http://`, not `https://`, on purpose.**
+  These were originally entered without an explicit scheme (Cloudflare's
+  Bulk Redirect form defaults to `http://` when none is given) and the
+  user chose to leave them rather than fix the scheme, because the
+  `enodia.sh` and `enodia.run` zones both have **Always Use HTTPS**
+  enabled (confirmed live via `curl --resolve` against plain `http://`
+  on both zones — every one of them 301s straight to `https://` with the
+  path preserved). Net effect: these 4 hosts take one extra 301 hop
+  (`https://www.enodia.sh` → `http://enodia.sh` → `https://enodia.sh`)
+  compared to a same-scheme target, since HSTS is **not** enabled on
+  either zone (no rule forces the browser to skip the plaintext hop
+  client-side). Accepted cost, not an oversight — don't "fix" this to
+  `https://` without checking with the user first, it was a considered
+  choice. Only the bare `enodia.run` → `enodia.sh` rule has an explicit
+  `https://` target (entered that way from the start).
+
+  Free-plan item cap is unclear — official docs claim a 10,000 rollout,
+  community reports still see a cap of 20 on some accounts; irrelevant
+  here, 5 rules fits either way.
 - **`docs.enodia.sh` (Cloudflare Pages)**: don't create the CNAME by hand
   — Pages project → Custom domains → "Set up a domain" → enter
   `docs.enodia.sh`, Cloudflare creates the DNS record itself since the
