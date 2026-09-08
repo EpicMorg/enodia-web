@@ -37,5 +37,12 @@ products sharing this same manifest convention.
 
 ## Lifecycle resolver
 
-None — endoflife.date has no Bamboo calendar. enodia still tracks
-`version` and `buildNumber`; only the lifecycle axis stays `unknown`.
+None wired up yet — unlike the other products on this list with no
+resolver, this isn't because endoflife.date has no calendar to point at:
+[endoflife.date/bamboo](https://endoflife.date/bamboo) is live with real
+cycle data, confirmed via `endoflife.date/api/bamboo.json`. `registry.go`
+just has `resolver: ""` for this product, with none of the sibling
+Atlassian probes' explicit "confirmed 404" comment — it looks like a gap
+in enodia itself rather than a deliberate "no calendar exists" case.
+enodia still tracks `version` and `buildNumber` either way; only the
+lifecycle axis stays `unknown` until this gets wired up upstream.
