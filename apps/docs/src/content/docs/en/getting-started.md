@@ -20,14 +20,21 @@ window — the installer patches the current session's `PATH` directly,
 not just the persisted registry value a fresh terminal would pick up.
 
 :::tip[Also works in Termux (Android)]
-The same Unix one-liner works unmodified — every release binary is a
-fully static Go build (no libc dependency at all, confirmed via
-`readelf`: no dynamic section, no interpreter), so it only needs a
-compatible Linux kernel, not glibc specifically, and Android's kernel
-qualifies. The install script itself falls back to `$PREFIX/bin` when
-the usual install directory isn't writable and there's no `sudo` to
-retry with — exactly Termux's situation — so no environment variable
-override is needed either.
+The same Unix one-liner works unmodified — confirmed on a real device —
+but it installs a different binary under the hood than it would on real
+Linux. Android's Bionic linker refuses to execute anything but a PIE
+(`ET_DYN`) binary (a kernel/linker policy since Android Lollipop), and
+enodia's regular `linux/arm64` build is a plain `ET_EXEC` — that failed
+to exec at all on first try. `install.sh` detects Termux via
+`$TERMUX_VERSION` and downloads a dedicated `android/arm64` build
+instead (`GOOS=android`, PIE, interpreter `/system/bin/linker64` — a
+path guaranteed to exist on any Android device, not something Termux
+itself has to provide). It also falls back to `$PREFIX/bin` for the
+install directory when the usual one isn't writable and `sudo` isn't a
+real option (Termux's own optional `sudo` package exists but just
+refuses on an unrooted device) — so no environment variable override is
+needed for any of this; arm64 is the only Android architecture built for
+today.
 :::
 
 Or a package, if you'd rather your package manager track updates:
