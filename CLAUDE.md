@@ -567,6 +567,32 @@ Docker tag), and `latest` — **no `1.0` tag exists**, goreleaser's
 the real available tags rather than inventing the one the user asked
 for that doesn't exist; picked `latest` per their stated fallback.
 
+**Rooted-device Termux bug documented, 2026-09-08** — upstream commit
+`98bb2cc`: on a rooted device (Magisk/KernelSU), even the correct
+`android_arm64` binary can fail to exec as the ordinary Termux user —
+[termux-exec#40](https://github.com/termux/termux-exec/issues/40), an
+open upstream bug in `termux-exec`'s own process-context detection
+(doesn't recognize Magisk/KernelSU/`run-as`/ADB contexts), not anything
+enodia's build or `install.sh` can fix. Workaround is `su` + a full
+path. Added a caution callout to `getting-started.md` (en/ru). Also
+corrected the Android platform-table version: upstream's README now
+says **Android 7+** (Termux's own practical floor) rather than the
+Android 5.0 Lollipop figure I'd written earlier, which was the right
+number for *why* a separate build exists (the PIE requirement) but the
+wrong one to lead with as "the minimum" — Termux itself requires newer.
+
+**Formality slip caught and fixed, 2026-09-08** — the Docker Hub/Quay
+sentence added in the same session as the `:latest` tag change (after
+the big ты→вы conversion pass earlier, so it never got swept by that
+pass) still used informal `бери`/`тянешь`/`хочешь`. User flagged it
+directly, mid-sentence-annoyed. Rewrote impersonally, re-swept the rest
+of the RU docs for the same pattern (informal verb endings,
+ты/тебя/твой-family pronouns) — everything else already checked out
+formal. **Process lesson**: any RU content added *after* a full
+формальность pass needs the same grep sweep applied to it specifically
+before considering the work done — a global pass doesn't self-maintain
+against later edits.
+
 ### `apps/landing` — done, 2026-09-07
 
 - **Hand-scaffolded, not `create-astro`** — a plain Astro app is small
