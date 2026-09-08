@@ -630,6 +630,27 @@ the reader), not just pronouns and imperative endings — a heading
 phrased as a question addressed to "you" is exactly where this slips in
 silently, since there's no pronoun token to grep for at all.
 
+**Bamboo's "no lifecycle resolver" claim was wrong, caught by the user,
+2026-09-08**: `bamboo.md` (en/ru) originally said "endoflife.date has no
+Bamboo calendar," copied from the phrasing used on the genuinely-404
+products (owncast, portainer, teamcity, testrail, zou, etc.) without
+independently checking this one. [endoflife.date/bamboo](https://endoflife.date/bamboo)
+is real and live, confirmed via `endoflife.date/api/bamboo.json`
+returning real cycle data — the gap is in enodia's own
+`internal/probe/registry.go`, which has `resolver: ""` for bamboo with
+none of the sibling probes' explicit "confirmed 404" comment. Re-verified
+every other "no calendar" claim across all 29 product pages live at the
+same time (`bitwarden`, `vaultwarden`, `jellyfin`, `owncast`,
+`perforce-swarm`/`helix-swarm`/`swarm`/`perforce`, `portainer`,
+`teamcity`, `testrail`, `zou`/`kitsu`/`cg-wire`) — all still genuinely
+404, only bamboo was wrong. Both `bamboo.md` files corrected to describe
+this as an apparent gap in enodia itself, not "no calendar exists worth
+resolving." **Lesson**: an absent resolver in `registry.go` is not
+self-evidently "no calendar exists" — only trust that reading when the
+source itself carries the explicit confirmed-404 comment; an empty
+`resolver: ""` with no such comment needs its own live check before
+writing anything about *why* it's empty.
+
 ### `apps/landing` — done, 2026-09-07
 
 - **Hand-scaffolded, not `create-astro`** — a plain Astro app is small
