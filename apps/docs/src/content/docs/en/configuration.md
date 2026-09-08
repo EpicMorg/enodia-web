@@ -71,6 +71,12 @@ automatically (see [Concepts](/en/concepts/#https-first-credentials-never-sent-i
 or run `enodia config resolve` to see what scheme each target would use
 without sending any credentials.
 
+See **Product setup** in the sidebar (or the
+[Supported products](/en/products/) table) for the exact endpoint, auth
+requirements, and recorded fields for each of the 29 built-in probes —
+`path`, `credentials`, and `options` above are the general shape; each
+product's own page says what it actually needs.
+
 ### TLS (`tls:`)
 
 Three levels, in descending order of correctness:

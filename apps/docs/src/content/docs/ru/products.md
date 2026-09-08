@@ -10,7 +10,9 @@ description: Все 29 встроенных проб, прямо из `enodia pr
 используемый для получения дат жизненного цикла, где это применимо; `-`
 значит, что у enodia есть определение версии для этого продукта, но пока
 нет соответствия в календаре жизненного цикла (оси patch/branch у него
-всё равно работают; ось lifecycle остаётся `unknown`).
+всё равно работают; ось lifecycle остаётся `unknown`). Перейдите по
+ссылке на нужный продукт, чтобы увидеть точный эндпоинт, требования к
+аутентификации и записываемые поля.
 
 Эта таблица сгенерирована из `enodia products` для текущей сборки
 бинарника — перезапустите команду, чтобы проверить расхождение, если с
@@ -19,35 +21,35 @@ description: Все 29 встроенных проб, прямо из `enodia pr
 
 | Продукт | Описание | Резолвер |
 |---|---|---|
-| `artifactory` | JFrog Artifactory | `endoflife:artifactory` |
-| `bamboo` | Atlassian Bamboo (Data Center) | — |
-| `bitbucket` | Atlassian Bitbucket (Data Center) | `endoflife:bitbucket` |
-| `bitwarden` | Bitwarden (self-hosted) | — |
-| `confluence` | Atlassian Confluence (Data Center) | `endoflife:confluence` |
-| `elasticsearch` | Elasticsearch | `endoflife:elasticsearch` |
-| `generic` | Самописный парсер для систем, которые enodia не знает — см. [Конфигурацию](/ru/configuration/#generic-проба) | — |
-| `gitlab` | GitLab | `endoflife:gitlab` |
-| `grafana` | Grafana | `endoflife:grafana` |
-| `jellyfin` | Jellyfin | — |
-| `jenkins` | Jenkins | `endoflife:jenkins` |
-| `jira` | Atlassian Jira (Data Center) | `endoflife:jira-software` |
-| `keycloak` | Keycloak | `endoflife:keycloak` |
-| `mattermost` | Mattermost | `endoflife:mattermost` |
-| `mysql` | MySQL Server | `endoflife:mysql` |
-| `nextcloud` | Nextcloud | `endoflife:nextcloud` |
-| `owncast` | Owncast | — |
-| `perforce-swarm` | Perforce Helix Swarm | — |
-| `portainer` | Portainer | — |
-| `postgresql` | PostgreSQL | `endoflife:postgresql` |
-| `redis` | Redis | `endoflife:redis` |
-| `sonarqube` | SonarQube | `endoflife:sonarqube-community` |
-| `ssh` | SSH-баннер (любая реализация) | — |
-| `teamcity` | JetBrains TeamCity | — |
-| `testrail` | TestRail | — |
-| `vault` | HashiCorp Vault | `endoflife:hashicorp-vault` |
-| `vaultwarden` | Vaultwarden | — |
-| `vcenter` | VMware vCenter Server | `endoflife:vcenter` |
-| `zou` | Zou (бэкенд CG-Wire / Kitsu) | — |
+| [`artifactory`](/ru/configuration/products/artifactory/) | JFrog Artifactory | `endoflife:artifactory` |
+| [`bamboo`](/ru/configuration/products/bamboo/) | Atlassian Bamboo (Data Center) | — |
+| [`bitbucket`](/ru/configuration/products/bitbucket/) | Atlassian Bitbucket (Data Center) | `endoflife:bitbucket` |
+| [`bitwarden`](/ru/configuration/products/bitwarden/) | Bitwarden (self-hosted) | — |
+| [`confluence`](/ru/configuration/products/confluence/) | Atlassian Confluence (Data Center) | `endoflife:confluence` |
+| [`elasticsearch`](/ru/configuration/products/elasticsearch/) | Elasticsearch | `endoflife:elasticsearch` |
+| [`generic`](/ru/configuration/products/generic/) | Самописный парсер для систем, которые enodia не знает — см. [Конфигурацию](/ru/configuration/#generic-проба) | — |
+| [`gitlab`](/ru/configuration/products/gitlab/) | GitLab | `endoflife:gitlab` |
+| [`grafana`](/ru/configuration/products/grafana/) | Grafana | `endoflife:grafana` |
+| [`jellyfin`](/ru/configuration/products/jellyfin/) | Jellyfin | — |
+| [`jenkins`](/ru/configuration/products/jenkins/) | Jenkins | `endoflife:jenkins` |
+| [`jira`](/ru/configuration/products/jira/) | Atlassian Jira (Data Center) | `endoflife:jira-software` |
+| [`keycloak`](/ru/configuration/products/keycloak/) | Keycloak | `endoflife:keycloak` |
+| [`mattermost`](/ru/configuration/products/mattermost/) | Mattermost | `endoflife:mattermost` |
+| [`mysql`](/ru/configuration/products/mysql/) | MySQL Server | `endoflife:mysql` |
+| [`nextcloud`](/ru/configuration/products/nextcloud/) | Nextcloud | `endoflife:nextcloud` |
+| [`owncast`](/ru/configuration/products/owncast/) | Owncast | — |
+| [`perforce-swarm`](/ru/configuration/products/perforce-swarm/) | Perforce Helix Swarm | — |
+| [`portainer`](/ru/configuration/products/portainer/) | Portainer | — |
+| [`postgresql`](/ru/configuration/products/postgresql/) | PostgreSQL | `endoflife:postgresql` |
+| [`redis`](/ru/configuration/products/redis/) | Redis | `endoflife:redis` |
+| [`sonarqube`](/ru/configuration/products/sonarqube/) | SonarQube | `endoflife:sonarqube-community` |
+| [`ssh`](/ru/configuration/products/ssh/) | SSH-баннер (любая реализация) | — |
+| [`teamcity`](/ru/configuration/products/teamcity/) | JetBrains TeamCity | — |
+| [`testrail`](/ru/configuration/products/testrail/) | TestRail | — |
+| [`vault`](/ru/configuration/products/vault/) | HashiCorp Vault | `endoflife:hashicorp-vault` |
+| [`vaultwarden`](/ru/configuration/products/vaultwarden/) | Vaultwarden | — |
+| [`vcenter`](/ru/configuration/products/vcenter/) | VMware vCenter Server | `endoflife:vcenter` |
+| [`zou`](/ru/configuration/products/zou/) | Zou (бэкенд CG-Wire / Kitsu) | — |
 
 ## Продукты Atlassian
 
@@ -59,7 +61,7 @@ manifest-эндпоинта. `product:` объявляется явно в ко�
 сообщает о себе как `stash` (его прежнее имя) — это ответ вендора, а не
 странность enodia.
 
-## Не нашёл свой продукт?
+## Не нашли свой продукт?
 
 Используйте [`product: generic`](/ru/configuration/#generic-проба) как
 аварийный выход для всего, у чего нет отдельной пробы, либо заведите
