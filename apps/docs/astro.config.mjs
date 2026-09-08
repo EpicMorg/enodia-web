@@ -36,7 +36,19 @@ export default defineConfig({
 				{
 					label: 'Configuration',
 					translations: { ru: 'Конфигурация' },
-					slug: 'configuration',
+					items: [
+						{
+							label: 'Configuration',
+							translations: { ru: 'Конфигурация' },
+							slug: 'configuration',
+						},
+						{
+							label: 'Product setup',
+							translations: { ru: 'Настройка продуктов' },
+							collapsed: true,
+							items: [{ autogenerate: { directory: 'configuration/products' } }],
+						},
+					],
 				},
 				{
 					label: 'CLI reference',
