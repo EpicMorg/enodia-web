@@ -9,7 +9,7 @@ description: Установите enodia и запустите первую пр
 вашу ОС/архитектуру:
 
 ```bash
-curl -fsSL https://get.enodia.sh/unix | sh   # Linux/macOS
+curl -fsSL https://get.enodia.sh/unix | sh   # Linux/macOS/Android (Termux)
 ```
 
 ```powershell
@@ -59,8 +59,16 @@ sudo pacman -U enodia_linux_amd64.pkg.tar.zst      # Arch
 ```bash
 docker run --rm \
   -v /etc/enodia:/config:ro \
-  ghcr.io/epicmorg/enodia:1 check --config /config/config.yaml
+  ghcr.io/epicmorg/enodia:latest check --config /config/config.yaml
 ```
+
+Тот же образ публикуется и в `docker.io/epicmorg/enodia`, и в Quay —
+те же теги, тот же multi-arch манифест, бери тот registry, откуда уже
+и так тянешь остальное. Кроме `latest`, каждый релиз публикует и полный
+закреплённый номер версии (например `1.0.0-1` — `+` не разрешён в
+Docker-теге, поэтому разделитель build-метаданных становится `-`), и
+голый тег мажорной версии (`1`), если хочешь закрепиться не так жёстко,
+как на `latest`.
 
 ### Сборка из исходников
 
@@ -81,6 +89,7 @@ go build -o enodia ./cmd/enodia
 | Linux | amd64, arm64 | Ядро 3.2 или новее — Debian 8+, Ubuntu 14.04+, RHEL/CentOS 7+ подходят с запасом |
 | Windows | amd64, arm64, 386 | Windows 10 / Windows Server 2016 или новее |
 | macOS | amd64, arm64 | macOS 12 Monterey или новее |
+| Android (Termux) | только arm64 | Android 5.0 Lollipop или новее — минимум для поддержки PIE (см. заметку про Termux выше); самому Termux на практике может требоваться более новая версия |
 
 Это собственный минимум тулчейна Go, а не что-то, что enodia добавляет
 сверху. Сборка из исходников более новым Go поднимает минимум для macOS
