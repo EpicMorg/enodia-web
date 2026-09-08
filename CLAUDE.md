@@ -554,6 +554,19 @@ binary will execute on a given OS/kernel, `readelf -h`'s `Type:` field
 section/`NEEDED`-entries check already being done — don't treat "fully
 static" as answering "will this exec here at all."
 
+**Container image now also on Docker Hub and Quay, 2026-09-08** —
+upstream commit `849df47`: same multi-arch image, three registries
+(GHCR unchanged; `docker.io/epicmorg/enodia` and Quay via org-level
+secrets the parent repo doesn't itself mint/rotate). `getting-started.md`
+(en/ru) mentions all three. **Docker tag switched from `:1` to
+`:latest`** per explicit user request (wanted at least `:1.0` — checked
+live via `crane ls ghcr.io/epicmorg/enodia`: actual published tags are
+`1`, `1.0.0-1` (full pinned version, `+`→`-` since `+` isn't legal in a
+Docker tag), and `latest` — **no `1.0` tag exists**, goreleaser's
+`dockers_v2.tags` template only produces those three shapes. Documented
+the real available tags rather than inventing the one the user asked
+for that doesn't exist; picked `latest` per their stated fallback.
+
 ### `apps/landing` — done, 2026-09-07
 
 - **Hand-scaffolded, not `create-astro`** — a plain Astro app is small

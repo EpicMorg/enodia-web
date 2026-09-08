@@ -8,7 +8,7 @@ description: Install enodia and run your first check.
 The easiest path — one command, picks the right binary for your OS/arch:
 
 ```bash
-curl -fsSL https://get.enodia.sh/unix | sh   # Linux/macOS
+curl -fsSL https://get.enodia.sh/unix | sh   # Linux/macOS/Android (Termux)
 ```
 
 ```powershell
@@ -56,8 +56,15 @@ Or a container:
 ```bash
 docker run --rm \
   -v /etc/enodia:/config:ro \
-  ghcr.io/epicmorg/enodia:1 check --config /config/config.yaml
+  ghcr.io/epicmorg/enodia:latest check --config /config/config.yaml
 ```
+
+The same image is also published to `docker.io/epicmorg/enodia` and
+Quay — same tags, same multi-arch manifest, pick whichever registry you
+already pull from. Besides `latest`, every release also publishes the
+full pinned version (e.g. `1.0.0-1` — `+` isn't legal in a Docker tag,
+so the build metadata separator becomes `-`) and a bare major-version
+tag (`1`) if you want to pin loosely instead of tracking `latest`.
 
 ### Build from source
 
@@ -78,6 +85,7 @@ go build -o enodia ./cmd/enodia
 | Linux | amd64, arm64 | Kernel 3.2 or later — Debian 8+, Ubuntu 14.04+, RHEL/CentOS 7+ all comfortably qualify |
 | Windows | amd64, arm64, 386 | Windows 10 / Windows Server 2016 or later |
 | macOS | amd64, arm64 | macOS 12 Monterey or later |
+| Android (Termux) | arm64 only | Android 5.0 Lollipop or later — the floor for PIE support (see the Termux note above); Termux itself may require newer in practice |
 
 These are the Go toolchain's own floor, not something enodia adds on
 top. Building from source with a newer Go raises the macOS floor
