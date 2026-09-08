@@ -120,6 +120,12 @@ credentials:
   redis-auth:
     kind: password
     password: "${REDIS_PASSWORD}"
+
+  linux-host-ssh:
+    kind: ssh-key
+    username: enodia-ro
+    private_key_file: /etc/enodia/ssh/id_ed25519
+    passphrase: "${SSH_KEY_PASSPHRASE}"   # optional, only if the key is encrypted
 ```
 
 | `kind` | Fields used | Sends |
@@ -128,7 +134,36 @@ credentials:
 | `bearer` | `value` | `Authorization: Bearer <value>` |
 | `token-header` | `header`, `value` | a custom header, e.g. `PRIVATE-TOKEN`, `X-Vault-Token` |
 | `basic` | `username`, `password` | HTTP Basic auth |
-| `password` | `password` | protocol-native auth (Redis `AUTH`, a SQL connection's own password, ...) |
+| `password` | `password` (plus `username`, for the protocols that use one — Redis ACL, PostgreSQL) | protocol-native auth (Redis `AUTH`, a SQL connection's own password, ...) |
+| `ssh-key` | `username`, `private_key_file`, `passphrase` (optional) | SSH public-key auth, for the SSH-based OS-identification probes (see [Supported products](/en/products/)) |
+
+`username` alone with `kind: password` and no `private_key_file` also
+works for SSH targets — the SSH probes accept either a password or a
+private key, same as any SSH client would (`username` plus `password`
+under `kind: password`, or `username` plus `private_key_file` under
+`kind: ssh-key`).
+
+### SSH host key verification
+
+Every SSH-based probe reuses the same `tls:` block the HTTPS probes use
+for certificate verification — `pin_sha256` here holds the hex SHA-256 of
+the host key's own wire encoding, not a TLS certificate, but it's the
+same "pin a fingerprint, or say `insecure` and get warned" shape:
+
+```yaml
+targets:
+  - id: linux-host
+    product: debian
+    address: host.example.com
+    credentials: linux-host-ssh
+    tls:
+      pin_sha256:
+        - "AB:CD:...:EF"   # sha256 of the host key, ssh-keyscan or similar
+      # insecure: true      # last resort — skips host key verification entirely
+```
+
+With neither `pin_sha256` nor `insecure: true` set, the connection is
+refused before a single credential is sent.
 
 ### `credentials_file`
 

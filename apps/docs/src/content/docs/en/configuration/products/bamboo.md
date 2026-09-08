@@ -37,12 +37,8 @@ products sharing this same manifest convention.
 
 ## Lifecycle resolver
 
-None wired up yet — unlike the other products on this list with no
-resolver, this isn't because endoflife.date has no calendar to point at:
-[endoflife.date/bamboo](https://endoflife.date/bamboo) is live with real
-cycle data, confirmed via `endoflife.date/api/bamboo.json`. `registry.go`
-just has `resolver: ""` for this product, with none of the sibling
-Atlassian probes' explicit "confirmed 404" comment — it looks like a gap
-in enodia itself rather than a deliberate "no calendar exists" case.
-enodia still tracks `version` and `buildNumber` either way; only the
-lifecycle axis stays `unknown` until this gets wired up upstream.
+`endoflife:bamboo` — now wired up. [endoflife.date/bamboo](https://endoflife.date/bamboo)
+is a real, live calendar; an earlier revision of this page mistakenly
+claimed no such calendar existed at all, going only off `registry.go`
+having `resolver: ""` with no explanation, rather than actually checking
+endoflife.date directly. That's fixed both here and upstream.

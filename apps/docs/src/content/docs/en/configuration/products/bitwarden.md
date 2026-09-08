@@ -25,10 +25,13 @@ None — the endpoint accepts no credential shape.
 Rust reimplementation of the Bitwarden server API, not a fork, with its
 own independent version numbering. It exposes the identical endpoint and
 response shape, but is registered as a separate `product:` — pointing a
-Vaultwarden install at `product: bitwarden` would compare its version
-against the wrong lifecycle calendar the moment either product gets one.
+Vaultwarden install at `product: bitwarden` would compare the wrong
+project's version against the other's release history.
 
 ## Lifecycle resolver
 
-None — endoflife.date has no calendar under either `bitwarden` or
-`vaultwarden` (both confirmed 404). Inventory-only for now.
+`github:bitwarden/server` — endoflife.date has no `bitwarden` calendar
+(confirmed 404), so this resolves against GitHub Releases instead: the
+latest published, non-prerelease tag only, with no eol/support/lts dates
+(GitHub has no opinion on lifecycle policy, only "what's the latest
+release").

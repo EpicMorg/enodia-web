@@ -25,5 +25,8 @@ mandatory first-run admin account has even been created.
 
 ## Lifecycle resolver
 
-None — endoflife.date has no Portainer calendar (confirmed 404).
-Inventory-only for now.
+`github:portainer/portainer` — endoflife.date has no Portainer calendar
+(confirmed 404), so this resolves against GitHub Releases instead: the
+latest published, non-prerelease tag only, with no eol/support/lts dates
+(GitHub has no opinion on lifecycle policy, only "what's the latest
+release").
