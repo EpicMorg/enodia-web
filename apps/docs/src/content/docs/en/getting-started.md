@@ -37,6 +37,21 @@ needed for any of this; arm64 is the only Android architecture built for
 today.
 :::
 
+:::caution[Rooted Android devices may need `su`]
+Confirmed live: on a **rooted** device (Magisk/KernelSU), the correct
+`android_arm64` binary can still fail to exec as the ordinary Termux
+user — Cobra reports something like `unknown command "<path-to-enodia>"
+for "enodia"`, which is actually the OS never handing the binary its own
+arguments in the first place. Running the exact same binary via `su`
+with a full path works. This is a known, open, upstream bug —
+[termux-exec#40](https://github.com/termux/termux-exec/issues/40):
+`termux-exec`'s own linker-exemption logic doesn't recognize Magisk/
+KernelSU/`run-as`/ADB process contexts, which a rooted device commonly
+puts even an ordinary Termux session into. Not something enodia's build
+or `install.sh` can route around — a non-rooted device shouldn't hit
+this at all.
+:::
+
 Or a package, if you'd rather your package manager track updates:
 
 ```bash
@@ -85,7 +100,7 @@ go build -o enodia ./cmd/enodia
 | Linux | amd64, arm64 | Kernel 3.2 or later — Debian 8+, Ubuntu 14.04+, RHEL/CentOS 7+ all comfortably qualify |
 | Windows | amd64, arm64, 386 | Windows 10 / Windows Server 2016 or later |
 | macOS | amd64, arm64 | macOS 12 Monterey or later |
-| Android (Termux) | arm64 only | Android 5.0 Lollipop or later — the floor for PIE support (see the Termux note above); Termux itself may require newer in practice |
+| Android (Termux) | arm64 only | Android 7 or later — [Termux's own floor](https://github.com/termux/termux-app), stricter than the Android 5.0 Lollipop PIE-support minimum that actually drove the separate build (see the Termux note above). Rooted devices may need `su` — see the caution above |
 
 These are the Go toolchain's own floor, not something enodia adds on
 top. Building from source with a newer Go raises the macOS floor
