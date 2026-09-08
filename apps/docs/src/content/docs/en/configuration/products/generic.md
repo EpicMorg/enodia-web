@@ -8,7 +8,7 @@ The escape hatch for anything without a dedicated probe — a hand-written
 the frozen `json`/`xml`/`header`/`plaintext`/`regex` vocabulary, and the
 `clean_regex` field-spelling note live in
 [Configuration → The generic probe](/en/configuration/#the-generic-probe);
-this page exists only so `generic` shows up alongside the other 28
+this page exists only so `generic` shows up alongside the other 86
 products in the sidebar.
 
 ```yaml

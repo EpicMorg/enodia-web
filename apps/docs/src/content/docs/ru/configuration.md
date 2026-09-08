@@ -122,6 +122,12 @@ credentials:
   redis-auth:
     kind: password
     password: "${REDIS_PASSWORD}"
+
+  linux-host-ssh:
+    kind: ssh-key
+    username: enodia-ro
+    private_key_file: /etc/enodia/ssh/id_ed25519
+    passphrase: "${SSH_KEY_PASSPHRASE}"   # опционально, только если ключ зашифрован
 ```
 
 | `kind` | Используемые поля | Что отправляется |
@@ -130,7 +136,37 @@ credentials:
 | `bearer` | `value` | `Authorization: Bearer <value>` |
 | `token-header` | `header`, `value` | произвольный заголовок, напр. `PRIVATE-TOKEN`, `X-Vault-Token` |
 | `basic` | `username`, `password` | HTTP Basic auth |
-| `password` | `password` | нативная для протокола аутентификация (Redis `AUTH`, пароль SQL-подключения, ...) |
+| `password` | `password` (плюс `username` — для протоколов, где он нужен: Redis ACL, PostgreSQL) | нативная для протокола аутентификация (Redis `AUTH`, пароль SQL-подключения, ...) |
+| `ssh-key` | `username`, `private_key_file`, `passphrase` (опционально) | SSH-аутентификация по публичному ключу — для SSH-проб определения ОС (см. [Поддерживаемые продукты](/ru/products/)) |
+
+Для SSH-таргетов также работает просто `username` вместе с `kind:
+password` и без `private_key_file` — SSH-пробы принимают либо пароль,
+либо приватный ключ, как и любой SSH-клиент (`username` плюс `password`
+под `kind: password`, либо `username` плюс `private_key_file` под
+`kind: ssh-key`).
+
+### Проверка ключа хоста SSH
+
+Каждая SSH-проба использует тот же блок `tls:`, что и HTTPS-пробы для
+проверки сертификата — `pin_sha256` здесь хранит hex SHA-256 не TLS-
+сертификата, а самого ключа хоста в его wire-кодировке, но форма та же:
+«закрепите отпечаток, либо явно укажите `insecure` и получите
+предупреждение»:
+
+```yaml
+targets:
+  - id: linux-host
+    product: debian
+    address: host.example.com
+    credentials: linux-host-ssh
+    tls:
+      pin_sha256:
+        - "AB:CD:...:EF"   # sha256 ключа хоста, ssh-keyscan или аналог
+      # insecure: true      # последний резерв — полностью отключает проверку ключа хоста
+```
+
+Если не указаны ни `pin_sha256`, ни `insecure: true`, соединение
+отклоняется ещё до отправки хоть одного credential.
 
 ### `credentials_file`
 

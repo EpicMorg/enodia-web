@@ -31,5 +31,8 @@ comparing two unrelated numbering schemes.
 
 ## Lifecycle resolver
 
-None — endoflife.date has no calendar under either `bitwarden` or
-`vaultwarden` (both confirmed 404). Inventory-only for now.
+`github:dani-garcia/vaultwarden` — endoflife.date has no `vaultwarden`
+calendar (confirmed 404), so this resolves against GitHub Releases
+instead: the latest published, non-prerelease tag only, with no
+eol/support/lts dates (GitHub has no opinion on lifecycle policy, only
+"what's the latest release").

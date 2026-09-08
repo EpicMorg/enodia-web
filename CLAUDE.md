@@ -651,6 +651,54 @@ source itself carries the explicit confirmed-404 comment; an empty
 `resolver: ""` with no such comment needs its own live check before
 writing anything about *why* it's empty.
 
+**enodia jumped from 29 to 87 supported products, 2026-09-08/09** —
+the parent repo added 58 new probes in one push: 25 SSH-based OS
+identifiers (23 sharing an `osReleaseFamilyProbe` framework reading
+`/etc/os-release`'s `ID` field over SSH, 2 sharing a `unameFamilyProbe`
+running `uname -sr` for OpenBSD/NetBSD, which have no os-release
+equivalent, plus Astra Linux/legacy CentOS/macOS/OPNsense/Oracle
+Solaris each reading their own distinct identity file/command), and 27
+standalone HTTP/TCP probes (Apache, ClickHouse, ESXi, Forgejo, Graylog,
+HAProxy, Harbor, Jaeger, Kibana, Logstash, MongoDB, Nexus, nginx,
+oauth2-proxy, OpenSearch, pgAdmin, phpMyAdmin, postgres_exporter,
+ProFTPD, Proxmox VE, RouterOS, Synology DSM, Traefik, TrueNAS,
+WordPress, YouTrack, Zabbix). A new `kind: ssh-key` credential
+(`private_key_file`/`passphrase`) and a `github:<owner/repo>` resolver
+type (latest GitHub Release only, no eol/support/lts — GitHub has no
+lifecycle opinion) were added alongside. Also: `zou`/`kitsu` split into
+two products sharing one probe (different lifecycle resolvers — Zou's
+own GitHub repo has no usable Releases), `vcenter`'s probe was rewritten
+entirely (SOAP `RetrieveServiceContent` instead of
+`vimServiceVersions.xml` — real marketing version instead of the vim25
+API schema version, plus a real vCenter-vs-ESXi identity check), and six
+existing products got a `github:` resolver wired up for the first time
+(`bitwarden`, `vaultwarden`, `jellyfin`, `owncast`, `portainer`, plus the
+new `kitsu`).
+
+Wrote one page per new product (58 × 2 languages = 116 files) plus a
+shared `ssh-os-probes.md` explainer for the 30 SSH-based products (same
+cross-linking pattern as the Atlassian family, just for a much bigger
+group — each OS's own page states only its specific `ID`/`VERSION_ID`
+facts and resolver, not the shared mechanism). `products.md` (en/ru)
+was rewritten from a single 29-row table into two tables ("Applications
+and infrastructure services", 57 rows; "Operating systems", 30 rows)
+plus a new `zou`/`kitsu` explainer section. `configuration.md` (en/ru)
+gained the `ssh-key` credential kind and an "SSH host key verification"
+section (reuses the existing `tls.pin_sha256`/`insecure` vocabulary —
+`pin_sha256` there is the host key's own wire encoding, not a TLS
+certificate).
+
+Every fact came from reading `internal/probe/*.go` directly (66 files)
+plus `docs/DECISIONS.md` D23 (which already documents the exact
+`ID`/`VERSION_ID` verified per OS, and why three originally-planned
+products — `fortios`, `cisco-ios-xe`, `tails` — didn't make it in), not
+from `enodia products`' one-line summaries. Caught two now-stale "28
+products" mentions in `generic.md` (en/ru) left over from the count
+change. Verified: `astro build` succeeds (195 pages, up from 77), a
+programmatic link/anchor check against the built HTML found zero broken
+internal links, and the RU content got the same formal-register sweep
+(pronouns + verb-conjugation questions) as every prior round — clean.
+
 ### `apps/landing` — done, 2026-09-07
 
 - **Hand-scaffolded, not `create-astro`** — a plain Astro app is small

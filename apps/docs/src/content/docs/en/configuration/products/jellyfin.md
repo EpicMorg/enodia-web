@@ -27,5 +27,8 @@ the software itself, so only `Version` and `ProductName` are read.
 
 ## Lifecycle resolver
 
-None — endoflife.date has no Jellyfin calendar (confirmed 404).
-Inventory-only for now.
+`github:jellyfin/jellyfin` — endoflife.date has no Jellyfin calendar
+(confirmed 404), so this resolves against GitHub Releases instead: the
+latest published, non-prerelease tag only, with no eol/support/lts dates
+(GitHub has no opinion on lifecycle policy, only "what's the latest
+release").
