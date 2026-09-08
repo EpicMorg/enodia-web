@@ -45,11 +45,11 @@ three apps to match — `apps/get`'s Pages Functions needed no code change
 (they fetch live) but their 404 messages were generalized away from a
 now-resolved-and-therefore-misleading "no release yet" claim;
 `apps/landing`'s and `apps/docs`'s copy got real install one-liners and
-package instructions in place of placeholders. **Note**: enodia's own
-`README.md` on `master` still says "Status: pre-1.0" / "Not published
-yet" as of this writing — that's the *parent* repo's own doc going stale
-after the release, not something to copy into this repo; this repo's
-content was written from live-verified reality, not from that README.
+package instructions in place of placeholders. **Update, 2026-09-08**:
+enodia's own `README.md` no longer has this problem — commit `e3f87f2`
+fixed it to say "Status: 1.0" and link `docs.enodia.sh` directly, so the
+parent repo's own docs and this one now agree; no longer something to
+watch for.
 
 **docs.enodia.sh/ (bare root) no longer 404s** — added
 `redirects: { '/': '/en/' }` to `apps/docs/astro.config.mjs` (portable,
@@ -521,7 +521,38 @@ no `root` locale, by design (item 1), and whether a `/` → `/en/`
 redirect is wanted was never decided — ask before adding one. The
 `Entry docs → 404 was not found` build warning (benign Starlight
 scaffold quirk, `dist/404.html` still works) is unchanged, still
-cosmetic.
+cosmetic. **Update, 2026-09-08**: the root redirect got decided and
+built (see "Status" at the top of this file) — this specific open item
+is closed, left here only as the historical record of when it wasn't.
+
+**Termux/Android — corrected, 2026-09-08, a real verification gap on my
+part**: an earlier pass here claimed the plain `linux/arm64` release
+binary would run under Termux unmodified, reasoning from `readelf -d`
+showing no dynamic section/no `NEEDED` entries (true, and still true).
+That reasoning was incomplete — static linking says nothing about ELF
+*type* (`ET_EXEC` vs `ET_DYN`/PIE), and `readelf -h`'s `Type:` field
+was never checked. The user tested on a real device: Android's Bionic
+linker refused the `linux/arm64` binary outright (`"has unexpected
+e_type: 2"` — `ET_EXEC`; Android has required PIE since Lollipop, a
+kernel/linker policy, nothing to do with libc). Upstream fix
+(`docs/DECISIONS.md` D20 in the parent repo): a distinct
+`android/arm64` goreleaser build (`GOOS=android`, still
+`CGO_ENABLED=0`), producing `ET_DYN` with interpreter
+`/system/bin/linker64`; `install.sh` picks it via `$TERMUX_VERSION`
+(deliberately not the more generic `$PREFIX` already used for the
+install-directory fallback — a wrong guess here downloads a binary that
+flat-out cannot execute, a worse failure mode than picking the wrong
+directory). Re-verified myself after the fix: downloaded the real
+`enodia_android_arm64.tar.gz` asset, confirmed `Type: DYN`, interpreter
+`/system/bin/linker64`, and zero `NEEDED` entries in the dynamic
+section (still no shared-library dependency, just PIE's own relocation
+machinery) — matches D20's claims exactly, not taken on faith.
+`getting-started.md`'s Termux callout (en/ru) rewritten to describe
+this correctly. **Lesson for next time**: when checking whether a
+binary will execute on a given OS/kernel, `readelf -h`'s `Type:` field
+(`EXEC` vs `DYN`) is a separate, necessary check from the dynamic
+section/`NEEDED`-entries check already being done — don't treat "fully
+static" as answering "will this exec here at all."
 
 ### `apps/landing` — done, 2026-09-07
 
