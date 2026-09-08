@@ -593,6 +593,43 @@ formal. **Process lesson**: any RU content added *after* a full
 before considering the work done — a global pass doesn't self-maintain
 against later edits.
 
+**Per-product configuration pages added, 2026-09-08** — one page per
+supported product (29 × 2 languages = 58 files), at
+`(en|ru)/configuration/products/<product>.md`, nested in the sidebar
+under Configuration as a collapsed "Product setup" group via Starlight's
+`autogenerate`. Each page's content came directly from reading its
+`internal/probe/*.go` implementation in the parent repo (endpoint, auth
+requirements, recorded `extra` fields), not from `enodia products`'
+one-line summary — real gotchas captured this way: TeamCity's bootstrap-
+token-vs-personal-access-token Basic/Bearer split, Keycloak being the
+only probe with `Required: true` auth, MySQL's MariaDB-masking detection
+(`5.5.5-` prefix) causing a deliberate hard failure, Bitbucket's manifest
+still self-reporting as `stash`. `products.md` (en/ru) now links each
+row to its detail page; `configuration.md` (en/ru) points at the new
+sidebar group from the `targets:` section.
+
+**Starlight sidebar gotcha**: the installed Starlight version (`0.42.0`)
+no longer supports a `label` + `translations` directly on an
+`autogenerate` sidebar item — that pattern was removed in Starlight
+v0.39.0. The fix is one more level of nesting: a manual group with
+`label`/`translations`/`collapsed` whose own `items` array contains a
+bare `{ autogenerate: { directory: ... } }` object. Caught by `astro
+build` failing outright with a clear `AstroUserError` naming the exact
+fix — not something to guess at from memory if it comes up again for a
+different sidebar section.
+
+**Second, real formal-register violation found and fixed the same
+session**: `products.md` ru's "## Не нашёл свой продукт?" heading —
+singular/informal past-tense verb agreement (`нашёл`, matching an
+implied `ты`), not a pronoun, so the earlier pronoun-only grep sweeps
+(`\b(ты|тебя|тебе|...)\b`) never caught it. Fixed to "Не нашли свой
+продукт?" (plural agreement, matching Вы). **Process lesson, reinforcing
+the one above**: a formality sweep must also check verb *conjugation*
+(singular vs. plural agreement on past tense and questions addressed to
+the reader), not just pronouns and imperative endings — a heading
+phrased as a question addressed to "you" is exactly where this slips in
+silently, since there's no pronoun token to grep for at all.
+
 ### `apps/landing` — done, 2026-09-07
 
 - **Hand-scaffolded, not `create-astro`** — a plain Astro app is small
