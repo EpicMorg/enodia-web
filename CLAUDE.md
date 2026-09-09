@@ -699,6 +699,29 @@ programmatic link/anchor check against the built HTML found zero broken
 internal links, and the RU content got the same formal-register sweep
 (pronouns + verb-conjugation questions) as every prior round — clean.
 
+**HashiCorp Vault Agent integration documented, 2026-09-09** — user
+request: enodia already reads credentials from env vars
+(`${VAR}`/`${VAR:-default}`) and an optional separate `credentials_file`,
+so Vault Agent's own `template`/`exec` rendering composes directly with
+both, no enodia-side feature needed. Added a "HashiCorp Vault Agent
+integration" section to `configuration.md` (en/ru), placed right after
+"Environment variable interpolation". Key fact verified in the source
+before writing anything (`cmd/enodia/pipeline.go`'s `collectObservations`
+→ `internal/config/config.go`'s `Config.Build` → `LoadCredentials`):
+config and credentials are reloaded from disk on *every* `enodia check`
+invocation and *every* `enodia serve --interval` tick — nothing cached
+for the process's lifetime — so a Vault Agent template continuously
+re-rendering either file is picked up automatically, no signal or
+restart required. Documented two patterns: (1) Vault Agent `exec` mode
+injecting env vars into enodia's own process, read via the existing
+interpolation; (2) Vault Agent templating a full `credentials_file`
+directly in enodia's schema, which needs no `exec`/restart wiring at all
+given the reload-every-cycle behavior above. Kept the exact Vault Agent
+HCL syntax explicitly hedged ("illustrative — see Vault Agent's own
+docs") rather than asserting precise flag names for a tool whose docs
+weren't fetched live this session — the enodia-side claims are the ones
+actually verified against source.
+
 ### `apps/landing` — done, 2026-09-07
 
 - **Hand-scaffolded, not `create-astro`** — a plain Astro app is small

@@ -75,6 +75,11 @@ export default defineConfig({
 					translations: { ru: 'Безопасность' },
 					slug: 'security',
 				},
+				{
+					label: 'Changelog',
+					translations: { ru: 'Чейнджлог' },
+					slug: 'changelog',
+				},
 			],
 		}),
 	],
