@@ -804,6 +804,36 @@ the user makes every commit there themselves. Flagged back to the user
 in this round's response instead of touched directly; don't cross that
 line without them explicitly asking for it.
 
+**Synced with enodia 1.2.0+0, 2026-09-10** — two new products, `p4d`
+(Perforce Helix Core Server) and `p4p` (Perforce Proxy), added via
+`internal/probe/p4d.go`/`p4p.go`/`p4info.go` (D28). Genuinely novel
+mechanism, worth remembering if it comes up again: **the first probes in
+enodia that shell out to an external CLI** (the operator's own `p4`
+binary, path overridable per-target via `options.binary` — the first
+real use of `Target.Options`, previously an unused extensibility field)
+rather than speaking a wire protocol or HTTP directly. Root cause was a
+real, deep investigation: Perforce's RPC protocol was fully reverse-
+engineered and a hand-built client's handshake was confirmed
+byte-correct against a packet capture, but real direct `p4d` servers
+silently drop that exact handshake for reasons invisible from the
+client side (TLS and rate-limiting both ruled out live) — shelling out
+to the real `p4` binary sidesteps the problem entirely rather than
+chasing it further. Wrote `p4d.md`/`p4p.md` (en/ru), bumped
+`products.md`'s count (87 → 89) with a note on the CLI dependency, and
+cross-linked `options.binary` from `configuration.md`'s `targets`
+section. Also caught and documented a real internal bug fix in the same
+release: `probe.Observation.Resolver` (added in 1.1.0 for sonarqube) was
+a non-pointer struct, so `omitempty` never actually omitted it — every
+JSON export since 1.1.0 carried a spurious `"resolver":{}` on every
+single observation, not just sonarqube's. Worth remembering if a user
+ever asks why their older JSON exports look different from newer ones.
+
+README status line note from last round resolved itself: this release's
+own commit `98693a7` bumped `> Status:` from 1.0 to 1.2 and linked
+`CHANGELOG.md` directly — the user's repeated "kстати, всё ещё 1.0"
+observation across two rounds evidently got noticed and acted on
+upstream; nothing left to flag here now unless it drifts stale again.
+
 ### `apps/landing` — done, 2026-09-07
 
 - **Hand-scaffolded, not `create-astro`** — a plain Astro app is small
