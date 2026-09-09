@@ -12,6 +12,39 @@ affects how you'd actually configure something. Tags follow
 metadata, used only for a rebuild with no functional change, not to
 sidestep a real version bump.
 
+## 1.2.0+0 — 2026-09-10
+
+### Added
+
+- [`p4d`](/en/configuration/products/p4d/) and
+  [`p4p`](/en/configuration/products/p4p/) probes, for Perforce Helix
+  Core Server and Perforce Proxy. Perforce's own RPC wire protocol was
+  fully reverse-engineered and a hand-built client reproduced its
+  handshake correctly against a real proxy, but that exact,
+  byte-verified-correct handshake is silently dropped by real direct
+  `p4d` servers for reasons not visible from the client side. Both
+  probes shell out to the operator's own `p4` CLI instead — the first
+  probes in enodia to run an external process rather than speak a wire
+  protocol directly. The binary path is configurable per target via
+  [`options.binary`](/en/configuration/#targets) (falling back to `p4`
+  on `$PATH`); this works identically on Windows, pointed at `p4.exe`.
+  A proxy's reply is told apart from a direct server's by the presence
+  of its own `proxyVersion` field — each probe rejects the other's
+  shape.
+
+### Fixed
+
+- The `p4 -Ztag` output parser didn't strip Windows line endings: a
+  real `p4.exe` writes `\r\n`, leaving a trailing `\r` inside field
+  values like `ServerID`.
+- `probe.Observation.Resolver` (added in 1.1.0+0 for
+  [SonarQube](/en/configuration/products/sonarqube/)) was a plain
+  struct, not a pointer — `encoding/json`'s `omitempty` has no concept
+  of "empty" for a struct value, so every single observation was
+  serialising a spurious `"resolver":{}` in JSON exports, not just
+  SonarQube's. Fixed to a pointer, the same reason `tlsVerified` is
+  already nullable rather than a bare `false`.
+
 ## 1.1.1+0 — 2026-09-10
 
 ### Fixed

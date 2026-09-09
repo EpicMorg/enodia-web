@@ -1,9 +1,9 @@
 ---
 title: Supported products
-description: All 87 built-in probes, straight from `enodia products`.
+description: All 89 built-in probes, straight from `enodia products`.
 ---
 
-87 products, each a compiled-in probe (see
+89 products, each a compiled-in probe (see
 [Concepts](/en/concepts/#probes-are-compiled-in-not-a-yaml-dsl)). Use the
 value in **Product** as `product:` in a target. **Resolver** is the
 lifecycle-data identifier — `endoflife:<slug>` for
@@ -36,8 +36,13 @@ itself; see [its own page](/en/configuration/products/sonarqube/).
 
 ## Applications and infrastructure services
 
-57 products, probed over HTTP(S) or a raw wire protocol (MySQL, Redis,
-MongoDB, ...) — no SSH involved.
+59 products, probed over HTTP(S) or a raw wire protocol (MySQL, Redis,
+MongoDB, ...) — no SSH involved. Two of them,
+[`p4d`](/en/configuration/products/p4d/) and
+[`p4p`](/en/configuration/products/p4p/), are a further exception:
+neither speaks a wire protocol enodia implements at all — both shell
+out to the operator's own `p4` CLI, which needs to be installed
+alongside enodia itself, not just reachable over the network.
 
 | Product | Summary | Resolver |
 |---|---|---|
@@ -74,6 +79,8 @@ MongoDB, ...) — no SSH involved.
 | [`oauth2-proxy`](/en/configuration/products/oauth2-proxy/) | oauth2-proxy | `github:oauth2-proxy/oauth2-proxy` |
 | [`opensearch`](/en/configuration/products/opensearch/) | OpenSearch | `endoflife:opensearch` |
 | [`owncast`](/en/configuration/products/owncast/) | Owncast | `github:owncast/owncast` |
+| [`p4d`](/en/configuration/products/p4d/) | Perforce Helix Core Server (p4d) | — |
+| [`p4p`](/en/configuration/products/p4p/) | Perforce Proxy (p4p) | — |
 | [`perforce-swarm`](/en/configuration/products/perforce-swarm/) | Perforce Helix Swarm | — |
 | [`pgadmin`](/en/configuration/products/pgadmin/) | pgAdmin | `github-tags:pgadmin-org/pgadmin4` |
 | [`phpmyadmin`](/en/configuration/products/phpmyadmin/) | phpMyAdmin | `endoflife:phpmyadmin` |
