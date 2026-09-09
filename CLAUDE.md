@@ -722,6 +722,59 @@ docs") rather than asserting precise flag names for a tool whose docs
 weren't fetched live this session — the enodia-side claims are the ones
 actually verified against source.
 
+**Synced with enodia 1.1.0+0, 2026-09-10, and added a Changelog page**
+— three real changes plus a new upstream `CHANGELOG.md` this repo now
+mirrors:
+
+- **SonarQube split (D25)**: SonarSource split "SonarQube" into Server
+  (calendar-versioned `2025.x`/`2026.x`) vs. Community Build (`24.x`/
+  `25.x`/`26.x`) at the end of 2024, tracked as two different
+  endoflife.date pages. Not a D9-style second `product:` — both
+  variants hit the identical endpoint as the identical product.
+  `probe.Observation` gained a per-observation `Resolver` override field
+  instead; `sonarqubeProbe` now sets it from the version string's
+  leading year (four digits → server, two digits from `24` → community,
+  smaller → pre-split, treated as community). `sonarqube.md` (en/ru)
+  rewritten — it previously documented a single hardcoded
+  `sonarqube-community` resolver, which is simply wrong for a Server
+  instance.
+- **pgAdmin resolver (D24)**: a new `github-tags` resolver type (for a
+  GitHub repo with no Releases at all, only non-dotted tags —
+  `pgadmin-org/pgadmin4` ships `REL-9_17`) gave pgAdmin its first real
+  `DefaultResolver`. Picks the *highest-parsing* tag from the fetched
+  page, not the first one — the tags endpoint documents no ordering
+  guarantee, unlike Releases. `pgadmin.md` (en/ru) updated from "no
+  resolver" to the real one; `products.md` (en/ru) intro now explains
+  all three resolver types (`endoflife:`, `github:`, `github-tags:`).
+- **`GITHUB_TOKEN` (D24)**: both GitHub-backed resolvers were
+  unauthenticated (60/hour, per source IP) until this release —
+  `resolver.New` now takes a token, the CLI passes it from the
+  environment, same convention `gh`/goreleaser/Actions use. Documented
+  in `products.md`'s intro (en/ru), cross-linked from `pgadmin.md`.
+- **Docker publishing moved out of enodia's own repo entirely**, into
+  `EpicMorg/docker` (own schedule, not tied to enodia's release
+  pipeline) — this was *not* mentioned in the user's own summary of the
+  release and had to be caught independently by reading the actual
+  commit history (`8acc717` and its two precursor/revert commits,
+  `440d911`/`ea950ca`) rather than trusting the request's own bullet
+  list as exhaustive. Verified live via `crane`/`docker inspect`-style
+  checks against all three registries (GHCR/Docker Hub/Quay) before
+  writing anything: the image is now `linux/amd64` only (arm64
+  dropped), runs as root (not scratch/minimal), and new-pipeline tags
+  drop the old `-BUILD` suffix entirely (`1.1.0`, not `1.1.0-0`) — a
+  real, observed difference from the pre-migration `1.0.0-1`-shaped
+  tags, not assumed from the commit message alone. `getting-started.md`
+  (en/ru) Docker section rewritten to match. **Lesson**: a user's release
+  summary is a starting point for what to check, not the full list of
+  what changed — `git log`/`git show` against the actual diff still
+  found something they didn't mention.
+- **New `changelog.md`** (en/ru), added to the sidebar right after
+  Security — mirrors enodia's own `CHANGELOG.md` (added upstream this
+  same release) but with links into the rest of this site wherever a
+  change affects actual configuration. This is now a page that needs
+  its own update pass alongside every future release sync, same as
+  `products.md`.
+
 ### `apps/landing` — done, 2026-09-07
 
 - **Hand-scaffolded, not `create-astro`** — a plain Astro app is small
