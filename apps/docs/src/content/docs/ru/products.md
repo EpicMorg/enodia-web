@@ -10,16 +10,34 @@ description: Все 87 встроенных проб, прямо из `enodia pr
 `endoflife:<слаг>` для [endoflife.date](https://endoflife.date/)
 (настоящие даты EOL/support), `github:<owner/repo>` для GitHub Releases
 (только последняя версия, без eol/support/lts — у GitHub нет мнения о
-политике жизненного цикла); `—` значит, что у enodia есть определение
-версии для этого продукта, но пока нет совпадения по жизненному циклу
-(оси patch/branch у него всё равно работают; ось lifecycle остаётся
-`unknown`). Перейдите по ссылке на нужный продукт, чтобы увидеть точный
-эндпоинт, требования к аутентификации и записываемые поля.
+политике жизненного цикла), либо `github-tags:<owner/repo>` для
+репозитория вообще без Releases, только с git-тегами (то же
+ограничение «только последняя версия», что и у `github:`, используется,
+когда собственные теги продукта даже не похожи на обычную версию через
+точки — см. [pgAdmin](/ru/configuration/products/pgadmin/)); `—` значит,
+что у enodia есть определение версии для этого продукта, но пока нет
+совпадения по жизненному циклу (оси patch/branch у него всё равно
+работают; ось lifecycle остаётся `unknown`). Перейдите по ссылке на
+нужный продукт, чтобы увидеть точный эндпоинт, требования к
+аутентификации и записываемые поля.
+
+Оба резолвера на базе GitHub по умолчанию работают без аутентификации
+(ограничение 60 запросов в час, общее для всего, что делит с enodia один
+исходящий IP) — задайте переменную окружения **`GITHUB_TOKEN`** (та же
+конвенция, что уже используют `gh`, goreleaser и сам GitHub Actions),
+чтобы поднять этот лимит до 5000 в час; пустое значение или отсутствие
+переменной просто откатывается к неаутентифицированному лимиту, ничего
+не ломается в любом случае.
 
 Эта таблица сгенерирована из `enodia products` для текущей сборки
 бинарника — перезапустите команду, чтобы проверить расхождение, если с
 этого момента прошло много времени, прежде чем считать эту страницу
-истиной в последней инстанции.
+истиной в последней инстанции. **У `sonarqube`** в таблице показан
+статический резолвер по умолчанию (`endoflife:sonarqube-server` — то,
+что печатает `enodia products`, пока ничего ещё не опрошено) —
+реальное наблюдение выбирает между ним и
+`endoflife:sonarqube-community` для каждого инстанса отдельно, по самой
+строке версии; см. [его собственную страницу](/ru/configuration/products/sonarqube/).
 
 ## Приложения и инфраструктурные сервисы
 
@@ -62,7 +80,7 @@ Redis, MongoDB, ...) — без участия SSH.
 | [`opensearch`](/ru/configuration/products/opensearch/) | OpenSearch | `endoflife:opensearch` |
 | [`owncast`](/ru/configuration/products/owncast/) | Owncast | `github:owncast/owncast` |
 | [`perforce-swarm`](/ru/configuration/products/perforce-swarm/) | Perforce Helix Swarm | — |
-| [`pgadmin`](/ru/configuration/products/pgadmin/) | pgAdmin | — |
+| [`pgadmin`](/ru/configuration/products/pgadmin/) | pgAdmin | `github-tags:pgadmin-org/pgadmin4` |
 | [`phpmyadmin`](/ru/configuration/products/phpmyadmin/) | phpMyAdmin | `endoflife:phpmyadmin` |
 | [`portainer`](/ru/configuration/products/portainer/) | Portainer | `github:portainer/portainer` |
 | [`postgres_exporter`](/ru/configuration/products/postgres_exporter/) | prometheus-community/postgres_exporter | `github:prometheus-community/postgres_exporter` |
@@ -71,7 +89,7 @@ Redis, MongoDB, ...) — без участия SSH.
 | [`proxmox`](/ru/configuration/products/proxmox/) | Proxmox VE | `endoflife:proxmox-ve` |
 | [`redis`](/ru/configuration/products/redis/) | Redis | `endoflife:redis` |
 | [`routeros`](/ru/configuration/products/routeros/) | MikroTik RouterOS | `endoflife:routeros` |
-| [`sonarqube`](/ru/configuration/products/sonarqube/) | SonarQube | `endoflife:sonarqube-community` |
+| [`sonarqube`](/ru/configuration/products/sonarqube/) | SonarQube (Server или Community Build) | `endoflife:sonarqube-server`\* |
 | [`ssh`](/ru/configuration/products/ssh/) | SSH-баннер (любая реализация) | — |
 | [`synology-dsm`](/ru/configuration/products/synology-dsm/) | Synology DSM | — |
 | [`teamcity`](/ru/configuration/products/teamcity/) | JetBrains TeamCity | — |

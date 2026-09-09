@@ -9,15 +9,30 @@ value in **Product** as `product:` in a target. **Resolver** is the
 lifecycle-data identifier — `endoflife:<slug>` for
 [endoflife.date](https://endoflife.date/) (real EOL/support dates),
 `github:<owner/repo>` for GitHub Releases (latest version only, no
-eol/support/lts — GitHub has no opinion on lifecycle policy) — and a `—`
-means enodia has version detection for that product but no lifecycle
-match yet (its patch/branch axes still work; its lifecycle axis stays
-`unknown`). Click a product for its exact endpoint, auth requirements,
-and recorded fields.
+eol/support/lts — GitHub has no opinion on lifecycle policy), or
+`github-tags:<owner/repo>` for a repo with no Releases at all, only git
+tags (same "latest version only" limitation as `github:`, used when a
+product's own tags aren't even a plain dotted version — see
+[pgAdmin](/en/configuration/products/pgadmin/)) — and a `—` means enodia
+has version detection for that product but no lifecycle match yet (its
+patch/branch axes still work; its lifecycle axis stays `unknown`). Click
+a product for its exact endpoint, auth requirements, and recorded
+fields.
+
+Both GitHub-backed resolver types are unauthenticated by default (capped
+at 60 requests/hour, shared with anything else on the same source IP) —
+set the **`GITHUB_TOKEN`** environment variable (the same convention
+`gh`, goreleaser, and GitHub Actions itself use) to raise that to
+5000/hour; empty or unset just falls back to the unauthenticated cap,
+nothing breaks either way.
 
 This table is generated from `enodia products` against the currently
 built binary — re-run it to check for drift before treating this page as
-gospel if it's been a while.
+gospel if it's been a while. **`sonarqube`**'s row shows its static
+fallback (`endoflife:sonarqube-server`, what `enodia products` prints
+with nothing yet probed) — a real observation picks between that and
+`endoflife:sonarqube-community` per instance, from the version string
+itself; see [its own page](/en/configuration/products/sonarqube/).
 
 ## Applications and infrastructure services
 
@@ -60,7 +75,7 @@ MongoDB, ...) — no SSH involved.
 | [`opensearch`](/en/configuration/products/opensearch/) | OpenSearch | `endoflife:opensearch` |
 | [`owncast`](/en/configuration/products/owncast/) | Owncast | `github:owncast/owncast` |
 | [`perforce-swarm`](/en/configuration/products/perforce-swarm/) | Perforce Helix Swarm | — |
-| [`pgadmin`](/en/configuration/products/pgadmin/) | pgAdmin | — |
+| [`pgadmin`](/en/configuration/products/pgadmin/) | pgAdmin | `github-tags:pgadmin-org/pgadmin4` |
 | [`phpmyadmin`](/en/configuration/products/phpmyadmin/) | phpMyAdmin | `endoflife:phpmyadmin` |
 | [`portainer`](/en/configuration/products/portainer/) | Portainer | `github:portainer/portainer` |
 | [`postgres_exporter`](/en/configuration/products/postgres_exporter/) | prometheus-community/postgres_exporter | `github:prometheus-community/postgres_exporter` |
@@ -69,7 +84,7 @@ MongoDB, ...) — no SSH involved.
 | [`proxmox`](/en/configuration/products/proxmox/) | Proxmox VE | `endoflife:proxmox-ve` |
 | [`redis`](/en/configuration/products/redis/) | Redis | `endoflife:redis` |
 | [`routeros`](/en/configuration/products/routeros/) | MikroTik RouterOS | `endoflife:routeros` |
-| [`sonarqube`](/en/configuration/products/sonarqube/) | SonarQube | `endoflife:sonarqube-community` |
+| [`sonarqube`](/en/configuration/products/sonarqube/) | SonarQube (Server or Community Build) | `endoflife:sonarqube-server`\* |
 | [`ssh`](/en/configuration/products/ssh/) | SSH banner (any implementation) | — |
 | [`synology-dsm`](/en/configuration/products/synology-dsm/) | Synology DSM | — |
 | [`teamcity`](/en/configuration/products/teamcity/) | JetBrains TeamCity | — |

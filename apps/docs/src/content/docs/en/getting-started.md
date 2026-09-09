@@ -74,12 +74,18 @@ docker run --rm \
   ghcr.io/epicmorg/enodia:latest check --config /config/config.yaml
 ```
 
-The same image is also published to `docker.io/epicmorg/enodia` and
-Quay — same tags, same multi-arch manifest, pick whichever registry you
-already pull from. Besides `latest`, every release also publishes the
-full pinned version (e.g. `1.0.0-1` — `+` isn't legal in a Docker tag,
-so the build metadata separator becomes `-`) and a bare major-version
-tag (`1`) if you want to pin loosely instead of tracking `latest`.
+**Since 1.1.0, this image is built and published by a companion repo**,
+[EpicMorg/docker](https://github.com/EpicMorg/docker/tree/master/linux/ecosystem/apps/enodia),
+on its own schedule — not by this project's own release pipeline
+anymore, though the published address and tags stay the same. Also
+published to `docker.io/epicmorg/enodia` and Quay, same tags — `latest`,
+a bare major (`1`), and the exact version with no build suffix (e.g.
+`1.1.0` — confirmed live; an earlier pipeline's own tags looked like
+`1.0.0-1` instead, still pullable, just not how new releases tag from
+here on). Two real changes worth knowing about: the image is
+**`linux/amd64` only** now (arm64 was dropped when publishing moved),
+and it runs as **root** rather than a dedicated user, on the project's
+own `debian:trixie-light` house base instead of `scratch`.
 
 ### Build from source
 

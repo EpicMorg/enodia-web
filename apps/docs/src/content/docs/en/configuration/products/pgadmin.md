@@ -36,8 +36,16 @@ at.
 
 ## Lifecycle resolver
 
-None — endoflife.date has no pgAdmin calendar (confirmed 404).
-pgadmin-org/pgadmin4's own GitHub tags use the shape `REL-9_17`, not a
-dotted version, so wiring the GitHub Releases resolver here today would
-compare against a silently wrong reference rather than no reference at
-all. Inventory-only for now.
+`github-tags:pgadmin-org/pgadmin4`. endoflife.date has no pgAdmin
+calendar (confirmed 404), and `pgadmin-org/pgadmin4` has no GitHub
+Releases at all (confirmed live: the releases endpoint returns an empty
+array) — only tags, shaped `REL-9_17` rather than a dotted version. The
+`github-tags` resolver type exists specifically for this: it converts
+that shape to `9.17` and picks the *highest-parsing* tag from the
+fetched page rather than trusting list order, since the tags endpoint
+documents no ordering guarantee the way Releases' reverse-chronological
+order does. Like the plain `github:` resolver, it only ever knows
+"latest version" — no eol/support/lts dates, since the tags endpoint
+carries none. See [Supported products](/en/products/#applications-and-infrastructure-services)
+for the `GITHUB_TOKEN` environment variable that raises this resolver's
+rate limit.
