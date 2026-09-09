@@ -1,9 +1,9 @@
 ---
 title: Поддерживаемые продукты
-description: Все 87 встроенных проб, прямо из `enodia products`.
+description: Все 89 встроенных проб, прямо из `enodia products`.
 ---
 
-87 продуктов, у каждого — вкомпилированная проба (см.
+89 продуктов, у каждого — вкомпилированная проба (см.
 [Концепции](/ru/concepts/#пробы-вкомпилированы-а-не-yaml-dsl)). Значение
 из колонки **Продукт** используется как `product:` в таргете.
 **Резолвер** — идентификатор данных о жизненном цикле:
@@ -41,8 +41,14 @@ description: Все 87 встроенных проб, прямо из `enodia pr
 
 ## Приложения и инфраструктурные сервисы
 
-57 продуктов, опрашиваемых по HTTP(S) или сырому wire-протоколу (MySQL,
-Redis, MongoDB, ...) — без участия SSH.
+59 продуктов, опрашиваемых по HTTP(S) или сырому wire-протоколу (MySQL,
+Redis, MongoDB, ...) — без участия SSH. Два из них,
+[`p4d`](/ru/configuration/products/p4d/) и
+[`p4p`](/ru/configuration/products/p4p/), — ещё одно исключение: ни
+один не говорит ни на одном wire-протоколе, который реализует сама
+enodia — оба обращаются к собственному CLI `p4` оператора, который
+должен быть установлен на той же машине, что и сама enodia, а не
+просто быть доступным по сети.
 
 | Продукт | Описание | Резолвер |
 |---|---|---|
@@ -79,6 +85,8 @@ Redis, MongoDB, ...) — без участия SSH.
 | [`oauth2-proxy`](/ru/configuration/products/oauth2-proxy/) | oauth2-proxy | `github:oauth2-proxy/oauth2-proxy` |
 | [`opensearch`](/ru/configuration/products/opensearch/) | OpenSearch | `endoflife:opensearch` |
 | [`owncast`](/ru/configuration/products/owncast/) | Owncast | `github:owncast/owncast` |
+| [`p4d`](/ru/configuration/products/p4d/) | Perforce Helix Core Server (p4d) | — |
+| [`p4p`](/ru/configuration/products/p4p/) | Perforce Proxy (p4p) | — |
 | [`perforce-swarm`](/ru/configuration/products/perforce-swarm/) | Perforce Helix Swarm | — |
 | [`pgadmin`](/ru/configuration/products/pgadmin/) | pgAdmin | `github-tags:pgadmin-org/pgadmin4` |
 | [`phpmyadmin`](/ru/configuration/products/phpmyadmin/) | phpMyAdmin | `endoflife:phpmyadmin` |
