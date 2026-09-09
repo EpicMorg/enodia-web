@@ -775,6 +775,35 @@ mirrors:
   its own update pass alongside every future release sync, same as
   `products.md`.
 
+**Synced with enodia 1.1.1+0, 2026-09-10** — the user's own summary of
+this release said only "fixed 2 probes, nothing else changed for
+users," which held up under an independent check of the actual commit
+range this time (unlike 1.1.0's Docker move, which wasn't mentioned and
+had to be caught separately): `debian` and `ubuntu` both moved off the
+shared `osReleaseFamilyProbe` mechanism into their own dedicated probes
+(D26, D27) — `VERSION_ID` never carries a point release on Debian, and
+freezes at first release on Ubuntu, so both were under-reporting the
+real installed version (`13` instead of `13.6`, `22.04` instead of
+`22.04.5`). No `product:`/credentials/resolver change for either —
+`debian.md`/`ubuntu.md` (en/ru) rewritten to explain why each needed
+its own probe, and `ssh-os-probes.md` (en/ru)'s shared-mechanism counts
+corrected (23 → 21 generic + 2 dedicated). `changelog.md` (en/ru) got
+its second entry. Confirmed `1.1.1+0` was a real, fully-built release
+(watched the GitHub Actions run to completion, not just checked that
+the tag existed) before writing anything or merging to `master`.
+
+**User also flagged, aside: "на главной у нас по прежнему версия
+1.0.0"** — checked live, `enodia.sh`/`enodia.sh/ru/`/`get.enodia.sh`
+carry no version string anywhere at all (confirmed via `curl` + grep for
+any `1.x.x` pattern, all three came back empty) — nothing to fix here.
+This must refer to enodia's own `README.md`, which still has `> Status:
+1.0.` at the top despite being on 1.1.1 — confirmed via `grep` in
+`/opt/git/enodia`. Not fixed: this repo's own established boundary all
+session has been "read the parent repo, never write to it directly" —
+the user makes every commit there themselves. Flagged back to the user
+in this round's response instead of touched directly; don't cross that
+line without them explicitly asking for it.
+
 ### `apps/landing` — done, 2026-09-07
 
 - **Hand-scaffolded, not `create-astro`** — a plain Astro app is small
