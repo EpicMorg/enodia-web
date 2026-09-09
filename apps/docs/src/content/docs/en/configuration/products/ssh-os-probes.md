@@ -17,10 +17,20 @@ One SSH connection, one command, one disconnect — this is not a
 general-purpose remote-exec client, just enough to read a single identity
 fact:
 
-- **23 products** read `/etc/os-release` (the systemd-standardized
+- **21 products** read `/etc/os-release` (the systemd-standardized
   identity file every modern Linux distribution ships, plus FreeBSD's own
   `/var/run/os-release`, generated dynamically at boot in the same
-  `KEY=VALUE` shape) and check its `ID` field.
+  `KEY=VALUE` shape) and check its `ID` field — a shared, generic
+  mechanism (`osReleaseFamilyProbe`).
+- **2 more** ([Debian](/en/configuration/products/debian/),
+  [Ubuntu](/en/configuration/products/ubuntu/)) also read
+  `/etc/os-release`, but through their own dedicated probe rather than
+  the generic mechanism above — both distributions leave `VERSION_ID`
+  imprecise (Debian's never carries a point release at all; Ubuntu's
+  freezes at first release and never reflects a later point release),
+  so each reads further for the real one: Debian cross-checks
+  `/etc/debian_version`, Ubuntu prefers the same file's own `VERSION`
+  field when it's more precise. See their own pages for exactly why.
 - **2 products** (OpenBSD, NetBSD) have no os-release-equivalent file at
   all — `uname -sr` is the identity source instead (`"<kernel name>
   <release>"`, e.g. `"OpenBSD 7.9"`).
@@ -87,7 +97,8 @@ for the full explanation.
 Every probe in this family records:
 
 - `version` — from `VERSION_ID` (os-release family) or the kernel
-  release (uname family)
+  release (uname family); Debian and Ubuntu read further for a precise
+  point release `VERSION_ID` alone doesn't carry — see their own pages
 - `extra.hostKeyVerified` — `"true"`/`"false"`, whether `tls.pin_sha256`
   actually matched (surfaces the same way `TLSVerified` does for HTTPS
   targets — a fleet-wide audit of which SSH targets are pinned)
