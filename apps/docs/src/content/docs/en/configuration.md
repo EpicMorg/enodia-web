@@ -198,6 +198,89 @@ environment variable:
 - `${VAR}` — replaced with `$VAR`'s value; missing is an error.
 - `${VAR:-default}` — replaced with `$VAR`'s value, or `default` if unset.
 
+## HashiCorp Vault Agent integration
+
+Neither `enodia.yaml`'s inline `credentials:` map nor a separate
+`credentials.yaml` needs a human to write it. Both are just files enodia
+reads fresh on every run — confirmed in the source: `enodia check`
+reloads config and credentials from scratch each invocation, and
+`enodia serve --interval` does the same on every refresh cycle
+(`Config.Build` calls `LoadCredentials` every time `collectObservations`
+runs — nothing is cached for the process's lifetime, so editing either
+file takes effect without a restart). That's exactly the shape
+[Vault Agent](https://developer.hashicorp.com/vault/docs/agent-and-proxy/agent)'s
+own `template` rendering is built for. enodia has no Vault-specific
+integration of its own — none is needed, since the two mechanisms below
+already compose with it directly.
+
+### Vault Agent renders environment variables
+
+Point Vault Agent's `template` (or `env_template`) stanza at the secrets
+a target needs, and reference them the normal way, through
+[environment variable interpolation](#environment-variable-interpolation)
+above:
+
+```yaml title="credentials.yaml"
+jira-token:
+  kind: bearer
+  value: "${JIRA_TOKEN}"
+```
+
+Vault Agent's `exec` mode runs enodia itself (or a wrapper script calling
+`enodia check`) as its supervised child process, injecting the rendered
+variables straight into that process's environment — no secret ever
+touches disk as a file enodia has to read. Vault Agent's `exec` stanza
+also supports restarting the child process when a templated secret
+changes, if you want a long-running `enodia serve` to pick up a rotated
+token immediately rather than waiting on it to simply still be valid at
+the next `--interval` tick — see Vault Agent's own docs for the exact
+config for that, it's entirely on the Vault Agent side.
+
+### Vault Agent renders a `credentials.yaml` directly
+
+Point `credentials_file:` at the path Vault Agent's `template` stanza
+writes to, and template the exact shape
+[`credentials_file`](#credentials_file) expects:
+
+```yaml title="enodia.yaml"
+schemaVersion: 1
+credentials_file: /run/enodia/credentials.yaml
+targets:
+  - id: jira-main
+    product: jira
+    address: https://jira.example.com
+    credentials: jira-token
+```
+
+```hcl title="Vault Agent template stanza — illustrative; see Vault Agent's own docs for exact syntax"
+template {
+  destination = "/run/enodia/credentials.yaml"
+  perms       = "0600"
+  contents    = <<EOT
+jira-token:
+  kind: bearer
+  value: "{{ with secret "secret/data/enodia/jira" }}{{ .Data.data.token }}{{ end }}"
+EOT
+}
+```
+
+This path needs no `exec`/restart wiring at all: `enodia check` re-reads
+`credentials_file` from scratch on every invocation, and `enodia serve`
+re-reads it on every refresh cycle regardless of how it changed on disk.
+A cron-scheduled `enodia check` or a long-running `enodia serve` both
+just pick up whatever Vault Agent last wrote, on their own schedule —
+nothing enodia-specific to configure for it.
+
+### Either way, follow enodia's own credential handling
+
+Both patterns still land inside everything [Security](/en/security/)
+already covers — credentials never appear in the inventory, exported
+reports, or logs, and TLS verification stays on unless you opt out per
+target. Vault Agent's own `perms` and destination-directory choice is
+what keeps the rendered file off of anything else's read access; enodia
+itself has no opinion on where `credentials_file` lives beyond resolving
+a relative path against the config file that names it.
+
 ## The generic probe
 
 `product: generic` is the escape hatch for a target that will never get
