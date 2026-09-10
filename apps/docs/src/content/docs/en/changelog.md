@@ -12,6 +12,19 @@ affects how you'd actually configure something. Tags follow
 metadata, used only for a rebuild with no functional change, not to
 sidestep a real version bump.
 
+## 1.2.1+0 — 2026-09-10
+
+### Fixed
+
+- [`p4d`/`p4p`](/en/configuration/products/p4d/#timeout) didn't apply
+  `timeout` to the `p4` CLI subprocess they shell out to — every other
+  probe in this tree clamps its own transport to `timeout` before
+  touching the network, and this one didn't. A `p4` process stuck
+  dialing an unreachable direct server (no response, no reset — the
+  exact network behavior that's the whole reason these two probes shell
+  out to `p4` in the first place) hung indefinitely, stalling an entire
+  collection run. Reported directly from a real hang in production.
+
 ## 1.2.0+0 — 2026-09-10
 
 ### Added
