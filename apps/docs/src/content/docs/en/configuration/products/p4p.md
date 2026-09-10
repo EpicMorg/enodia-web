@@ -30,6 +30,14 @@ targets:
       binary: /opt/perforce/bin/p4
 ```
 
+## Timeout
+
+`timeout` (per-target, falling back to `defaults.timeout`) applies to
+the `p4` subprocess the same way it applies to every other probe's own
+transport — see
+[`p4d`'s own note](/en/configuration/products/p4d/#timeout) for why
+this matters concretely for Perforce specifically. Fixed in 1.2.1.
+
 ## Authentication
 
 None — confirmed live that `info` answers fully unauthenticated on a

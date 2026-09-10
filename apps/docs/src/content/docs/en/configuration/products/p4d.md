@@ -47,6 +47,17 @@ works against proxies, both this probe and
 [Perforce Proxy](/en/configuration/products/p4p/) shell out to the
 operator's own `p4` CLI instead.
 
+## Timeout
+
+`timeout` (per-target, falling back to `defaults.timeout`) applies to
+the `p4` subprocess the same way it applies to every other probe's own
+transport. This matters concretely here: a `p4` process stuck dialing
+an unreachable direct server hangs with no response and no reset at
+the TCP level — exactly the behavior described above — so without a
+timeout it would stall an entire collection run rather than fail that
+one target. (Fixed in 1.2.1 — an earlier version passed no timeout to
+the subprocess at all.)
+
 ## Authentication
 
 None — confirmed live that `info` answers fully unauthenticated on real
