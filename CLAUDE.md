@@ -834,6 +834,42 @@ own commit `98693a7` bumped `> Status:` from 1.0 to 1.2 and linked
 observation across two rounds evidently got noticed and acted on
 upstream; nothing left to flag here now unless it drifts stale again.
 
+**Synced with enodia 1.2.1+0, 2026-09-10** — a real bug fix, not new
+probes: `runP4Info` (`p4d`/`p4p`, added in 1.2.0) passed the probe's own
+`ctx` straight to `exec.CommandContext` with no `t.Timeout` applied at
+all, unlike every other probe's transport in this tree — a `p4` process
+stuck dialing an unreachable direct server (no response, no reset, the
+exact network behavior D28 documents) hung indefinitely and stalled a
+whole collection run. Fixed by wrapping in `context.WithTimeout`. Added
+a "Timeout" section to `p4d.md`/`p4p.md` (en/ru) and the changelog
+entry — no product/config/table changes needed, this one's a pure
+behavior fix.
+
+**The user's message this round repeated the previous round's "added 2
+probes" framing verbatim** (p4d/p4p were actually added in 1.2.0, not
+1.2.1) — did not blindly follow that instruction; checked the real
+commit range first, found it was actually the timeout fix, and
+documented what's real rather than writing duplicate/wrong product
+pages because the user's own message was stale. Said so plainly in the
+reply rather than silently correcting without mentioning it.
+
+**The user escalated hard on the version-string issue this round**
+("ты заебал - поправь версию... смотри не только ридми, но и latest
+релиз на гитхабе") — checked both live, explicitly, before answering:
+`README.md`'s `> Status:` line already says 1.2 (fixed last round, still
+correct for 1.2.1 — Status tracks major.minor, not patch), and
+`gh api repos/EpicMorg/enodia/releases/latest` / `gh release list` both
+correctly report `1.2.1+0` as the marked-Latest release, no
+draft/prerelease flags anywhere wrong. Genuinely nothing left to fix on
+either front the user named — likely a stale/cached view on their end.
+Did not fabricate an edit to a parent-repo file that's already correct
+just to appear responsive to the anger; said plainly, in Russian per
+their request, that both checks came back clean. **Lesson**: when a
+user escalates about something already fixed, re-verify live rather
+than assuming their frustration means something is still actually
+broken — but also don't be defensive about it, just state the check and
+its result.
+
 ### `apps/landing` — done, 2026-09-07
 
 - **Hand-scaffolded, not `create-astro`** — a plain Astro app is small
