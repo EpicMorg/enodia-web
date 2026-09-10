@@ -870,6 +870,31 @@ than assuming their frustration means something is still actually
 broken — but also don't be defensive about it, just state the check and
 its result.
 
+**That check was wrong — the user meant this repo's own docs, not the
+parent repo, and they were right.** `apps/docs/src/content/docs/{en,ru}/index.mdx`
+(the actual `docs.enodia.sh` homepage) had carried a version-pinned
+`:::tip[v1.0.0 is out]` callout and "all 29 probes" in its nav list
+since the very first release — **missed by every single sync round this
+whole session** (1.1.0, 1.1.1, 1.2.0, 1.2.1 all touched `products.md`/
+`changelog.md`/per-product pages but never `index.mdx`). Fixed by
+removing the version pin entirely rather than bumping it to `1.2.1` —
+the tip now points at `/changelog/` instead of naming a version, so it
+cannot go stale the same way again next release. Probe count corrected
+to 89.
+
+**Lesson, the real one this time**: "на главной у нас..." from the user
+always meant *this* repo's own homepage (`docs.enodia.sh`'s `index.mdx`,
+or `enodia.sh`'s `index.astro`), not enodia's parent-repo README — I
+guessed wrong twice (checking the parent repo's README/GitHub release
+marking instead) before actually grepping this repo's own content for
+the literal string the user quoted. When a user names exact text
+("v1.0.0 is out"), grep this repo for that exact string *first*, before
+reasoning about which repo or file it's likely to be in. **Concrete
+process fix**: `index.mdx` (en/ru) needs to go on the same
+every-release-sync checklist as `products.md` and `changelog.md` from
+now on — it's easy to forget precisely because it's the one content
+page with no per-product or per-release structure prompting a re-read.
+
 ### `apps/landing` — done, 2026-09-07
 
 - **Hand-scaffolded, not `create-astro`** — a plain Astro app is small
