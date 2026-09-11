@@ -417,6 +417,20 @@ this blindly if it's been a while. As of writing:
     reviewed by the portmgr team — same review gate as `homebrew-core`,
     no lighter path.
 
+## Noted, not started
+
+- **Machine-translation-assisted localization, 2026-09-11** — the user
+  stood up a self-hosted LibreTranslate instance at
+  `azimovskii-dev.saber3d.net:5000`, floating the idea of using it for
+  `apps/docs` translation work (presumably en↔ru, possibly more
+  locales later). Explicitly just a note for now ("пока просто
+  запиши") — no decision on scope, workflow (pre-translate then
+  human-edit? CI-time? on-demand?), or whether it'd touch `landing`/
+  `get` too. Don't start building against this URL until the user
+  actually asks for it; when they do, verify the instance is live and
+  check its API shape before assuming anything about how LibreTranslate
+  versions typically work.
+
 ## Next steps
 
 ### `apps/docs` — done so far (2026-09-07)
