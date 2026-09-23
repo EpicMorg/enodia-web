@@ -92,7 +92,7 @@ shell out to.
 
 See **Product setup** in the sidebar (or the
 [Supported products](/en/products/) table) for the exact endpoint, auth
-requirements, and recorded fields for each of the 29 built-in probes —
+requirements, and recorded fields for each of the 90 built-in probes —
 `path`, `credentials`, and `options` above are the general shape; each
 product's own page says what it actually needs.
 

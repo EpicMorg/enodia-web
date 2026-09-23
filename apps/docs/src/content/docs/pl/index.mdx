@@ -1,0 +1,88 @@
+---
+title: enodia
+description: Wiedz, co masz uruchomione i ile czasu mu zostało.
+---
+
+**enodia** pyta wdrożone usługi, w jakiej wersji działają, porównuje
+te wersje z kalendarzami cyklu życia publikowanymi przez producentów
+i pokazuje, co już nie jest wspierane, czemu kończy się wsparcie
+i gdzie wersje w obrębie floty się rozjechały. Usługi opisuje się raz —
+resztą zajmuje się enodia.
+
+:::tip[Aktywnie wydawane]
+Pakiety, surowe archiwa i obraz kontenera dla Linuksa, macOS i Windows.
+Instrukcja instalacji znajduje się w sekcji [Pierwsze kroki](/pl/getting-started/),
+a nowości — w [Historii zmian](/pl/changelog/).
+:::
+
+## Dlaczego enodia
+
+Większość narzędzi pokrywa tylko połowę problemu: albo śledzą wydania
+upstream, albo wiedzą, co zostało wdrożone — rzadko jedno i drugie,
+a żadne nie zestawia tego z datami cyklu życia producenta.
+
+| Narzędzie | Śledzi wydania upstream | Wie, co zostało wdrożone | Daty cyklu życia |
+|---|---|---|---|
+| `eol` CLI | — | — | tak |
+| nvchecker | tak | — | — |
+| Renovate / Dependabot | tak (zależności) | — | — |
+| what's-up-docker | tak (tylko kontenery) | tylko kontenery | — |
+| Uptime Kuma | — | tylko działa/nie działa | — |
+| **enodia** | tak | **tak** | **tak** |
+
+## Minuta z enodia
+
+```yaml title="enodia.yaml"
+schemaVersion: 1
+targets:
+  - id: jira-main
+    product: jira
+    address: https://jira.example.com
+
+  - id: gitlab-main
+    product: gitlab
+    address: https://gitlab.example.com
+    credentials: gitlab-token
+
+credentials:
+  gitlab-token:
+    kind: token-header
+    header: PRIVATE-TOKEN
+    value: "${GITLAB_TOKEN}"
+```
+
+```console
+$ enodia check
+ID           PRODUCT  PATCH   LIFECYCLE  BRANCH     SEVERITY  REASON  CVES
+jira-main    jira     behind  active     newer_lts  warn      -       -
+gitlab-main  gitlab   behind  eol        newer      fail      -       -
+```
+
+To cała pętla: cel opisuje się raz, uruchamia `enodia check` i dla
+każdego celu otrzymuje trzy niezależne fakty — stan poprawek, stan
+cyklu życia oraz informację, czy istnieje nowsza gałąź — a do tego
+ważność wyliczoną na podstawie polityki, którą kontroluje użytkownik.
+Wystarczy wskazać w bloku `cve:` eksport BDU FSTEC i/lub NVD, a kolumna
+`CVES` wypełni się znanymi podatnościami każdej dokładnie zainstalowanej
+wersji — zobacz [Korelacja CVE](/pl/cve/).
+
+## Co dalej
+
+- **[Pierwsze kroki](/pl/getting-started/)** — co faktycznie działa już
+  dziś i pierwszy plik `enodia.yaml`.
+- **[Koncepcje](/pl/concepts/)** — dwufazowa architektura, trzy osie
+  werdyktu i powód, dla którego czas jest parametrem, a nie zegarem
+  systemowym.
+- **[Konfiguracja](/pl/configuration/)** — każde pole, które przyjmują
+  `enodia.yaml` i `credentials.yaml`.
+- **[Dokumentacja CLI](/pl/cli-reference/)** — każde polecenie, prosto
+  z `--help`.
+- **[Korelacja CVE](/pl/cve/)** — znane podatności dla każdej
+  zainstalowanej wersji, z eksportów BDU FSTEC i NVD.
+- **[Obsługiwane produkty](/pl/products/)** — wszystkie 90 sond.
+
+## Nazwa
+
+Enodia, „ta przy drodze”, to epitet Hekate: niosącej pochodnię
+strażniczki rozstajów. Pasuje do czegoś, co oświetla to, co niszczeje,
+i stoi tam, gdzie wybiera się kierunek aktualizacji.

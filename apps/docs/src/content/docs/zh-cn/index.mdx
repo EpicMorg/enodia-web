@@ -1,0 +1,68 @@
+---
+title: enodia
+description: 了解您正在运行什么，以及它还剩多少支持时间。
+---
+
+**enodia** 会询问您已部署的服务正在运行哪个版本，将这些版本与厂商的生命周期日历进行比对，并告诉您哪些已经停止支持、哪些即将停止支持，以及您的服务器群在哪些地方出现了版本分化。您只需描述一次您的服务——其余的交给 enodia。
+
+:::tip[持续发布中]
+提供适用于 Linux/macOS/Windows 的软件包、原始归档文件和容器镜像。请参阅[快速开始](/zh-cn/getting-started/)了解如何安装，或查看[更新日志](/zh-cn/changelog/)了解最新变化。
+:::
+
+## 为什么选择 enodia
+
+大多数工具只解决了问题的一半：它们要么跟踪上游发布，要么知道您部署了什么——很少两者兼顾，而且没有一个会把这些信息与厂商的生命周期日期关联起来。
+
+| 工具 | 跟踪上游发布 | 知道您部署了什么 | 生命周期日期 |
+|---|---|---|---|
+| `eol` CLI | — | — | 是 |
+| nvchecker | 是 | — | — |
+| Renovate / Dependabot | 是（依赖项） | — | — |
+| what's-up-docker | 是（仅容器） | 仅容器 | — |
+| Uptime Kuma | — | 仅在线/离线状态 | — |
+| **enodia** | 是 | **是** | **是** |
+
+## 一分钟了解 enodia
+
+```yaml title="enodia.yaml"
+schemaVersion: 1
+targets:
+  - id: jira-main
+    product: jira
+    address: https://jira.example.com
+
+  - id: gitlab-main
+    product: gitlab
+    address: https://gitlab.example.com
+    credentials: gitlab-token
+
+credentials:
+  gitlab-token:
+    kind: token-header
+    header: PRIVATE-TOKEN
+    value: "${GITLAB_TOKEN}"
+```
+
+```console
+$ enodia check
+ID           PRODUCT  PATCH   LIFECYCLE  BRANCH     SEVERITY  REASON  CVES
+jira-main    jira     behind  active     newer_lts  warn      -       -
+gitlab-main  gitlab   behind  eol        newer      fail      -       -
+```
+
+这就是完整的流程：描述一次目标，运行 `enodia check`，即可为每个目标获得三项相互独立的事实——
+补丁状态、生命周期状态，以及是否存在更新的分支——外加一个根据您所控制的策略计算出的严重级别。将 `cve:` 块指向 BDU FSTEC 和/或 NVD 导出文件，`CVES` 列就会填入每个确切已安装版本的已知漏洞——
+请参阅 [CVE 关联](/zh-cn/cve/)。
+
+## 下一步
+
+- **[快速开始](/zh-cn/getting-started/)**——目前实际可用的内容，以及您的第一个 `enodia.yaml`。
+- **[核心概念](/zh-cn/concepts/)**——两阶段设计、三个判定维度，以及为什么时间是一个参数而不是系统时钟。
+- **[配置](/zh-cn/configuration/)**——`enodia.yaml` 和 `credentials.yaml` 接受的每一个字段。
+- **[CLI 参考](/zh-cn/cli-reference/)**——每一条命令，直接取自 `--help`。
+- **[CVE 关联](/zh-cn/cve/)**——基于 BDU FSTEC 和 NVD 导出文件，列出每个已安装版本的已知漏洞。
+- **[支持的产品](/zh-cn/products/)**——全部 90 个探针。
+
+## 名称由来
+
+Enodia，意为“路旁之女”，是赫卡忒（Hecate）的别称：持火炬者、十字路口的守护者。这对于一个照亮正在衰朽之物、并伫立在您选择升级方向之处的工具来说，再合适不过。

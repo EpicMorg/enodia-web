@@ -39,31 +39,37 @@ ym(112978858, 'init', {ssr:true, webvisor:true, trackHash:true, clickmap:true, e
 			locales: {
 				en: { label: 'English', lang: 'en' },
 				ru: { label: 'Русский', lang: 'ru' },
+				es: { label: 'Español', lang: 'es' },
+				'pt-br': { label: 'Português (Brasil)', lang: 'pt-BR' },
+				ro: { label: 'Română', lang: 'ro' },
+				pl: { label: 'Polski', lang: 'pl' },
+				'zh-cn': { label: '简体中文', lang: 'zh-CN' },
+				uk: { label: 'Українська', lang: 'uk' },
 			},
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/EpicMorg/enodia' }],
 			sidebar: [
 				{
 					label: 'Getting started',
-					translations: { ru: 'Начало работы' },
+					translations: { ru: 'Начало работы', es: 'Primeros pasos', 'pt-BR': 'Primeiros passos', ro: 'Primii pași', pl: 'Pierwsze kroki', 'zh-CN': '快速开始', uk: 'Початок роботи' },
 					slug: 'getting-started',
 				},
 				{
 					label: 'Concepts',
-					translations: { ru: 'Концепции' },
+					translations: { ru: 'Концепции', es: 'Conceptos', 'pt-BR': 'Conceitos', ro: 'Concepte', pl: 'Koncepcje', 'zh-CN': '核心概念', uk: 'Концепції' },
 					slug: 'concepts',
 				},
 				{
 					label: 'Configuration',
-					translations: { ru: 'Конфигурация' },
+					translations: { ru: 'Конфигурация', es: 'Configuración', 'pt-BR': 'Configuração', ro: 'Configurare', pl: 'Konfiguracja', 'zh-CN': '配置', uk: 'Конфігурація' },
 					items: [
 						{
 							label: 'Configuration',
-							translations: { ru: 'Конфигурация' },
+							translations: { ru: 'Конфигурация', es: 'Configuración', 'pt-BR': 'Configuração', ro: 'Configurare', pl: 'Konfiguracja', 'zh-CN': '配置', uk: 'Конфігурація' },
 							slug: 'configuration',
 						},
 						{
 							label: 'Product setup',
-							translations: { ru: 'Настройка продуктов' },
+							translations: { ru: 'Настройка продуктов', es: 'Configuración de productos', 'pt-BR': 'Configuração de produtos', ro: 'Configurarea produselor', pl: 'Konfiguracja produktów', 'zh-CN': '产品配置', uk: 'Налаштування продуктів' },
 							collapsed: true,
 							items: [{ autogenerate: { directory: 'configuration/products' } }],
 						},
@@ -71,37 +77,37 @@ ym(112978858, 'init', {ssr:true, webvisor:true, trackHash:true, clickmap:true, e
 				},
 				{
 					label: 'CLI reference',
-					translations: { ru: 'Справочник CLI' },
+					translations: { ru: 'Справочник CLI', es: 'Referencia de la CLI', 'pt-BR': 'Referência da CLI', ro: 'Referință CLI', pl: 'Dokumentacja CLI', 'zh-CN': 'CLI 参考', uk: 'Довідник CLI' },
 					slug: 'cli-reference',
 				},
 				{
 					label: 'Views',
-					translations: { ru: 'Представления' },
+					translations: { ru: 'Представления', es: 'Vistas', 'pt-BR': 'Visões', ro: 'Vizualizări', pl: 'Widoki', 'zh-CN': '视图', uk: 'Подання' },
 					slug: 'views',
 				},
 				{
 					label: 'Reporting',
-					translations: { ru: 'Отчёты' },
+					translations: { ru: 'Отчёты', es: 'Informes', 'pt-BR': 'Relatórios', ro: 'Rapoarte', pl: 'Raporty', 'zh-CN': '报告', uk: 'Звіти' },
 					slug: 'reporting',
 				},
 				{
 					label: 'CVE correlation',
-					translations: { ru: 'Сопоставление с CVE' },
+					translations: { ru: 'Сопоставление с CVE', es: 'Correlación de CVE', 'pt-BR': 'Correlação de CVEs', ro: 'Corelare CVE', pl: 'Korelacja CVE', 'zh-CN': 'CVE 关联', uk: 'Зіставлення з CVE' },
 					slug: 'cve',
 				},
 				{
 					label: 'Supported products',
-					translations: { ru: 'Поддерживаемые продукты' },
+					translations: { ru: 'Поддерживаемые продукты', es: 'Productos compatibles', 'pt-BR': 'Produtos suportados', ro: 'Produse acceptate', pl: 'Obsługiwane produkty', 'zh-CN': '支持的产品', uk: 'Підтримувані продукти' },
 					slug: 'products',
 				},
 				{
 					label: 'Security',
-					translations: { ru: 'Безопасность' },
+					translations: { ru: 'Безопасность', es: 'Seguridad', 'pt-BR': 'Segurança', ro: 'Securitate', pl: 'Bezpieczeństwo', 'zh-CN': '安全', uk: 'Безпека' },
 					slug: 'security',
 				},
 				{
 					label: 'Changelog',
-					translations: { ru: 'Чейнджлог' },
+					translations: { ru: 'Чейнджлог', es: 'Registro de cambios', 'pt-BR': 'Registro de alterações', ro: 'Jurnal de modificări', pl: 'Historia zmian', 'zh-CN': '更新日志', uk: 'Журнал змін' },
 					slug: 'changelog',
 				},
 			],
