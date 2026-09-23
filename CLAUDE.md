@@ -462,7 +462,11 @@ this blindly if it's been a while. As of writing:
   `InstallTabs.astro` takes a `lang` prop now) and to
   `getting-started.md` (en/ru). winget is still pending moderation — add
   it the same way (third block in that same panel) once the user says
-  it's published; don't add it before.
+  it's published; don't add it before. **Update, 2026-09-24**:
+  `get.enodia.sh` got the same Windows panel (`irm` / localized "or" /
+  `choco install enodia`, `.alt`/`.or` styles in `Get.astro`,
+  [PR #23](https://github.com/EpicMorg/enodia-web/pull/23)) — winget
+  goes into **both** panels, landing and get.
 - **Homebrew tap / MacPorts port**: investigated, both paused/parked, not
   started:
   - Homebrew: a personal tap (`homebrew-tap` repo, no review needed,
