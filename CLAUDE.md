@@ -309,8 +309,10 @@ Node/npm/npx at all before) — confirmed against Astro 7.x's own
     `sitemap-index.xml` + `sitemap-0.xml`, never a bare `sitemap.xml`, so
     both `apps/landing` and `apps/docs` carry a `public/_redirects` line
     `/sitemap.xml /sitemap-index.xml 301` (verified live in prod on both).
-    `apps/get` still has no sitemap — two static pages plus two Functions,
-    add the same way if the user asks.
+    `apps/get` got the same treatment the same day, at the user's request
+    (`/` and `/ru/` only — `/unix`/`/windows` are Pages Functions, not
+    Astro pages, so they're not in it; `/sitemap.xml` 301 verified live
+    in prod).
 12. **robots.txt: a plain static `public/robots.txt` file per app**, not
     an integration. Neither community option (`astro-robots-txt`, stale
     since 2023; `astro-robots`, stale since late 2024) looked maintained
@@ -926,6 +928,56 @@ process fix**: `index.mdx` (en/ru) needs to go on the same
 every-release-sync checklist as `products.md` and `changelog.md` from
 now on — it's easy to forget precisely because it's the one content
 page with no per-product or per-release structure prompting a re-read.
+
+**Synced with enodia 2.0.0+0, 2026-09-23** ([PR #19](https://github.com/EpicMorg/enodia-web/pull/19),
+merge `5a7cccb`) — the biggest release so far: **CVE correlation**
+(D30–D35) against operator-supplied БДУ ФСТЭК and NVD files, plus a
+`fortios` probe (D29). New `cve.md` (en/ru) in the sidebar after
+Reporting; a `## CVE correlation` / `## Сопоставление с CVE` section
+inserted before the lifecycle-resolver heading on **every** product page
+(generated from `internal/cve/productmap.go`'s `productSoftNames` (BDU)
+and `productCPENames` (NVD) keys — `ssh` maps via `openssh`/`dropbear`);
+`products.md` tables gained a CVE column; `index.mdx`, `views.md`,
+`getting-started.md`, `concepts.md`, `reporting.md`,
+`configuration.md`, `changelog.md` all touched. Facts worth remembering:
+
+- **Count mismatch, deliberate**: upstream's CHANGELOG says "53 products
+  matched" — that's product *names* in the map (OpenSSH and Dropbear
+  separately); in probe terms it's **52 of 90**, which is what these docs
+  say (with the reason spelled out in the changelog entry). 38 unmatched:
+  25 distros, 4 BSD/Solaris, esxi/vcenter, synology-dsm, truenas, 5 with
+  no data (kitsu, zou, postgres_exporter, p4p, perforce-swarm), generic.
+- **bdu.fstec.ru's TLS needs the Russian Trusted chain** — the server
+  doesn't send its Sub CA; root from gu-st.ru plus the AIA-named
+  `subca_ssl_rsa2024.crt` from nuc-cdp.digital.gov.ru, concatenated with
+  newlines, works with `curl --cacert` (verified live). Documented in
+  `cve.md`.
+- **`CVES` is `-` both for zero findings and for no lookup** — the column
+  is always present in compact/drift, even with no `cve:` block.
+  `config validate` does not check that the configured files exist (only
+  the control-character rule); `check` does, and fails.
+- `check --from` also correlates, using whatever config `config.Locate`
+  finds where `check` runs (D34 superseded D30's explicit-`--config`-only
+  rule).
+- JSON `cves[]` uses Go-default capitalised keys (`Source`,
+  `AdvisoryID`, `CVSS{Version,Score,Severity}` …), one entry per source
+  per finding; CVSS is picked 3.1/3.0 → 4.0 → 2.0 (`cvssPreference`), not
+  "highest version". Prometheus export carries no CVE metrics.
+- The inline HTML report still has zero `<script>` and loads nothing
+  remote, but it's no longer true that it has no `http(s)://` at all —
+  CVE links and the footer are plain hrefs; `reporting.md`'s old
+  "no http(s):// anywhere" claim was corrected accordingly.
+- CDN-mode theme picker (localStorage) had existed since 1.0.0 and was
+  never documented — added alongside 2.0.0's remembered-dismissal note.
+- Docker tags now `latest`/`2`/`2.0.0` on all three registries
+  (docker.io additionally has `2.0`, `2.1`).
+- A RU informal slip predating this round was caught in `reporting.md`
+  ("направь … пересобирай") and fixed — the sweep over *added* lines
+  found it only because the whole paragraph was re-read.
+
+Landing's pitch (en/ru) gained one clause about CVE correlation; the
+upstream README's own pitch paragraph is unchanged, so this is the one
+place landing deliberately goes beyond paraphrasing it.
 
 ### `apps/landing` — done, 2026-09-07
 
