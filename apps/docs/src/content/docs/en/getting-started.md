@@ -19,6 +19,14 @@ irm https://get.enodia.sh/windows | iex      # Windows
 window — the installer patches the current session's `PATH` directly,
 not just the persisted registry value a fresh terminal would pick up.
 
+On Windows, [Chocolatey](https://community.chocolatey.org/packages/enodia)
+works too, if you'd rather your package manager track updates (a winget
+package is on its way, not published yet):
+
+```powershell
+choco install enodia
+```
+
 :::tip[Also works in Termux (Android)]
 The same Unix one-liner works unmodified — confirmed on a real device —
 but it installs a different binary under the hood than it would on real
