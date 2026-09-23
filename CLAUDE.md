@@ -400,6 +400,14 @@ this blindly if it's been a while. As of writing:
   Once choco/winget packages exist, document install precedence (package
   manager first, script as fallback) in the parent repo's README and
   eventually here — not before they exist.
+  **Update, 2026-09-23**: Chocolatey is live
+  (`community.chocolatey.org/packages/enodia`, approved, 1.2.1 — checked
+  via the OData feed) — added as a second block under `install.ps1` on
+  the landing page's Windows tab (separated by a localized "or"/"или";
+  `InstallTabs.astro` takes a `lang` prop now) and to
+  `getting-started.md` (en/ru). winget is still pending moderation — add
+  it the same way (third block in that same panel) once the user says
+  it's published; don't add it before.
 - **Homebrew tap / MacPorts port**: investigated, both paused/parked, not
   started:
   - Homebrew: a personal tap (`homebrew-tap` repo, no review needed,
