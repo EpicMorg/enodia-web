@@ -1,4 +1,6 @@
 ---
+import YandexMetrika from '../components/YandexMetrika.astro';
+
 interface Props {
 	lang: 'en' | 'ru';
 	title: string;
@@ -25,6 +27,7 @@ const { lang, title, description } = Astro.props;
 		<meta property="og:description" content={description} />
 		<meta property="og:image" content="https://get.enodia.sh/og-image.png" />
 		<meta name="twitter:card" content="summary_large_image" />
+		<YandexMetrika />
 	</head>
 	<body>
 		<slot />
