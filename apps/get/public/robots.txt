@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://get.enodia.sh/sitemap-index.xml
