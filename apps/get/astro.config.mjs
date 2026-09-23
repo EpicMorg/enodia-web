@@ -8,7 +8,17 @@ export default defineConfig({
 	output: 'static',
 	i18n: {
 		defaultLocale: 'en',
-		locales: ['en', 'ru'],
+		// Keep in sync with src/i18n/locales.ts (path = URL prefix, codes =
+		// BCP 47 tag).
+		locales: [
+			'en',
+			'ru',
+			'es',
+			{ path: 'pt-br', codes: ['pt-BR'] },
+			'ro',
+			'pl',
+			{ path: 'zh-cn', codes: ['zh-CN'] },
+		],
 		routing: {
 			// root ("/") stays English, unprefixed - matches /unix and /windows
 			// (Pages Functions, outside Astro's i18n routing entirely) also
@@ -24,7 +34,15 @@ export default defineConfig({
 		sitemap({
 			i18n: {
 				defaultLocale: 'en',
-				locales: { en: 'en', ru: 'ru' },
+				locales: {
+					en: 'en',
+					ru: 'ru',
+					es: 'es',
+					'pt-br': 'pt-BR',
+					ro: 'ro',
+					pl: 'pl',
+					'zh-cn': 'zh-CN',
+				},
 			},
 		}),
 	],

@@ -1,0 +1,46 @@
+---
+// The one get.enodia.sh page, rendered once per locale by the thin files
+// under src/pages/ — copy lives in src/i18n/strings.ts, not here.
+import Get from '../layouts/Get.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import { localeByPath, localeHref, type LocalePath } from '../i18n/locales';
+import { strings } from '../i18n/strings';
+
+interface Props {
+	locale: LocalePath;
+}
+
+const { locale } = Astro.props;
+const s = strings[locale];
+const { docs } = localeByPath(locale);
+const proxy = s.proxy
+	.replace('{sh}', '<a href="https://github.com/EpicMorg/enodia/blob/master/install.sh">install.sh</a>')
+	.replace('{ps1}', '<a href="https://github.com/EpicMorg/enodia/blob/master/install.ps1">install.ps1</a>');
+---
+
+<Get locale={locale} title="get.enodia.sh" description={s.tagline}>
+	<main>
+		<img class="logo" src="/logo.png" width="72" height="72" alt="" />
+		<h1>get.enodia.sh</h1>
+		<p class="tagline">{s.tagline}</p>
+
+		<div class="cmd">
+			<p>macOS / Linux</p>
+			<pre><code>curl -fsSL https://get.enodia.sh/unix | sh</code></pre>
+		</div>
+
+		<div class="cmd">
+			<p>Windows (PowerShell)</p>
+			<pre><code>irm https://get.enodia.sh/windows | iex</code></pre>
+		</div>
+
+		<nav class="links">
+			<a href={`https://enodia.sh${localeHref(locale)}`}>enodia.sh</a>
+			<a href={`https://docs.enodia.sh/${docs}/`}>{s.docs}</a>
+			<a href="https://github.com/EpicMorg/enodia">GitHub</a>
+		</nav>
+
+		<LanguageSwitcher current={locale} />
+	</main>
+	<footer set:html={proxy} />
+</Get>

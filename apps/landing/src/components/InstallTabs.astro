@@ -4,10 +4,10 @@
 // (Starlight's own <Tabs> component isn't available here on purpose -
 // landing/get are plain Astro, see CLAUDE.md Decided item 2).
 interface Props {
-	lang?: 'en' | 'ru';
+	// the localized "or" between the two Windows install paths
+	or?: string;
 }
-const { lang = 'en' } = Astro.props;
-const or = lang === 'ru' ? 'или' : 'or';
+const { or = 'or' } = Astro.props;
 ---
 
 <div class="install-tabs">

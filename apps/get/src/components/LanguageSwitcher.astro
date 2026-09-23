@@ -1,0 +1,38 @@
+---
+// Every locale by its own name; the current one is plain text, not a link.
+// Keep identical to apps/landing's own copy.
+import { locales, localeHref, type LocalePath } from '../i18n/locales';
+
+interface Props {
+	current: LocalePath;
+}
+
+const { current } = Astro.props;
+---
+
+<nav class="langs">
+	{
+		locales.map((l) =>
+			l.path === current ? (
+				<span lang={l.lang} aria-current="page">{l.label}</span>
+			) : (
+				<a href={localeHref(l.path)} lang={l.lang} hreflang={l.lang}>{l.label}</a>
+			),
+		)
+	}
+</nav>
+
+<style>
+	.langs {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem 1rem;
+		margin-top: 1rem;
+		font-size: 0.85rem;
+	}
+
+	.langs span {
+		color: var(--fg);
+		font-weight: 600;
+	}
+</style>
