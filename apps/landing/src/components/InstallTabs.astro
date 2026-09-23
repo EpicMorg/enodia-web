@@ -3,6 +3,11 @@
 // works with JavaScript disabled, and keeps this app dependency-free
 // (Starlight's own <Tabs> component isn't available here on purpose -
 // landing/get are plain Astro, see CLAUDE.md Decided item 2).
+interface Props {
+	lang?: 'en' | 'ru';
+}
+const { lang = 'en' } = Astro.props;
+const or = lang === 'ru' ? 'или' : 'or';
 ---
 
 <div class="install-tabs">
@@ -12,7 +17,11 @@
 	<label for="tab-windows">Windows</label>
 	<div class="tab-panels">
 		<pre class="panel panel-unix"><code>curl -fsSL https://get.enodia.sh/unix | sh</code></pre>
-		<pre class="panel panel-windows"><code>irm https://get.enodia.sh/windows | iex</code></pre>
+		<div class="panel panel-windows">
+			<pre><code>irm https://get.enodia.sh/windows | iex</code></pre>
+			<div class="or"><span>{or}</span></div>
+			<pre><code>choco install enodia</code></pre>
+		</div>
 	</div>
 </div>
 
@@ -82,6 +91,30 @@
 		margin: 0;
 		border: none;
 		border-radius: 0;
+	}
+
+	.panel-windows pre {
+		margin: 0;
+		border: none;
+		border-radius: 0;
+	}
+
+	/* A thin rule with "or" centred on it - separates the two Windows
+	   install paths inside one panel without a second set of tabs. */
+	.or {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0 1rem;
+		color: var(--muted);
+		font-size: 0.8rem;
+	}
+
+	.or::before,
+	.or::after {
+		content: '';
+		flex: 1;
+		border-top: 1px solid var(--border);
 	}
 
 	#tab-unix:checked ~ .tab-panels .panel-unix,
