@@ -234,6 +234,29 @@ Node/npm/npx at all before) — confirmed against Astro 7.x's own
    formal/impersonal (usted, dumneavoastră, 您; Polish phrased
    impersonally; pt-BR's neutral você). BDU is written `BDU FSTEC`
    (Latin) outside en/ru.
+
+   **Update, 2026-09-24: `uk` (Українська) added to landing/get, and
+   `docs` now ships all 8 locales** (`en`, `ru`, `es`, `pt-br`, `ro`,
+   `pl`, `zh-cn`, `uk`) — 102 pages each, 817 built pages, Pagefind
+   indexes every locale. Landing/get "Documentation" links now go to the
+   matching docs locale. Translated from English by parallel subagents
+   (two per language: 11 core pages / 91 product pages) against a shared
+   brief with fixed terminology and recurring-heading tables (kept in the
+   session scratchpad, not the repo — the translated trees themselves
+   are now the reference for terminology). **Every future release sync
+   now has to touch 8 trees, not 2**: change `en/` first, carry the same
+   change into each locale, then run `tools/i18n-structcheck.py`, build,
+   `tools/i18n-fixanchors.py`, rebuild, and the link check. Gotchas met
+   along the way: CJK prose must not have soft line breaks between
+   characters (renders as a space — `tools/i18n-cjkjoin.py`);
+   cross-page link text like "Configuration → X" drifted between the two
+   agents per language and had to be aligned to the target heading by
+   hand (3 cases); two stale counts were found in the English source
+   itself (`configuration.md` "29 probes" → 90, `generic.md` "28" → 89),
+   fixed in en/ru and every translation. `apps/docs/LICENSE` now holds
+   the official CC-BY-4.0 legal text (Decided item 7 had no file until
+   now); the Starlight scaffold's `apps/docs/README.md` was removed in
+   favor of the rewritten root `README.md`.
 7. **Docs content license: CC-BY-4.0** — scoped to the `docs` app's
    prose specifically, separate from enodia's own AGPL-3.0-or-later
    (code) and distinct from `landing`/`get`'s copy (marketing/infra text,
