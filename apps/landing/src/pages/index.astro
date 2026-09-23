@@ -1,36 +1,5 @@
 ---
-import Landing from '../layouts/Landing.astro';
-import InstallTabs from '../components/InstallTabs.astro';
+import LandingPage from '../components/LandingPage.astro';
 ---
 
-<Landing
-	lang="en"
-	title="enodia"
-	description="Know what you are running, and how long it has left. Service inventory and lifecycle/EOL monitoring for your infrastructure."
->
-	<main>
-		<img class="logo" src="/logo.png" width="72" height="72" alt="" />
-		<h1>enodia</h1>
-		<p class="tagline">Know what you are running, and how long it has left.</p>
-
-		<p class="pitch">
-			enodia asks your deployed services what version they're running, checks
-			those versions against vendor lifecycle calendars, and tells you what's
-			already dead, what's dying, and where your fleet has drifted apart —
-			and, given a БДУ ФСТЭК or NVD export, which known CVEs affect each exact
-			version. You describe your services once — enodia handles the rest.
-		</p>
-
-		<InstallTabs />
-
-		<nav class="links">
-			<a href="https://docs.enodia.sh/en/">Documentation</a>
-			<a href="https://get.enodia.sh/">Install</a>
-			<a href="https://github.com/EpicMorg/enodia">GitHub</a>
-			<a href="/ru/">Русский</a>
-		</nav>
-	</main>
-	<footer>
-		enodia is <a href="https://github.com/EpicMorg/enodia/blob/master/LICENSE">AGPL-3.0-or-later</a>.
-	</footer>
-</Landing>
+<LandingPage locale="" />

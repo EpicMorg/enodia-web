@@ -214,6 +214,26 @@ Node/npm/npx at all before) — confirmed against Astro 7.x's own
 6. **Languages: `en` + `ru`**, across all three apps for consistency
    (item 2), even where `landing`/`get` only need a couple of strings
    translated.
+
+   **Update, 2026-09-23: `landing` and `get` now ship 7 locales** — `en`
+   (unprefixed root), `ru`, `es`, `pt-br` (`pt-BR`), `ro`, `pl`, `zh-cn`
+   (`zh-CN`), switcher labels exactly as the user gave them (English,
+   Русский, Español, Português (Brasil), Română, Polski, 简体中文).
+   `docs` stays `en`+`ru` for now, by the user's choice; the extra
+   locales' "Documentation" link says "(in English)" in their own
+   language and points at `/en/`. Structure, identical in both apps:
+   `src/i18n/locales.ts` (path/lang/label/docs table — keep the two
+   copies and `astro.config.mjs`'s `i18n.locales` + sitemap `i18n` map in
+   sync), `src/i18n/strings.ts` (all copy), one page component
+   (`LandingPage.astro`/`GetPage.astro`) rendered by 3-line files under
+   `src/pages/<locale>/index.astro`, a shared `LanguageSwitcher.astro`,
+   hreflang alternates for every locale plus `x-default`. **Translated by
+   me, not LibreTranslate** — the user dropped LibreTranslate on
+   rehlds.dev in favor of translating through Claude, so the "Noted, not
+   started" LibreTranslate item below is superseded. Register:
+   formal/impersonal (usted, dumneavoastră, 您; Polish phrased
+   impersonally; pt-BR's neutral você). BDU is written `BDU FSTEC`
+   (Latin) outside en/ru.
 7. **Docs content license: CC-BY-4.0** — scoped to the `docs` app's
    prose specifically, separate from enodia's own AGPL-3.0-or-later
    (code) and distinct from `landing`/`get`'s copy (marketing/infra text,
@@ -455,7 +475,8 @@ hand; expect the same for future analytics changes.
 
 ## Noted, not started
 
-- **Machine-translation-assisted localization, 2026-09-11** — the user
+- **Superseded 2026-09-23** (Decided item 6's update — the user has
+  Claude translate directly). **Machine-translation-assisted localization, 2026-09-11** — the user
   stood up a self-hosted LibreTranslate instance at
   `azimovskii-dev.saber3d.net:5000`, floating the idea of using it for
   `apps/docs` translation work (presumably en↔ru, possibly more

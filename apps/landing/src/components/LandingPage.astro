@@ -1,0 +1,42 @@
+---
+// The one landing page, rendered once per locale by the thin files under
+// src/pages/ — copy lives in src/i18n/strings.ts, not here.
+import Landing from '../layouts/Landing.astro';
+import InstallTabs from './InstallTabs.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import { localeByPath, localeHref, type LocalePath } from '../i18n/locales';
+import { strings } from '../i18n/strings';
+
+interface Props {
+	locale: LocalePath;
+}
+
+const { locale } = Astro.props;
+const s = strings[locale];
+const { docs } = localeByPath(locale);
+const license = s.license.replace(
+	'{license}',
+	'<a href="https://github.com/EpicMorg/enodia/blob/master/LICENSE">AGPL-3.0-or-later</a>',
+);
+---
+
+<Landing locale={locale} title="enodia" description={s.description}>
+	<main>
+		<img class="logo" src="/logo.png" width="72" height="72" alt="" />
+		<h1>enodia</h1>
+		<p class="tagline">{s.tagline}</p>
+
+		<p class="pitch" set:html={s.pitch} />
+
+		<InstallTabs or={s.or} />
+
+		<nav class="links">
+			<a href={`https://docs.enodia.sh/${docs}/`}>{s.docs}</a>
+			<a href={`https://get.enodia.sh${localeHref(locale)}`}>{s.install}</a>
+			<a href="https://github.com/EpicMorg/enodia">GitHub</a>
+		</nav>
+
+		<LanguageSwitcher current={locale} />
+	</main>
+	<footer set:html={license} />
+</Landing>
