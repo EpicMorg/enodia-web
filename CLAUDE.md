@@ -301,6 +301,16 @@ Node/npm/npx at all before) — confirmed against Astro 7.x's own
     `apps/landing`/`apps/get` aren't Starlight sites, so if they ever get
     a sitemap it's the plain integration, added by hand, no such
     auto-wiring available.
+
+    **Update, 2026-09-23**: `apps/landing` now has it — `@astrojs/sitemap`
+    `^3.7.4` with the `i18n` mapping given by hand (`/` and `/ru/`, with
+    hreflang alternates; 404 excluded automatically), `robots.txt`
+    points at `sitemap-index.xml`. The integration only ever writes
+    `sitemap-index.xml` + `sitemap-0.xml`, never a bare `sitemap.xml`, so
+    both `apps/landing` and `apps/docs` carry a `public/_redirects` line
+    `/sitemap.xml /sitemap-index.xml 301` (verified live in prod on both).
+    `apps/get` still has no sitemap — two static pages plus two Functions,
+    add the same way if the user asks.
 12. **robots.txt: a plain static `public/robots.txt` file per app**, not
     an integration. Neither community option (`astro-robots-txt`, stale
     since 2023; `astro-robots`, stale since late 2024) looked maintained
