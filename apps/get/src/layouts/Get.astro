@@ -99,6 +99,36 @@ const site = 'https://get.enodia.sh';
 		margin: 0 0 1.2rem;
 	}
 
+	/* Two alternative commands in one panel, split by a thin rule with a
+	   localized "or" on it - same look as the landing page's Windows tab. */
+	.alt {
+		background: var(--code-bg);
+		border: 1px solid var(--border);
+		border-radius: 6px;
+		overflow: hidden;
+	}
+
+	.alt pre {
+		border: none;
+		border-radius: 0;
+	}
+
+	.or {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0 1rem;
+		color: var(--muted);
+		font-size: 0.8rem;
+	}
+
+	.or::before,
+	.or::after {
+		content: '';
+		flex: 1;
+		border-top: 1px solid var(--border);
+	}
+
 	.cmd p {
 		margin: 0 0 0.3rem;
 		font-size: 0.85rem;
