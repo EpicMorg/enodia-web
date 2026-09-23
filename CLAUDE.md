@@ -969,8 +969,15 @@ and `productCPENames` (NVD) keys — `ssh` maps via `openssh`/`dropbear`);
   "no http(s):// anywhere" claim was corrected accordingly.
 - CDN-mode theme picker (localStorage) had existed since 1.0.0 and was
   never documented — added alongside 2.0.0's remembered-dismissal note.
-- Docker tags now `latest`/`2`/`2.0.0` on all three registries
-  (docker.io additionally has `2.0`, `2.1`).
+- Docker tags now `latest`/`2`/`2.0.0` on all three registries.
+  docker.io also carries stray `2.0` (= the 1.2.0 image) and `2.1`
+  (= 1.2.1) — **a typo bug in EpicMorg/docker** (`develop`,
+  `linux/ecosystem/apps/enodia/{1.2.0,1.2.1}/docker-compose.yml`'s
+  `x-mirrors` list `docker.io/epicmorg/enodia:2.0`/`:2.1` instead of
+  `:1.2.0`/`:1.2.1`; the correct docker.io tags exist anyway via the
+  `image:` line). Reported to the user 2026-09-23; that repo is theirs to
+  fix, and the stray tags need deleting on Docker Hub. Docs here never
+  mention `2.0`/`2.1`.
 - A RU informal slip predating this round was caught in `reporting.md`
   ("направь … пересобирай") and fixed — the sweep over *added* lines
   found it only because the whole paragraph was re-read.
