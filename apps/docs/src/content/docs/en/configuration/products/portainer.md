@@ -23,6 +23,10 @@ mandatory first-run admin account has even been created.
 - `version`
 - `extra.instanceId`
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `github:portainer/portainer` — endoflife.date has no Portainer calendar

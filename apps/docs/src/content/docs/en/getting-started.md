@@ -87,8 +87,8 @@ docker run --rm \
 on its own schedule — not by this project's own release pipeline
 anymore, though the published address and tags stay the same. Also
 published to `docker.io/epicmorg/enodia` and Quay, same tags — `latest`,
-a bare major (`1`), and the exact version with no build suffix (e.g.
-`1.1.0` — confirmed live; an earlier pipeline's own tags looked like
+a bare major (`2`), and the exact version with no build suffix (e.g.
+`2.0.0` — confirmed live on all three registries; an earlier pipeline's own tags looked like
 `1.0.0-1` instead, still pullable, just not how new releases tag from
 here on). Two real changes worth knowing about: the image is
 **`linux/amd64` only** now (arm64 was dropped when publishing moved),
@@ -140,7 +140,7 @@ enodia check
 ```
 
 ```console
-ID           PRODUCT  PATCH  LIFECYCLE  BRANCH  SEVERITY  REASON
+ID           PRODUCT  PATCH  LIFECYCLE  BRANCH  SEVERITY  REASON  CVES
 gitlab-main  gitlab   ...
 ```
 

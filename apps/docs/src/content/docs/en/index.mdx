@@ -52,15 +52,18 @@ credentials:
 
 ```console
 $ enodia check
-ID           PRODUCT  PATCH   LIFECYCLE  BRANCH     SEVERITY  REASON
-jira-main    jira     behind  active     newer_lts  warn      -
-gitlab-main  gitlab   behind  eol        newer      fail      -
+ID           PRODUCT  PATCH   LIFECYCLE  BRANCH     SEVERITY  REASON  CVES
+jira-main    jira     behind  active     newer_lts  warn      -       -
+gitlab-main  gitlab   behind  eol        newer      fail      -       -
 ```
 
 That's the whole loop: describe a target once, run `enodia check`, get
 back three independent facts per target — patch status, lifecycle
 status, and whether a newer branch exists — plus a severity computed
-from policy you control.
+from policy you control. Point a `cve:` block at a БДУ ФСТЭК and/or
+NVD export and the `CVES` column fills in with the known
+vulnerabilities of each exact installed version — see
+[CVE correlation](/en/cve/).
 
 ## Where to go next
 
@@ -72,7 +75,9 @@ from policy you control.
   and `credentials.yaml` accept.
 - **[CLI reference](/en/cli-reference/)** — every command, straight from
   `--help`.
-- **[Supported products](/en/products/)** — all 89 probes.
+- **[CVE correlation](/en/cve/)** — known vulnerabilities per installed
+  version, from БДУ ФСТЭК and NVD exports.
+- **[Supported products](/en/products/)** — all 90 probes.
 
 ## The name
 

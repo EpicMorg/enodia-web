@@ -35,6 +35,10 @@ sharing this same manifest convention.
 - `version`
 - `extra.buildNumber`, `extra.typeId` — `typeId` will read `confluence`
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:confluence`.

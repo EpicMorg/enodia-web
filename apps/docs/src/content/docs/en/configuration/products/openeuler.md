@@ -19,6 +19,10 @@ Verified live via `vmactions/openeuler-vm` (24.03-LTS-SP4, the action's
 default release): `ID="openEuler"` — **capital E, confirmed live, not
 lowercase** — and `VERSION_ID="24.03"`.
 
+## CVE correlation
+
+Not matched — a general-purpose distribution's CVEs are package vulnerabilities, and the release number can't say which packages have been patched since. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 None — endoflife.date has no openEuler calendar today. Inventory-only.

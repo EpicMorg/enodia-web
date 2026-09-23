@@ -38,6 +38,10 @@ guessed at.
 - `extra.buildVersion` — from `BuildVersion`, when present
 - `extra.hostKeyVerified`
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:macos`.

@@ -28,6 +28,10 @@ response shape, but is registered as a separate `product:` — pointing a
 Vaultwarden install at `product: bitwarden` would compare the wrong
 project's version against the other's release history.
 
+## CVE correlation
+
+Matched against NVD when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `github:bitwarden/server` — endoflife.date has no `bitwarden` calendar

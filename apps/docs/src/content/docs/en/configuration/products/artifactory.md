@@ -38,6 +38,10 @@ deliberately never read. On a real production instance `license` was a
 per-install fingerprint, not a fixed literal, and none of the three
 describe the software itself.
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:artifactory`.

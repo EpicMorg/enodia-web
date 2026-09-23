@@ -8,7 +8,7 @@ The escape hatch for anything without a dedicated probe — a hand-written
 the frozen `json`/`xml`/`header`/`plaintext`/`regex` vocabulary, and the
 `clean_regex` field-spelling note live in
 [Configuration → The generic probe](/en/configuration/#the-generic-probe);
-this page exists only so `generic` shows up alongside the other 86
+this page exists only so `generic` shows up alongside the other 89
 products in the sidebar.
 
 ```yaml
@@ -25,6 +25,10 @@ targets:
 
 `none`, `bearer`, `token-header`, and `basic` are all accepted — whatever
 your in-house service actually expects.
+
+## CVE correlation
+
+Not matched — a hand-written parser has no product identity to look CVEs up by. See [CVE correlation](/en/cve/#which-products-are-matched).
 
 ## Lifecycle resolver
 

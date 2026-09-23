@@ -40,6 +40,10 @@ Confluence, проба всё равно громко откажет вмест�
 - `extra.buildNumber`, `extra.typeId` — `typeId` будет равен `stash`, а
   не `bitbucket`
 
+## Сопоставление с CVE
+
+Сверяется с NVD и БДУ ФСТЭК, если настроен [блок `cve:`](/ru/cve/).
+
 ## Резолвер жизненного цикла
 
 `endoflife:bitbucket`.

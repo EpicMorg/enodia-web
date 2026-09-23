@@ -43,6 +43,10 @@ with an alias.
   `extra.jobQueueUp`, `extra.indexerUp` — component health flags,
   `"true"`/`"false"`
 
+## CVE correlation
+
+Not matched — neither database has usable data for it. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 `github:cgwire/kitsu` — latest GitHub release only; no eol/support/lts

@@ -36,6 +36,10 @@ credentials:
 
 Only `version` — this probe records no `extra` fields.
 
+## CVE correlation
+
+Not matched — neither database has usable data for it. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 `github:prometheus-community/postgres_exporter` — this is a Prometheus

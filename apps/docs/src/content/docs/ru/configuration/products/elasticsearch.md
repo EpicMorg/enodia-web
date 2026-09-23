@@ -38,6 +38,10 @@ credentials:
 - `version` — из `version.number`
 - `extra.clusterName`, `extra.luceneVersion`, `extra.buildHash`
 
+## Сопоставление с CVE
+
+Сверяется с NVD и БДУ ФСТЭК, если настроен [блок `cve:`](/ru/cve/).
+
 ## Резолвер жизненного цикла
 
 `endoflife:elasticsearch`.

@@ -29,6 +29,10 @@ doesn't track Bitwarden's releases. It's registered as a distinct
 version against a `bitwarden`-labeled lifecycle calendar would be
 comparing two unrelated numbering schemes.
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `github:dani-garcia/vaultwarden` — endoflife.date has no `vaultwarden`

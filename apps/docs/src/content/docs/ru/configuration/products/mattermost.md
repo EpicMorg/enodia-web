@@ -30,6 +30,10 @@ telemetry/diagnostic ID, публичный ключ для подписи). Н�
 - `version`
 - `extra.buildNumber`, `extra.buildHash`
 
+## Сопоставление с CVE
+
+Сверяется с NVD и БДУ ФСТЭК, если настроен [блок `cve:`](/ru/cve/).
+
 ## Резолвер жизненного цикла
 
 `endoflife:mattermost`.

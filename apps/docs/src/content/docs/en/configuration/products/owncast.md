@@ -22,6 +22,10 @@ source, confirmed against a live `owncast/owncast:latest` container.
 - `version` — from `versionNumber`
 - `extra.online` — `"true"`/`"false"`
 
+## CVE correlation
+
+Matched against NVD when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `github:owncast/owncast` — endoflife.date has no Owncast calendar

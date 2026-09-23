@@ -27,6 +27,10 @@ its own, the same shape of gap a form-login product would have.
 
 Only `version` — this probe records no `extra` fields.
 
+## CVE correlation
+
+Matched against NVD when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:jaeger`.

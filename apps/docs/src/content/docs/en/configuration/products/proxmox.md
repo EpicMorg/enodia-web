@@ -38,6 +38,10 @@ recommends the API token for unattended automation anyway.
 - `version`
 - `extra.repoid`, when present
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:proxmox-ve`.

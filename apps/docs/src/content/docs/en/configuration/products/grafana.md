@@ -24,6 +24,10 @@ path to offer here.
 - `version`
 - `extra.commit`, `extra.database`
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:grafana`.

@@ -19,6 +19,10 @@ Verified live against the official top-level `photon:5.0` image (Docker's
 Official Images program — not `vmware/photon`'s own repo, which stops at
 2.0): `ID=photon`, `VERSION_ID=5.0`.
 
+## CVE correlation
+
+Not matched — a general-purpose distribution's CVEs are package vulnerabilities, and the release number can't say which packages have been patched since. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 `endoflife:photon`.

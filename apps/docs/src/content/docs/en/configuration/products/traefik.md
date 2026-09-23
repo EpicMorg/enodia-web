@@ -38,6 +38,10 @@ indistinguishable from a wrong address.
 Only `version` — this probe records no `extra` fields (`Codename` and
 `startDate` describe the release, not the deployment, and aren't read).
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:traefik`.

@@ -21,6 +21,10 @@ passed through as-is; `enodia`'s version comparison already strips a
 leading `v`/`V` before comparing, the same handling GitHub's `v1.2.3`
 release tags get elsewhere in the tool.
 
+## CVE correlation
+
+Not matched — a general-purpose distribution's CVEs are package vulnerabilities, and the release number can't say which packages have been patched since. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 `endoflife:postmarketos`.

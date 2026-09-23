@@ -39,6 +39,10 @@ sharing this same manifest convention.
 - `extra.buildNumber`, `extra.typeId` — `typeId` will read `stash`, not
   `bitbucket`
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:bitbucket`.

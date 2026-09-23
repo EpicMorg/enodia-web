@@ -19,6 +19,10 @@ Verified live against `kalilinux/kali-rolling`: `ID=kali`,
 `VERSION_ID="2026.3"` — a dated rolling-release snapshot, not a discrete
 version.
 
+## CVE correlation
+
+Not matched — a general-purpose distribution's CVEs are package vulnerabilities, and the release number can't say which packages have been patched since. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 None — Kali is rolling-release, and endoflife.date has no calendar for

@@ -30,6 +30,10 @@ OPNsense, которая читает нужный файл и печатает 
 - `version` — разобрано из вывода `opnsense-version`
 - `extra.hostKeyVerified`
 
+## Сопоставление с CVE
+
+Сверяется с NVD и БДУ ФСТЭК, если настроен [блок `cve:`](/ru/cve/).
+
 ## Резолвер жизненного цикла
 
 `endoflife:opnsense`.

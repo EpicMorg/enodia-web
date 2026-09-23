@@ -41,6 +41,10 @@ rather than the two coexisting.
 
 Only `version` — this probe records no `extra` fields.
 
+## CVE correlation
+
+Not matched — too few entries, versioned differently from what the probe reports. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 `endoflife:truenas`.

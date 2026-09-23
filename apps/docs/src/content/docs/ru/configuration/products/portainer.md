@@ -24,6 +24,10 @@ targets:
 - `version`
 - `extra.instanceId`
 
+## Сопоставление с CVE
+
+Сверяется с NVD и БДУ ФСТЭК, если настроен [блок `cve:`](/ru/cve/).
+
 ## Резолвер жизненного цикла
 
 `github:portainer/portainer` — у endoflife.date нет календаря для

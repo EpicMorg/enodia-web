@@ -39,6 +39,10 @@ Apple ограничивает виртуализацию macOS только н�
 - `extra.buildVersion` — из `BuildVersion`, если присутствует
 - `extra.hostKeyVerified`
 
+## Сопоставление с CVE
+
+Сверяется с NVD и БДУ ФСТЭК, если настроен [блок `cve:`](/ru/cve/).
+
 ## Резолвер жизненного цикла
 
 `endoflife:macos`.

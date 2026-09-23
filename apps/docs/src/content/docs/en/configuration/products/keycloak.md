@@ -41,6 +41,10 @@ it fresh; enodia itself has no token-refresh logic.
 - `version` — from `systemInfo.version`
 - `extra.javaVersion`
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:keycloak`.

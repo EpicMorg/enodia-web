@@ -63,6 +63,10 @@ reverse.
   `p4d`'s own version/ID, passed through from the same reply, when
   present
 
+## CVE correlation
+
+Not matched — neither database has usable data for it. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 None — Perforce is proprietary, with no endoflife.date page under any

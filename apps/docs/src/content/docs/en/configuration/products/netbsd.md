@@ -22,6 +22,10 @@ image exists otherwise): `uname -sr` → `"NetBSD 11.0"`, with no hostname
 in it at all — unlike `uname -a`, which this probe deliberately doesn't
 use.
 
+## CVE correlation
+
+Not matched — NVD records its patch levels in a CPE field the matcher doesn't read, so matching on the release alone would flag a fully patched host with every CVE ever fixed in that release. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 `endoflife:netbsd`.

@@ -37,6 +37,10 @@ than treated as part of the version.
 - `version` — the software string
 - `extra.protocol` — the SSH protocol version, e.g. `2.0`
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured. Matched by banner: `OpenSSH_…` as OpenSSH, `dropbear_…` as Dropbear; any other SSH implementation gets no lookup rather than OpenSSH's CVEs.
+
 ## Lifecycle resolver
 
 None — `ssh` isn't one product with one lifecycle calendar; OpenSSH and

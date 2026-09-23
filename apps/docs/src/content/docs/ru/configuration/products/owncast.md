@@ -23,6 +23,10 @@ targets:
 - `version` — из `versionNumber`
 - `extra.online` — `"true"`/`"false"`
 
+## Сопоставление с CVE
+
+Сверяется с NVD, если настроен [блок `cve:`](/ru/cve/).
+
 ## Резолвер жизненного цикла
 
 `github:owncast/owncast` — у endoflife.date нет календаря для Owncast

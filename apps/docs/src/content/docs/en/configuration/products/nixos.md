@@ -21,6 +21,10 @@ the Nix package manager running on a non-NixOS base with no
 `/etc/os-release` at all — not a usable verification target, which is
 why an ISO rootfs capture was used instead.
 
+## CVE correlation
+
+Not matched — a general-purpose distribution's CVEs are package vulnerabilities, and the release number can't say which packages have been patched since. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 `endoflife:nixos`.

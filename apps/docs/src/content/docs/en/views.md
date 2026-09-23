@@ -15,10 +15,16 @@ anything needs attention.
 
 ```console
 $ enodia check
-ID           PRODUCT  PATCH   LIFECYCLE  BRANCH     SEVERITY  REASON
-jira-main    jira     behind  active     newer_lts  warn      -
-gitlab-main  gitlab   behind  eol        newer      fail      -
+ID           PRODUCT  PATCH   LIFECYCLE  BRANCH     SEVERITY  REASON  CVES
+jira-main    jira     behind  active     newer_lts  warn      -       12
+gitlab-main  gitlab   behind  eol        newer      fail      -       -
 ```
+
+The last column, `CVES`, is the number of distinct CVEs affecting that
+exact version — `-` when there are none, including when no
+[`cve:` block](/en/cve/) is configured or the product isn't matched.
+`drift` carries the same column; `lifecycle` and `fleet` don't. CVEs
+never change `SEVERITY` or the exit code.
 
 ## `lifecycle`
 
@@ -37,9 +43,9 @@ Installed version against the latest release in the same cycle:
 
 ```console
 $ enodia check --from inventory.jsonl --view drift
-ID           PRODUCT  CURRENT  LATEST   CYCLE  PATCH
-jira-main    jira     10.3.1   10.3.25  10.3   behind
-gitlab-main  gitlab   17.5.0   17.5.5   17.5   behind
+ID           PRODUCT  CURRENT  LATEST   CYCLE  PATCH   CVES
+jira-main    jira     10.3.1   10.3.25  10.3   behind  12
+gitlab-main  gitlab   17.5.0   17.5.5   17.5   behind  -
 ```
 
 ## `fleet`

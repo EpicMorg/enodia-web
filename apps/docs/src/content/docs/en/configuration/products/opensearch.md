@@ -44,6 +44,10 @@ credentials:
 - `version` — from `version.number`
 - `extra.clusterName`, `extra.luceneVersion`
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:opensearch`.

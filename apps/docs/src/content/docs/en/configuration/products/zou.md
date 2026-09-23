@@ -42,6 +42,10 @@ rather than risk comparing against the wrong component's version numbers.
   `extra.jobQueueUp`, `extra.indexerUp` — component health flags,
   `"true"`/`"false"`
 
+## CVE correlation
+
+Not matched — neither database has usable data for it. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 None — `cgwire/zou`'s GitHub repo has no usable Releases to resolve

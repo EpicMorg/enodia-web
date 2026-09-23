@@ -35,6 +35,10 @@ dedicated `mariadb` probe yet — this is a hard stop, not something to
 route around with the [generic probe](/en/configuration/products/generic/)
 today.
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:mysql`.

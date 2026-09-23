@@ -43,6 +43,10 @@ credentials:
 - `version` — из `systemInfo.version`
 - `extra.javaVersion`
 
+## Сопоставление с CVE
+
+Сверяется с NVD и БДУ ФСТЭК, если настроен [блок `cve:`](/ru/cve/).
+
 ## Резолвер жизненного цикла
 
 `endoflife:keycloak`.

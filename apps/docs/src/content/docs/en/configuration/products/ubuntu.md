@@ -42,6 +42,10 @@ Verified live against `ubuntu:24.04`: `ID=ubuntu`, `VERSION_ID="24.04"`.
   `22.04.5`; otherwise the bare `VERSION_ID`
 - `extra.hostKeyVerified`
 
+## CVE correlation
+
+Not matched — a general-purpose distribution's CVEs are package vulnerabilities, and the release number can't say which packages have been patched since. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 `endoflife:ubuntu` — unchanged.
