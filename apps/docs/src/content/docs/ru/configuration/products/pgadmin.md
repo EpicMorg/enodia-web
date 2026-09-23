@@ -35,6 +35,10 @@ targets:
 - `version` — например, `9.17`
 - `extra.suffixCode`, только если он ненулевой
 
+## Сопоставление с CVE
+
+Сверяется с NVD и БДУ ФСТЭК, если настроен [блок `cve:`](/ru/cve/).
+
 ## Резолвер жизненного цикла
 
 `github-tags:pgadmin-org/pgadmin4`. У endoflife.date нет календаря для

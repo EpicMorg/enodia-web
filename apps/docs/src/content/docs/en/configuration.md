@@ -20,6 +20,11 @@ defaults:                            # optional
   concurrency: 5
   retries: 2
   backoff: 500ms
+cve:                                 # optional, see "CVE correlation"
+  bdu:
+    path: vulxml.zip
+  nvd:
+    path: nvd/
 credentials: {}                      # optional, see "Credentials"
 targets: []                          # your services
 ```
@@ -39,6 +44,15 @@ Applies to every target unless overridden per-target.
 | `backoff` | duration | Delay between retries |
 
 Durations use Go's duration syntax: `500ms`, `10s`, `2m`, `1h30m`.
+
+### `cve`
+
+Optional. Points enodia at a БДУ ФСТЭК export (`cve.bdu.path`) and/or
+NVD JSON feeds (`cve.nvd.path`) you've downloaded yourself — enodia
+never fetches them. Relative paths resolve against this config's own
+directory, and a configured path that doesn't exist is an error. What
+it does, how to get the files, and which products are matched:
+[CVE correlation](/en/cve/).
 
 ### `targets`
 

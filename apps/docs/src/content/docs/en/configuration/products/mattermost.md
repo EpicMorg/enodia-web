@@ -29,6 +29,10 @@ the software itself, so only `Version` and the `Build*` fields are read.
 - `version`
 - `extra.buildNumber`, `extra.buildHash`
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:mattermost`.

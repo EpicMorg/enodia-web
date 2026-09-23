@@ -30,6 +30,10 @@ live against a real OPNsense 26.7 instance, reached via
 - `version` — parsed from `opnsense-version`'s output
 - `extra.hostKeyVerified`
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:opnsense`.

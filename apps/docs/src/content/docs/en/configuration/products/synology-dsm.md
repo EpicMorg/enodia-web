@@ -46,6 +46,10 @@ code, to detect a rejected login.
 Only `version` — parsed out of `version_string`'s `"DSM <version> Update
 <n>"` shape, e.g. `"DSM 7.3.2-86009 Update 4"` → `7.3.2-86009`.
 
+## CVE correlation
+
+Not matched — its ranges use bounds like `6.2.4-25556-3`, which the strict range parser rejects. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 None — endoflife.date has no calendar under `synology-dsm`, `synology`,

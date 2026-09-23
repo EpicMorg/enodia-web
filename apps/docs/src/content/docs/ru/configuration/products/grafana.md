@@ -25,6 +25,10 @@ targets:
 - `version`
 - `extra.commit`, `extra.database`
 
+## Сопоставление с CVE
+
+Сверяется с NVD и БДУ ФСТЭК, если настроен [блок `cve:`](/ru/cve/).
+
 ## Резолвер жизненного цикла
 
 `endoflife:grafana`.

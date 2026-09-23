@@ -30,6 +30,10 @@ the real point-release Astra itself tracks.
 - `version` — from `/etc/astra_version`
 - `extra.hostKeyVerified`
 
+## CVE correlation
+
+Not matched — a general-purpose distribution's CVEs are package vulnerabilities, and the release number can't say which packages have been patched since. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 None — endoflife.date has no Astra Linux calendar (confirmed 404 under

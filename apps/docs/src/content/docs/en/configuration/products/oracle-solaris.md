@@ -34,6 +34,10 @@ and republishes Oracle's own free-to-redistribute Solaris 11.4 CBE
 - `version` — parsed from `/etc/release`
 - `extra.hostKeyVerified`
 
+## CVE correlation
+
+Not matched — NVD records its patch levels in a CPE field the matcher doesn't read, so matching on the release alone would flag a fully patched host with every CVE ever fixed in that release. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 `endoflife:oracle-solaris`.

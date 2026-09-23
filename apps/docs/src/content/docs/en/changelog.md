@@ -12,6 +12,68 @@ affects how you'd actually configure something. Tags follow
 metadata, used only for a rebuild with no functional change, not to
 sidestep a real version bump.
 
+## 2.0.0+0 — 2026-09-23
+
+A major version for a major feature, not for a break: CVE correlation is
+the first evaluation axis that isn't about lifecycle. Existing
+`enodia.yaml`, `settings.yaml` and inventory files work unchanged — the
+new `cve:` block is optional, and a config without it behaves exactly as
+1.2 did.
+
+### Added
+
+- **[CVE correlation](/en/cve/)** against two local databases, БДУ ФСТЭК
+  and NIST NVD. enodia never downloads them: you fetch БДУ's
+  `vulxml.zip` and NVD's yearly `nvdcve-2.0-<year>.json.gz` files and
+  point `cve.bdu.path` / `cve.nvd.path` in `enodia.yaml` at them (a
+  file, or for NVD a directory of files). Either source works alone.
+  Both are stream-parsed and cached: the first run after a database
+  changes takes about a minute for all of NVD plus БДУ, every later run
+  under a second. See [how to download them](/en/cve/#enodia-never-downloads-the-databases-itself),
+  including the extra CA certificate bdu.fstec.ru needs.
+- **52 probes matched** (53 product names upstream — `ssh` counts as
+  both OpenSSH and Dropbear), every probe with usable data in either
+  source. Deliberately not matched, each for a stated reason:
+  general-purpose Linux distributions (their CVEs are package-level),
+  the BSDs and Solaris, ESXi/vCenter and Synology DSM (patch levels and
+  build suffixes the matcher doesn't read yet) — see
+  [which products are matched](/en/cve/#which-products-are-matched), and
+  each product's own page.
+- **Edition-aware matching** for [GitLab](/en/configuration/products/gitlab/),
+  [Vault](/en/configuration/products/vault/),
+  [Nextcloud](/en/configuration/products/nextcloud/) and
+  [MongoDB](/en/configuration/products/mongodb/): a community instance no
+  longer sees enterprise-only findings (on real data, GitLab 19.2.2 CE
+  sees 4 of NVD's 9, Nextcloud 27.1.3 CE 11 of 23). The four probes now
+  record their server's edition in `extra.enterprise`; an unknown
+  edition keeps every finding.
+- [`ssh`](/en/configuration/products/ssh/) targets are matched as
+  OpenSSH or Dropbear by their banner; any other SSH stack gets no CVE
+  lookup rather than OpenSSH's.
+- A **`CVES` column** in `check`'s [compact and drift views](/en/views/),
+  counting distinct CVEs.
+- A **per-CVE list** in [`export --format html`](/en/reporting/#the-cve-list),
+  pure CSS with no JavaScript, so the inline report stays a
+  zero-`<script>` offline file: one line per CVE with links to NVD,
+  cve.org and bdu.fstec.ru, БДУ's Russian text when БДУ has the CVE, a
+  colored `CRITICAL · CVSS 3.1 9.8` rating, most severe first.
+- [`export --format json`](/en/reporting/#--format-json) carries every
+  per-source finding under each assessment's `cves`, including a
+  structured CVSS rating parsed from both sources.
+- [`fortios`](/en/configuration/products/fortios/) probe for Fortinet
+  FortiGate, via its REST API with a REST API Admin token.
+- CDN-mode HTML reports remember a dismissed "needs internet access"
+  warning per viewer.
+
+### Notes
+
+- The `cve:` block is read from whichever config the run actually uses
+  — `--config`, `$ENODIA_CONFIG`, or the default search paths.
+- Windows paths work unquoted, in single quotes, with forward slashes or
+  as UNC paths. In YAML double quotes `\t` and `\n` become a tab and a
+  newline, so such a path is rejected at load with a hint.
+- `cisco-ios-xe` is off the roadmap for good.
+
 ## 1.2.1+0 — 2026-09-10
 
 ### Fixed

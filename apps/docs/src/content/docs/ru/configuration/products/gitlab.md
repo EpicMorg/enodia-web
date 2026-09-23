@@ -38,6 +38,10 @@ credentials:
 - `extra.revision`, если присутствует
 - `extra.enterprise` — `"true"`/`"false"`, GitLab EE или CE
 
+## Сопоставление с CVE
+
+Сверяется с NVD и БДУ ФСТЭК, если настроен [блок `cve:`](/ru/cve/). С учётом редакции: проба записывает редакцию сервера в `extra.enterprise`, и community-инстанс не видит находок только для enterprise. Если редакция неизвестна, сохраняются все находки.
+
 ## Резолвер жизненного цикла
 
 `endoflife:gitlab`.

@@ -45,6 +45,10 @@ status throws away the information you actually wanted.
 `ahead` isn't exotic — release candidates and calendar lag between a
 vendor's announcement and their download page produce it routinely.
 
+Known CVEs, when [configured](/en/cve/), are a separate fact next to
+the three axes, not a fourth one: they're listed per assessment but
+never feed severity, the exit code, or `--fail-on`.
+
 ## Facts and judgement are separate
 
 An `Observation` holds what was actually seen: a version string, whether

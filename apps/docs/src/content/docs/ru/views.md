@@ -15,10 +15,16 @@ description: compact, lifecycle, drift и fleet - четыре среза одн
 
 ```console
 $ enodia check
-ID           PRODUCT  PATCH   LIFECYCLE  BRANCH     SEVERITY  REASON
-jira-main    jira     behind  active     newer_lts  warn      -
-gitlab-main  gitlab   behind  eol        newer      fail      -
+ID           PRODUCT  PATCH   LIFECYCLE  BRANCH     SEVERITY  REASON  CVES
+jira-main    jira     behind  active     newer_lts  warn      -       12
+gitlab-main  gitlab   behind  eol        newer      fail      -       -
 ```
+
+Последняя колонка, `CVES`, — число различных CVE, затрагивающих именно
+эту версию; `-`, если их нет, в том числе когда
+[блок `cve:`](/ru/cve/) не настроен или продукт не сопоставляется. У
+`drift` та же колонка, у `lifecycle` и `fleet` её нет. CVE никогда не
+меняют `SEVERITY` и код выхода.
 
 ## `lifecycle`
 
@@ -37,9 +43,9 @@ gitlab-main  gitlab   eol        2025-01-16  2024-11-21    -350
 
 ```console
 $ enodia check --from inventory.jsonl --view drift
-ID           PRODUCT  CURRENT  LATEST   CYCLE  PATCH
-jira-main    jira     10.3.1   10.3.25  10.3   behind
-gitlab-main  gitlab   17.5.0   17.5.5   17.5   behind
+ID           PRODUCT  CURRENT  LATEST   CYCLE  PATCH   CVES
+jira-main    jira     10.3.1   10.3.25  10.3   behind  12
+gitlab-main  gitlab   17.5.0   17.5.5   17.5   behind  -
 ```
 
 ## `fleet`

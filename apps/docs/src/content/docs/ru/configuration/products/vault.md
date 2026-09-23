@@ -35,6 +35,12 @@ standby (`472`/`473`), не инициализирован (`501`) — и **в �
 - `extra.initialized`, `extra.sealed`, `extra.standby` —
   `"true"`/`"false"`
 - `extra.clusterName`, если присутствует
+- `extra.enterprise` — `"true"`/`"false"`, только если в ответе `/sys/health`
+  есть поле `enterprise`
+
+## Сопоставление с CVE
+
+Сверяется с NVD и БДУ ФСТЭК, если настроен [блок `cve:`](/ru/cve/). С учётом редакции: проба записывает редакцию сервера в `extra.enterprise`, и community-инстанс не видит находок только для enterprise. Если редакция неизвестна, сохраняются все находки.
 
 ## Резолвер жизненного цикла
 

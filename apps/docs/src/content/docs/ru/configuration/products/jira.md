@@ -36,6 +36,10 @@ Bitbucket, проба громко откажет вместо того, что�
 - `version`
 - `extra.buildNumber`, `extra.typeId` — `typeId` будет равен `jira`
 
+## Сопоставление с CVE
+
+Сверяется с NVD и БДУ ФСТЭК, если настроен [блок `cve:`](/ru/cve/).
+
 ## Резолвер жизненного цикла
 
 `endoflife:jira-software` — обратите внимание, слаг именно

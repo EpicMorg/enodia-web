@@ -26,12 +26,38 @@ This is the format to consume if you want to apply your own severity
 policy on top of enodia's facts (see
 [Concepts](/en/concepts/#facts-and-judgement-are-separate)).
 
+With a [`cve:` block](/en/cve/) configured, each assessment also carries
+a `cves` array — one entry per finding, per source (a CVE present in
+both БДУ and NVD appears twice; NVD once per matching CPE):
+
+```json
+{
+  "Source": "bdu",
+  "AdvisoryID": "BDU:2026-11879",
+  "CVEIDs": ["CVE-2026-19478"],
+  "Title": "Уязвимость программной платформы … GitLab EE/ CE …",
+  "Severity": "Высокий уровень опасности (базовая оценка CVSS 2.0 составляет 9,7) …",
+  "MatchedName": "Gitlab",
+  "RangeText": "от 19.2.0 до 19.2.4",
+  "FixStatus": "Уязвимость устранена",
+  "CVSS": { "Version": "3.1", "Score": 9.4, "Severity": "CRITICAL" }
+}
+```
+
+`Severity` and `RangeText` are the source's own text, verbatim; `CVSS`
+is one rating parsed out of it, picked CVSS 3.1/3.0 first, then 4.0,
+then 2.0 — 3.x is the version nearly every CVE carries in both sources,
+so scores in one list stay on the same scale. The `CVES` column in the
+table views counts distinct CVEs across these entries, not the entries
+themselves.
+
 ## `--format prometheus`
 
 A Prometheus textfile, meant for
 [`node_exporter`'s textfile collector](https://github.com/prometheus/node_exporter)
 — write it somewhere `node_exporter` is configured to scan, on a
-schedule, same as any other textfile metric.
+schedule, same as any other textfile metric. CVE findings aren't
+exported as metrics.
 
 ## `--format html`
 
@@ -51,8 +77,10 @@ isn't passed.
 `settings.yaml`'s `html.assets` controls what the generated file needs:
 
 - **`inline`** (default) — zero external resources. Verified: no
-  `http(s)://` or `<script` anywhere in the output. Renders identically
-  inside a fully closed network.
+  `<script` anywhere in the output and nothing loaded over
+  `http(s)://` — the only such URLs are plain links (the footer, the CVE
+  list's NVD/cve.org/БДУ pages). Renders identically inside a fully
+  closed network.
 - **`cdn`** — loads Bootstrap and a [Bootswatch](https://bootswatch.com/)
   theme from a CDN, and adds a visible in-page warning that the report
   needs internet access to render styled. `html.theme` picks the theme
@@ -61,10 +89,23 @@ isn't passed.
   request each and upgrades to whichever answers first, so one CDN being
   blocked on a given network doesn't take the report's styling down with
   it. The very first paint always uses jsdelivr; racing only ever
-  *upgrades* the stylesheet after that.
+  *upgrades* the stylesheet after that. The report also gets a theme
+  picker, remembered per viewer in the browser's `localStorage`, and the
+  warning's close button is remembered the same way — dismissed once, it
+  stays dismissed in that browser across regenerated reports.
 
 See [Configuration](/en/configuration/#settingsyaml) for the full
 `settings.yaml` example.
+
+### The CVE list
+
+With a [`cve:` block](/en/cve/) configured, the `compact` and `drift`
+sections' `CVES` cell becomes a link opening that target's CVE list: one
+line per CVE, most severe first, with links to NVD, cve.org and, for
+БДУ findings, the bdu.fstec.ru page, and the rating as colored badges
+(`CRITICAL · CVSS 3.1 9.8`). The description is БДУ's Russian text when
+БДУ has the CVE, NVD's English one otherwise. It's pure CSS (a `:target`
+modal), so it works the same in `inline` mode with no script at all.
 
 ### Row colors in CDN mode
 

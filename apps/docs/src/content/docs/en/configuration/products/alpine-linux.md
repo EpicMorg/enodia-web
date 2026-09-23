@@ -20,6 +20,10 @@ field, not `alpine-linux` — the `product:` value adds `-linux` for
 clarity, the match itself is against the shorter vendor string),
 `VERSION_ID=3.24.1`.
 
+## CVE correlation
+
+Not matched — a general-purpose distribution's CVEs are package vulnerabilities, and the release number can't say which packages have been patched since. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 `endoflife:alpine-linux`.

@@ -29,6 +29,10 @@ targets:
 `product:` — указание установки Vaultwarden как `product: bitwarden`
 сравнило бы версию не того проекта с историей релизов другого.
 
+## Сопоставление с CVE
+
+Сверяется с NVD, если настроен [блок `cve:`](/ru/cve/).
+
 ## Резолвер жизненного цикла
 
 `github:bitwarden/server` — у endoflife.date нет календаря `bitwarden`

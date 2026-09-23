@@ -83,6 +83,10 @@ from the `p4d` server itself, which this page covers.
 - `extra.raw` — the full unparsed `serverVersion` string
 - `extra.serverID`, `extra.serverServices`, when present
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 None — Perforce is proprietary, with no endoflife.date page under any

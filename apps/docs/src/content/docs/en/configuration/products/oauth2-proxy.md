@@ -31,6 +31,10 @@ bug.
 
 Only `version` — this probe records no `extra` fields.
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `github:oauth2-proxy/oauth2-proxy` — no endoflife.date calendar today,

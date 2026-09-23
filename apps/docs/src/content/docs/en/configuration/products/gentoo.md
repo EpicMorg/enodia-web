@@ -19,6 +19,10 @@ Verified live against `gentoo/stage3` (the official gentoo.org image):
 `ID=gentoo`, `VERSION_ID=2.18` — Gentoo Base System's own release
 number, not a distro version in the traditional sense.
 
+## CVE correlation
+
+Not matched — a general-purpose distribution's CVEs are package vulnerabilities, and the release number can't say which packages have been patched since. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 None — Gentoo is a rolling release, and endoflife.date has no calendar

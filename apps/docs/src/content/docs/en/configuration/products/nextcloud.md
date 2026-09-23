@@ -31,6 +31,13 @@ in the lifecycle calendar at all.
 - `version` — from `versionstring`
 - `extra.installed`, `extra.maintenance` — `"true"`/`"false"`
 - `extra.buildVersion` — the raw `version` field, kept for reference
+- `extra.enterprise` — from `status.php`'s `edition`: empty (the
+  community server, confirmed live) → `"false"`, `enterprise` → `"true"`;
+  any other value is left unreported rather than guessed at
+
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured. Edition-aware: the probe records the server's own edition in `extra.enterprise`, and a community instance doesn't see enterprise-only findings. An unknown edition keeps every finding.
 
 ## Lifecycle resolver
 

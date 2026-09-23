@@ -42,6 +42,10 @@ credentials:
 
 Only `version` — this probe records no `extra` fields.
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:haproxy`.

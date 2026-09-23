@@ -37,6 +37,10 @@ credentials:
   authenticated enough to get a `200` body back; absent on an anonymous
   `403`
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:jenkins`.

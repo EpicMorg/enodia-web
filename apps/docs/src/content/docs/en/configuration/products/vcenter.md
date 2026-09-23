@@ -42,6 +42,10 @@ version, real identity check.
 - `version` — the real marketing version, e.g. `8.0.3`
 - `extra.build`, when present
 
+## CVE correlation
+
+Not matched — almost all of its entries are `7.0` + `update_1`-style literals the matcher doesn't read, so the result would be either nothing or everything. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 `endoflife:vcenter`.

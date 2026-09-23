@@ -24,6 +24,10 @@ dynamically, at boot (`/etc/rc.d/os-release`) — in the exact same
 Verified live via QEMU (FreeBSD's own official cloud qcow2 — no Docker
 image exists for FreeBSD): `ID=freebsd`, `VERSION_ID="15.1"`.
 
+## CVE correlation
+
+Not matched — NVD records its patch levels in a CPE field the matcher doesn't read, so matching on the release alone would flag a fully patched host with every CVE ever fixed in that release. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 `endoflife:freebsd`.

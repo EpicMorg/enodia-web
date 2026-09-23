@@ -26,6 +26,10 @@ targets:
 описывает само программное обеспечение, поэтому читаются только
 `Version` и `ProductName`.
 
+## Сопоставление с CVE
+
+Сверяется с NVD, если настроен [блок `cve:`](/ru/cve/).
+
 ## Резолвер жизненного цикла
 
 `github:jellyfin/jellyfin` — у endoflife.date нет календаря для Jellyfin

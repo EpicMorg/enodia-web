@@ -86,6 +86,10 @@ targets:
 - `extra.raw` — полная неразобранная строка `serverVersion`
 - `extra.serverID`, `extra.serverServices`, если присутствуют
 
+## Сопоставление с CVE
+
+Сверяется с NVD и БДУ ФСТЭК, если настроен [блок `cve:`](/ru/cve/).
+
 ## Резолвер жизненного цикла
 
 Отсутствует — Perforce проприетарен, у endoflife.date нет страницы ни

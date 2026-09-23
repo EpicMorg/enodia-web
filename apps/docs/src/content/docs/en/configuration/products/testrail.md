@@ -24,6 +24,10 @@ None — the endpoint accepts no credential shape.
 
 Only `version` — the trimmed file contents, exactly as served.
 
+## CVE correlation
+
+Matched against NVD when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 None — endoflife.date has no TestRail calendar (confirmed 404).

@@ -19,6 +19,10 @@ Verified live against `vbatts/slackware:14.2`: `ID=slackware`,
 `VERSION_ID=14.2` — Slackware does ship `/etc/os-release`, despite older
 documentation claiming it doesn't.
 
+## CVE correlation
+
+Not matched — a general-purpose distribution's CVEs are package vulnerabilities, and the release number can't say which packages have been patched since. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 `endoflife:slackware`.

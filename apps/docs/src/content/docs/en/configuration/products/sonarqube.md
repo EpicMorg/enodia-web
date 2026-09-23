@@ -50,6 +50,10 @@ which one applies is reliably readable from the version string
   `DB_MIGRATION_NEEDED`, `DB_MIGRATION_RUNNING`; a fact about server
   health recorded as-is, not turned into an error when it isn't `UP`
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 Picked per observation, not fixed: `endoflife:sonarqube-server` or

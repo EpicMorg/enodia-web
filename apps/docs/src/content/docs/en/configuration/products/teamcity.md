@@ -52,6 +52,10 @@ token is meant to be rotated away after first login.
 - `version` — the full string, e.g. `2026.2 (build 238924)`
 - `extra.buildNumber`, `extra.internalId`
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 None — endoflife.date has no TeamCity calendar (confirmed 404).

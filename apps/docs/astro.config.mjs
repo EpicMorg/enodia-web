@@ -66,6 +66,11 @@ export default defineConfig({
 					slug: 'reporting',
 				},
 				{
+					label: 'CVE correlation',
+					translations: { ru: 'Сопоставление с CVE' },
+					slug: 'cve',
+				},
+				{
 					label: 'Supported products',
 					translations: { ru: 'Поддерживаемые продукты' },
 					slug: 'products',

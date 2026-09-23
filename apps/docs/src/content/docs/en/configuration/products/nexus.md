@@ -32,6 +32,10 @@ Only `version` — this probe records no `extra` fields (the edition,
 e.g. `COMMUNITY`/`PRO`, is dropped since `product: nexus` already
 implies it rather than needing to be recorded per-target).
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:nexus`.

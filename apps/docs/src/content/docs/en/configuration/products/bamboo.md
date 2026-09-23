@@ -35,6 +35,10 @@ products sharing this same manifest convention.
 - `version`
 - `extra.buildNumber`, `extra.typeId` — `typeId` will read `bamboo`
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:bamboo` — now wired up. [endoflife.date/bamboo](https://endoflife.date/bamboo)

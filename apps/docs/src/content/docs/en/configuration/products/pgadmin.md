@@ -34,6 +34,10 @@ at.
 - `version` — e.g. `9.17`
 - `extra.suffixCode`, only when nonzero
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `github-tags:pgadmin-org/pgadmin4`. endoflife.date has no pgAdmin

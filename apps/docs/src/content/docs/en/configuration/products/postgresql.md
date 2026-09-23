@@ -39,6 +39,10 @@ The database connected to defaults to the same value as the username
 (server-side default) — there's currently no config field to point at a
 different database name explicitly.
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:postgresql`.

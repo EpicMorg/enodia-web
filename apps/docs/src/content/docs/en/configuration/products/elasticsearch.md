@@ -36,6 +36,10 @@ HTTP with an identical body; no credential is required in that case.
 - `version` — from `version.number`
 - `extra.clusterName`, `extra.luceneVersion`, `extra.buildHash`
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:elasticsearch`.

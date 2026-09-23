@@ -53,15 +53,18 @@ credentials:
 
 ```console
 $ enodia check
-ID           PRODUCT  PATCH   LIFECYCLE  BRANCH     SEVERITY  REASON
-jira-main    jira     behind  active     newer_lts  warn      -
-gitlab-main  gitlab   behind  eol        newer      fail      -
+ID           PRODUCT  PATCH   LIFECYCLE  BRANCH     SEVERITY  REASON  CVES
+jira-main    jira     behind  active     newer_lts  warn      -       -
+gitlab-main  gitlab   behind  eol        newer      fail      -       -
 ```
 
 Это весь цикл целиком: один раз описали таргет, запустили `enodia check`,
 получили три независимых факта по каждому — статус патча, статус
 жизненного цикла и есть ли более новая ветка — плюс severity, вычисленный
-по политике, которую контролируете вы сами.
+по политике, которую контролируете вы сами. Укажите в блоке `cve:`
+выгрузку БДУ ФСТЭК и/или NVD — и колонка `CVES` заполнится известными
+уязвимостями именно установленной версии, см.
+[Сопоставление с CVE](/ru/cve/).
 
 ## Куда дальше
 
@@ -73,7 +76,9 @@ gitlab-main  gitlab   behind  eol        newer      fail      -
   `enodia.yaml` и `credentials.yaml`.
 - **[Справочник CLI](/ru/cli-reference/)** — все команды, прямо из
   `--help`.
-- **[Поддерживаемые продукты](/ru/products/)** — все 89 проб.
+- **[Сопоставление с CVE](/ru/cve/)** — известные уязвимости
+  установленной версии по выгрузкам БДУ ФСТЭК и NVD.
+- **[Поддерживаемые продукты](/ru/products/)** — все 90 проб.
 
 ## О названии
 

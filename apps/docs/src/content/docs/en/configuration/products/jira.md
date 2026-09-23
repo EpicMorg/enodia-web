@@ -35,6 +35,10 @@ sharing this same manifest convention.
 - `version`
 - `extra.buildNumber`, `extra.typeId` — `typeId` will read `jira`
 
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `endoflife:jira-software` — note the slug is `jira-software`, not `jira`.

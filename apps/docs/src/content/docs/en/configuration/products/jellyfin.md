@@ -25,6 +25,10 @@ same response also carries this deployment's own `ServerName`, a
 persistent install `Id`, and its `LocalAddress` — none of that describes
 the software itself, so only `Version` and `ProductName` are read.
 
+## CVE correlation
+
+Matched against NVD when a [`cve:` block](/en/cve/) is configured.
+
 ## Lifecycle resolver
 
 `github:jellyfin/jellyfin` — endoflife.date has no Jellyfin calendar

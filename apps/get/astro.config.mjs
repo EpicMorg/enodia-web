@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
@@ -16,4 +17,15 @@ export default defineConfig({
 			prefixDefaultLocale: false,
 		},
 	},
+	integrations: [
+		// Same as apps/landing: not Starlight, so the i18n mapping is given
+		// by hand. /unix and /windows are Pages Functions returning scripts,
+		// not pages - Astro never sees them, so they're not in the sitemap.
+		sitemap({
+			i18n: {
+				defaultLocale: 'en',
+				locales: { en: 'en', ru: 'ru' },
+			},
+		}),
+	],
 });

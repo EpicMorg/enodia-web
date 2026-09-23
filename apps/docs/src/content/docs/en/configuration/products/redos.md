@@ -19,6 +19,10 @@ Verified live against `alrdockerhub/redos:7.3.1` (real RED OS content —
 `HOME_URL`/`BUG_REPORT_URL` point at red-soft.ru): `ID="redos"`,
 `VERSION_ID="7.3.1"`.
 
+## CVE correlation
+
+Not matched — a general-purpose distribution's CVEs are package vulnerabilities, and the release number can't say which packages have been patched since. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 None — endoflife.date has no RED OS calendar today. Inventory-only.

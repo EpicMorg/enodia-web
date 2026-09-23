@@ -19,6 +19,10 @@ Verified live against `oraclelinux:9`: `ID="ol"` — Oracle's own
 os-release `ID` value, distinct from the `product:` name — and
 `VERSION_ID="9.8"`.
 
+## CVE correlation
+
+Not matched — a general-purpose distribution's CVEs are package vulnerabilities, and the release number can't say which packages have been patched since. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 `endoflife:oracle-linux`.

@@ -33,6 +33,11 @@ about that node, not a probe failure (see
 - `version`
 - `extra.initialized`, `extra.sealed`, `extra.standby` — `"true"`/`"false"`
 - `extra.clusterName`, when present
+- `extra.enterprise` — `"true"`/`"false"`, only when `/sys/health` carries its `enterprise` field
+
+## CVE correlation
+
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured. Edition-aware: the probe records the server's own edition in `extra.enterprise`, and a community instance doesn't see enterprise-only findings. An unknown edition keeps every finding.
 
 ## Lifecycle resolver
 

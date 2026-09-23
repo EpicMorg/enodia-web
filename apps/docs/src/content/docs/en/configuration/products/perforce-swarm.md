@@ -35,6 +35,10 @@ reported.
 - `extra.raw` — the full unparsed string
 - `extra.changelist`, `extra.releaseDate` — only when the format parsed
 
+## CVE correlation
+
+Not matched — neither database has usable data for it. See [CVE correlation](/en/cve/#which-products-are-matched).
+
 ## Lifecycle resolver
 
 None — endoflife.date has no calendar under `perforce-swarm`,
