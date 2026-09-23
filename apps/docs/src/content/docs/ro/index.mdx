@@ -1,0 +1,90 @@
+---
+title: enodia
+description: Aflați ce rulează la dumneavoastră și cât timp mai are.
+---
+
+**enodia** întreabă serviciile dumneavoastră implementate ce versiune
+rulează, verifică aceste versiuni în raport cu calendarele de ciclu de
+viață ale producătorilor și vă spune ce a ajuns deja la final, ce este pe
+cale să ajungă și unde flota dumneavoastră s-a dezaliniat. Descrieți
+serviciile o singură dată — enodia se ocupă de rest.
+
+:::tip[Lansat activ]
+Pachete, arhive simple și o imagine de container, pentru Linux/macOS/Windows.
+Consultați [Primii pași](/ro/getting-started/) pentru instalare sau
+[Jurnalul de modificări](/ro/changelog/) pentru noutăți.
+:::
+
+## De ce enodia
+
+Majoritatea instrumentelor acoperă doar o jumătate a problemei: fie
+urmăresc lansările din amonte, fie știu ce ați implementat — rareori
+ambele, și niciunul nu le corelează cu datele ciclului de viață ale
+producătorilor.
+
+| Instrument | Urmărește lansările din amonte | Știe ce ați implementat | Date ale ciclului de viață |
+|---|---|---|---|
+| `eol` CLI | — | — | da |
+| nvchecker | da | — | — |
+| Renovate / Dependabot | da (dependențe) | — | — |
+| what's-up-docker | da (doar containere) | doar containere | — |
+| Uptime Kuma | — | doar up/down | — |
+| **enodia** | da | **da** | **da** |
+
+## Un minut de enodia
+
+```yaml title="enodia.yaml"
+schemaVersion: 1
+targets:
+  - id: jira-main
+    product: jira
+    address: https://jira.example.com
+
+  - id: gitlab-main
+    product: gitlab
+    address: https://gitlab.example.com
+    credentials: gitlab-token
+
+credentials:
+  gitlab-token:
+    kind: token-header
+    header: PRIVATE-TOKEN
+    value: "${GITLAB_TOKEN}"
+```
+
+```console
+$ enodia check
+ID           PRODUCT  PATCH   LIFECYCLE  BRANCH     SEVERITY  REASON  CVES
+jira-main    jira     behind  active     newer_lts  warn      -       -
+gitlab-main  gitlab   behind  eol        newer      fail      -       -
+```
+
+Acesta este întregul ciclu: descrieți o țintă o singură dată, rulați
+`enodia check` și primiți înapoi trei fapte independente pentru fiecare
+țintă — starea patch-ului, starea ciclului de viață și dacă există o
+ramură mai nouă — plus o severitate calculată pe baza unei politici pe
+care o controlați dumneavoastră. Direcționați un bloc `cve:` către un
+export BDU FSTEC și/sau NVD, iar coloana `CVES` se completează cu
+vulnerabilitățile cunoscute ale fiecărei versiuni instalate exacte —
+consultați [Corelare CVE](/ro/cve/).
+
+## Ce urmează
+
+- **[Primii pași](/ro/getting-started/)** — ce funcționează efectiv astăzi
+  și primul dumneavoastră `enodia.yaml`.
+- **[Concepte](/ro/concepts/)** — designul în două faze, cele trei axe
+  ale verdictului și de ce timpul este un parametru, nu ceasul sistemului.
+- **[Configurare](/ro/configuration/)** — fiecare câmp acceptat de
+  `enodia.yaml` și `credentials.yaml`.
+- **[Referință CLI](/ro/cli-reference/)** — fiecare comandă, direct din
+  `--help`.
+- **[Corelare CVE](/ro/cve/)** — vulnerabilitățile cunoscute pentru
+  fiecare versiune instalată, din exporturile BDU FSTEC și NVD.
+- **[Produse acceptate](/ro/products/)** — toate cele 90 de sonde.
+
+## Numele
+
+Enodia, „cea de la marginea drumului”, este un epitet al lui Hecate:
+purtătoare de torță, păzitoare a răscrucilor. Potrivit pentru ceva ce
+luminează ceea ce se degradează și stă acolo unde alegeți în ce direcție
+să faceți upgrade.

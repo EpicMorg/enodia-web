@@ -18,6 +18,7 @@ export default defineConfig({
 			'ro',
 			'pl',
 			{ path: 'zh-cn', codes: ['zh-CN'] },
+			'uk',
 		],
 		routing: {
 			// root ("/") stays English, unprefixed - matches /unix and /windows
@@ -42,6 +43,7 @@ export default defineConfig({
 					ro: 'ro',
 					pl: 'pl',
 					'zh-cn': 'zh-CN',
+					uk: 'uk',
 				},
 			},
 		}),

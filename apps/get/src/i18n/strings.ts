@@ -23,27 +23,32 @@ export const strings: Record<
 	},
 	es: {
 		tagline: 'Instale enodia con un solo comando.',
-		docs: 'Documentación (en inglés)',
+		docs: 'Documentación',
 		proxy: '<code>/unix</code> y <code>/windows</code> actúan como proxy transparente de {sh} / {ps1} desde GitHub.',
 	},
 	'pt-br': {
 		tagline: 'Instale o enodia com um único comando.',
-		docs: 'Documentação (em inglês)',
+		docs: 'Documentação',
 		proxy: '<code>/unix</code> e <code>/windows</code> fazem proxy transparente de {sh} / {ps1} a partir do GitHub.',
 	},
 	ro: {
 		tagline: 'Instalați enodia cu o singură comandă.',
-		docs: 'Documentație (în engleză)',
+		docs: 'Documentație',
 		proxy: '<code>/unix</code> și <code>/windows</code> fac proxy transparent pentru {sh} / {ps1} de pe GitHub.',
 	},
 	pl: {
 		tagline: 'Instalacja enodia jednym poleceniem.',
-		docs: 'Dokumentacja (po angielsku)',
+		docs: 'Dokumentacja',
 		proxy: '<code>/unix</code> i <code>/windows</code> w przezroczysty sposób przekazują {sh} / {ps1} z GitHuba.',
 	},
 	'zh-cn': {
 		tagline: '一条命令安装 enodia。',
-		docs: '文档（英文）',
+		docs: '文档',
 		proxy: '<code>/unix</code> 和 <code>/windows</code> 会透明代理来自 GitHub 的 {sh} / {ps1}。',
+	},
+	uk: {
+		tagline: 'Встановіть enodia однією командою.',
+		docs: 'Документація',
+		proxy: '<code>/unix</code> і <code>/windows</code> прозоро проксують {sh} / {ps1} з GitHub.',
 	},
 };

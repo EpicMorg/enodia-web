@@ -33,6 +33,6 @@ Not matched — a hand-written parser has no product identity to look CVEs up by
 ## Lifecycle resolver
 
 None — a hand-rolled target has no calendar to look up by definition.
-Don't see your product on the list of 28 dedicated probes? See
+Don't see your product on the list of 89 dedicated probes? See
 [Supported products](/en/products/#dont-see-your-product) for the two
 ways forward: this escape hatch, or requesting a real probe.
