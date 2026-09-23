@@ -437,6 +437,22 @@ this blindly if it's been a while. As of writing:
     reviewed by the portmgr team — same review gate as `homebrew-core`,
     no lighter path.
 
+## Analytics
+
+**Yandex.Metrika counter `112978858`, all three sites, live 2026-09-23**
+([PR #20](https://github.com/EpicMorg/enodia-web/pull/20), merge
+`9dc4c19`) — the user's own snippet, kept verbatim (Webvisor, clickmap,
+`trackHash`, `ssr:true`, plus the `<noscript>` pixel). One counter shared
+across `enodia.sh`/`get.enodia.sh`/`docs.enodia.sh`, not one per site.
+Wired as `src/components/YandexMetrika.astro` (`is:inline`) in the
+`<head>` of `apps/landing`'s and `apps/get`'s layouts, and via Starlight's
+`head` config (`script` + `noscript` entries) in `apps/docs`. Verified in
+prod on every surface (en/ru, docs deep pages); `get.enodia.sh/unix`/
+`/windows` are Functions returning plain text and correctly carry
+nothing. The auto-mode permission classifier refused to merge this PR
+itself (third-party tracking going to prod) — the user merged it by
+hand; expect the same for future analytics changes.
+
 ## Noted, not started
 
 - **Machine-translation-assisted localization, 2026-09-11** — the user
