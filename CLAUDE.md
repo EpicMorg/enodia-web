@@ -1039,8 +1039,14 @@ and `productCPENames` (NVD) keys — `ssh` maps via `openssh`/`dropbear`);
   `linux/ecosystem/apps/enodia/{1.2.0,1.2.1}/docker-compose.yml`'s
   `x-mirrors` list `docker.io/epicmorg/enodia:2.0`/`:2.1` instead of
   `:1.2.0`/`:1.2.1`; the correct docker.io tags exist anyway via the
-  `image:` line). Reported to the user 2026-09-23; that repo is theirs to
-  fix, and the stray tags need deleting on Docker Hub. Docs here never
+  `image:` line). Reported to the user 2026-09-23. **The two stray tags were
+  deleted on Docker Hub on 2026-10-02**, at the user's explicit request
+  (Hub API `DELETE /v2/repositories/epicmorg/enodia/tags/<tag>/`, logged
+  in with the account in `~/.docker/config.json`); `1.2.0`/`1.2.1`/`1`
+  still resolve to the same digests. The compose files on GitHub
+  `develop` still carried the typo at that point (the user says their
+  local copy is correct, so likely unpushed) — a rebuild of 1.2.x from
+  GitHub would recreate them. Docs here never
   mention `2.0`/`2.1`.
 - A RU informal slip predating this round was caught in `reporting.md`
   ("направь … пересобирай") and fixed — the sweep over *added* lines
