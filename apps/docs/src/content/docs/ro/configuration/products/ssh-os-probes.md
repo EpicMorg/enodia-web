@@ -1,10 +1,10 @@
 ---
 title: Identificarea sistemului de operare prin SSH
-description: Cum funcționează familia de sonde SSH/os-release/uname din enodia — comună pentru 30 de produse de tip sistem de operare.
+description: Cum funcționează familia de sonde SSH/os-release/uname din enodia — comună pentru 31 de produse de tip sistem de operare.
 ---
 
-30 dintre produsele enodia — toate distribuțiile Linux, FreeBSD, OpenBSD,
-NetBSD, macOS, Oracle Solaris, OPNsense și CentOS-ul vechi — sunt
+31 dintre produsele enodia — toate distribuțiile Linux, FreeBSD, OpenBSD,
+NetBSD, macOS, Oracle Solaris, OPNsense, pfSense și CentOS-ul vechi — sunt
 identificate prin **SSH**, nu prin HTTP. Această pagină explică o singură
 dată mecanismul comun; pagina proprie a fiecărui sistem de operare (cu
 link din [Produse acceptate](/ro/products/)) indică doar valoarea
@@ -15,7 +15,7 @@ rezolvatorul ciclului de viață.
 
 O conexiune SSH, o comandă, o deconectare — acesta nu este un client
 generic de execuție la distanță, ci exact cât este necesar pentru a citi
-un singur fapt de identitate:
+faptele de identitate de care are nevoie:
 
 - **21 de produse** citesc `/etc/os-release` (fișierul de identitate
   standardizat de systemd, prezent în orice distribuție Linux modernă,
@@ -36,9 +36,17 @@ un singur fapt de identitate:
 - **2 produse** (OpenBSD, NetBSD) nu au deloc un fișier echivalent cu
   os-release — sursa identității este în schimb `uname -sr` (`"<kernel name>
   <release>"`, de exemplu `"OpenBSD 7.9"`).
-- **Încă 5** (Astra Linux, CentOS-ul vechi, macOS, OPNsense, Oracle
-  Solaris) citesc fiecare un fișier sau o comandă de identitate distinctă,
-  specifică produsului — consultați paginile lor.
+- **Încă 6** (Astra Linux, CentOS-ul vechi, macOS, OPNsense, pfSense,
+  Oracle Solaris) citesc fiecare un fișier sau o comandă de identitate
+  distinctă, specifică produsului — consultați paginile lor.
+
+Începând cu 2.1, zece dintre acestea — Debian, Ubuntu, Linux Mint, RHEL,
+Rocky Linux, AlmaLinux, Oracle Linux, Astra Linux, RED OS și Alpine —
+listează, de asemenea, pachetele instalate și citesc kernelul care
+rulează (`uname -r`/`-m`/`-v`) în aceeași comandă, pentru
+[corelarea CVE la nivel de pachet](/ro/cve/#cve-uri-la-nivel-de-pachet-pentru-distribuțiile-linux).
+Lista de pachete este stocată în observație, așa că un inventar al unor
+astfel de gazde este mai mare — zeci de KB per gazdă.
 
 `product:` este întotdeauna declarat explicit și verificat în raport cu
 câmpul real de identitate, niciodată ghicit din răspuns (același

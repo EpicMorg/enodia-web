@@ -32,9 +32,9 @@ clientes MySQL anteriores ao esquema de versões próprio do MariaDB — o
 que ainda acontece em uma imagem atual do MariaDB 10.11. `product: mysql`
 apontado para um servidor MariaDB detecta isso e **falha de propósito**,
 informando a versão real do MariaDB no erro, em vez de registrá-la
-silenciosamente como um fato do MySQL. Ainda não existe uma sonda
-`mariadb` dedicada — hoje isto é uma parada definitiva, não algo a
-contornar com a [sonda genérica](/pt-br/configuration/products/generic/).
+silenciosamente como um fato do MySQL. Desde a 2.1, o MariaDB tem uma
+sonda própria — use
+[`product: mariadb`](/pt-br/configuration/products/mariadb/) para ele.
 
 ## Correlação de CVEs
 

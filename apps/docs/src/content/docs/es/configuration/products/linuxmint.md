@@ -24,7 +24,7 @@ lo que comparar.
 
 ## Correlación de CVE
 
-No se contrasta: los CVE de una distribución de propósito general son vulnerabilidades de paquetes, y el número de versión no indica qué paquetes se han parcheado desde entonces. Consulte [Correlación de CVE](/es/cve/#qué-productos-tienen-correspondencia).
+Se coteja **por paquete instalado** con el OVAL de Canonical para la base Ubuntu del host (`UBUNTU_CODENAME` de os-release, registrado como `extra.codename`; el archivo va en `cve.oval.path`). La sonda también enumera los paquetes binarios instalados (`dpkg-query`) y lee `uname -r`/`-m`/`-v` en el mismo viaje de ida y vuelta por SSH; se almacenan como `packages` de la observación, y como `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. Solo se informan las CVE con una corrección más reciente que lo instalado, un hallazgo por paquete, enlazado a su USN. Consulte [Correlación de CVE](/es/cve/#cve-a-nivel-de-paquete-para-distribuciones-linux).
 
 ## Resolvedor del ciclo de vida
 

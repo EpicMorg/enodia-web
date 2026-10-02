@@ -37,6 +37,8 @@ enodia export --format html -o report.html
 
 `Severity` 和 `RangeText` 是来源自身的原文，逐字保留；`CVSS` 是从中解析出的一个评分，优先选取 CVSS 3.1/3.0，其次是 4.0，再次是 2.0——几乎每个 CVE 在两个来源中都带有 3.x 版本的评分，因此同一列表中的分数保持在同一尺度上。表格视图中的 `CVES` 列统计的是这些条目中不同 CVE 的数量，而不是条目本身的数量。
 
+Linux 主机的软件包级发现（请参阅 [CVE 关联](/zh-cn/cve/#linux-发行版的软件包级-cve)）使用相同的结构，其中 `Source` 为 `debian`、`oval` 或 `alpine`，`MatchedName` 为软件包名称，另外还有四个字段：`InstalledVersion`、`FixedVersion`（能消除 `CVEIDs` 中所有 CVE 的版本）、`AdvisoryURL` 和 `Advisories`（该软件包缺少的所有公告）。对于这类主机，清单本身也会变大：每条观测结果都带有一个 `packages` 映射（软件包 → 已安装版本），在 RHEL 系主机上还带有 `modules`（AppStream 模块流）——每台主机几十 KB。
+
 ## `--format prometheus`
 
 一个 Prometheus 文本文件，供[`node_exporter` 的 textfile 收集器](https://github.com/prometheus/node_exporter)使用——
@@ -63,7 +65,7 @@ CVE 发现不会作为指标导出。
 
 ### CVE 列表
 
-配置了 [`cve:` 块](/zh-cn/cve/)后，`compact` 和 `drift` 部分中的 `CVES` 单元格会变成一个链接，用于打开该目标的 CVE 列表：每个 CVE 一行，最严重的排在最前，带有指向 NVD、cve.org 的链接，对于 BDU 的发现还带有 bdu.fstec.ru 页面的链接，评分以彩色徽章显示（`CRITICAL · CVSS 3.1 9.8`）。当 BDU 收录了该 CVE 时，描述使用 BDU 的俄文文本，否则使用 NVD 的英文文本。它是纯 CSS 实现（一个 `:target` 模态框），因此在完全没有脚本的 `inline` 模式下同样可用。
+配置了 [`cve:` 块](/zh-cn/cve/)后，`compact` 和 `drift` 部分中的 `CVES` 单元格会变成一个链接，用于打开该目标的 CVE 列表：每个 CVE 一行，最严重的排在最前，带有指向 NVD、cve.org 的链接，对于 BDU 的发现还带有 bdu.fstec.ru 页面的链接，评分以彩色徽章显示（`CRITICAL · CVSS 3.1 9.8`）。当 BDU 收录了该 CVE 时，描述使用 BDU 的俄文文本，否则使用 NVD 的英文文本。软件包级发现则是每个软件包一行（`linux 6.12.107-1 → 6.12.111-1`），链接到包含该修复的公告，该软件包的 CVE 列表折叠在下方。它是纯 CSS 实现（一个 `:target` 模态框），因此在完全没有脚本的 `inline` 模式下同样可用。
 
 ### CDN 模式下的行颜色
 

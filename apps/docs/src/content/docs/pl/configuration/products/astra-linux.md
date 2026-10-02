@@ -32,7 +32,7 @@ czyli prawdziwe wydanie punktowe, które śledzi sama Astra.
 
 ## Korelacja CVE
 
-Brak dopasowania — CVE dystrybucji ogólnego przeznaczenia to podatności pakietów, a numer wydania nie mówi, które pakiety załatano od tego czasu. Zobacz stronę [Korelacja CVE](/pl/cve/#które-produkty-są-dopasowywane).
+Dopasowywany **według zainstalowanych pakietów** do własnego OVAL Astra Linux dla SE 1.7 lub 1.8 (`oval-definitions-alse-<1.7|1.8>.xml`, w `cve.oval.path`) — dane Debiana nie mają tu zastosowania, ponieważ wersje pakietów Astra to jej własne przebudowy. Wydanie jest dopasowywane według major.minor wersji (`1.8.6` → 1.8). Sonda wyświetla też listę zainstalowanych pakietów binarnych (`dpkg-query`) w tym samym przebiegu SSH co `/etc/astra_version` — zapisywane jako `packages` obserwacji, plus `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. Znaleziska prowadzą do własnego biuletynu Astra albo do BDU, gdy dostawca żadnego nie podaje (1.7). Dane Astra nie zawierają ważności, a jej pakiety jądra są porównywane jako zainstalowane, a nie jako działające. Zobacz stronę [Korelacja CVE](/pl/cve/#cve-na-poziomie-pakietów-dla-dystrybucji-linuksa).
 
 ## Resolver cyklu życia
 

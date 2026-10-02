@@ -22,7 +22,7 @@ jasności, samo dopasowanie odbywa się względem krótszego ciągu dostawcy),
 
 ## Korelacja CVE
 
-Brak dopasowania — CVE dystrybucji ogólnego przeznaczenia to podatności pakietów, a numer wydania nie mówi, które pakiety załatano od tego czasu. Zobacz stronę [Korelacja CVE](/pl/cve/#które-produkty-są-dopasowywane).
+Dopasowywany **według zainstalowanych pakietów** do secdb Alpine dla gałęzi hosta (`main.json` i `community.json`, w `cve.alpine.path`), a nie według wydania. Gałąź to major.minor z `VERSION_ID` (3.20.3 → v3.20); edge nie ma numerowanej gałęzi i nie otrzymuje znalezisk. Sonda odczytuje też `/lib/apk/db/installed` w tym samym przebiegu SSH i kluczuje pakiety według **pochodzenia** (origin — własny klucz secdb: `libcrypto3` i `libssl3` to oba `openssl`) — zapisywane jako `packages` obserwacji, plus `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. Zgłaszane są tylko CVE z poprawką nowszą niż zainstalowana wersja, jedno znalezisko na pochodzenie, z linkiem do jego strony na security.alpinelinux.org; secdb nie zawiera ważności. Zobacz stronę [Korelacja CVE](/pl/cve/#cve-na-poziomie-pakietów-dla-dystrybucji-linuksa).
 
 ## Resolver cyklu życia
 

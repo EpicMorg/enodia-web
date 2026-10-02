@@ -51,7 +51,7 @@ gitlab-main  gitlab   behind  eol        newer      fail      -       -
 ```
 
 这就是完整的流程：描述一次目标，运行 `enodia check`，即可为每个目标获得三项相互独立的事实——
-补丁状态、生命周期状态，以及是否存在更新的分支——外加一个根据您所控制的策略计算出的严重级别。将 `cve:` 块指向 BDU FSTEC 和/或 NVD 导出文件，`CVES` 列就会填入每个确切已安装版本的已知漏洞——
+补丁状态、生命周期状态，以及是否存在更新的分支——外加一个根据您所控制的策略计算出的严重级别。将 `cve:` 块指向 BDU FSTEC 和/或 NVD 导出文件，`CVES` 列就会填入每个确切已安装版本的已知漏洞，在十个 Linux 发行版上还会填入每个已安装软件包的已知漏洞——
 请参阅 [CVE 关联](/zh-cn/cve/)。
 
 ## 下一步
@@ -60,8 +60,8 @@ gitlab-main  gitlab   behind  eol        newer      fail      -       -
 - **[核心概念](/zh-cn/concepts/)**——两阶段设计、三个判定维度，以及为什么时间是一个参数而不是系统时钟。
 - **[配置](/zh-cn/configuration/)**——`enodia.yaml` 和 `credentials.yaml` 接受的每一个字段。
 - **[CLI 参考](/zh-cn/cli-reference/)**——每一条命令，直接取自 `--help`。
-- **[CVE 关联](/zh-cn/cve/)**——基于 BDU FSTEC 和 NVD 导出文件，列出每个已安装版本的已知漏洞。
-- **[支持的产品](/zh-cn/products/)**——全部 90 个探针。
+- **[CVE 关联](/zh-cn/cve/)**——基于 BDU FSTEC 和 NVD 导出文件，列出每个已安装版本的已知漏洞，并在 Linux 主机上按已安装的软件包列出。
+- **[支持的产品](/zh-cn/products/)**——全部 96 个探针。
 
 ## 名称由来
 

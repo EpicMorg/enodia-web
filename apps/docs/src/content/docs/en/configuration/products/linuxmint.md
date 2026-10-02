@@ -23,7 +23,7 @@ been the wrong thing to match against.
 
 ## CVE correlation
 
-Not matched — a general-purpose distribution's CVEs are package vulnerabilities, and the release number can't say which packages have been patched since. See [CVE correlation](/en/cve/#which-products-are-matched).
+Matched **per installed package** against Canonical's OVAL for the host's Ubuntu base (os-release `UBUNTU_CODENAME`, recorded as `extra.codename`; the file goes in `cve.oval.path`). The probe also lists the installed binary packages (`dpkg-query`) and reads `uname -r`/`-m`/`-v` in the same SSH round trip — stored as the observation's `packages`, and `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. Only CVEs with a fix newer than what's installed are reported, one finding per package, linked to its USN. See [CVE correlation](/en/cve/#package-level-cves-for-linux-distributions).
 
 ## Lifecycle resolver
 

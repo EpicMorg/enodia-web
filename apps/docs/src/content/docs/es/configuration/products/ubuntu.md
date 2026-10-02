@@ -43,11 +43,15 @@ Verificado en vivo contra `ubuntu:24.04`: `ID=ubuntu`, `VERSION_ID="24.04"`.
 
 - `version`: la versión puntual precisa cuando `VERSION` la tiene, p. ej.
   `22.04.5`; en caso contrario, el `VERSION_ID` sin más
+- `extra.codename`: `VERSION_CODENAME` de os-release
+- `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`: `uname -r`,
+  `-m`, `-v`
+- `packages`: los paquetes binarios instalados y sus versiones (véase más abajo)
 - `extra.hostKeyVerified`
 
 ## Correlación de CVE
 
-No se contrasta: los CVE de una distribución de propósito general son vulnerabilidades de paquetes, y el número de versión no indica qué paquetes se han parcheado desde entonces. Consulte [Correlación de CVE](/es/cve/#qué-productos-tienen-correspondencia).
+Se coteja **por paquete instalado** con el OVAL de Canonical para la versión del host (`com.ubuntu.<codename>.usn.oval.xml.bz2`, en `cve.oval.path`), no por versión. La sonda también enumera los paquetes binarios instalados (`dpkg-query`) y lee `uname -r`/`-m`/`-v` en el mismo viaje de ida y vuelta por SSH; se almacenan como `packages` de la observación, y como `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. La versión del kernel en ejecución se completa con el número de subida de `uname -v`, para que un kernel que ya incluye la corrección no se interprete como si aún le faltara; los hallazgos del kernel se denominan `kernel <flavour> (<uname -r>)`. Solo se informan las CVE con una corrección más reciente que lo instalado, un hallazgo por paquete, enlazado a su USN. Consulte [Correlación de CVE](/es/cve/#cve-a-nivel-de-paquete-para-distribuciones-linux).
 
 ## Resolvedor del ciclo de vida
 

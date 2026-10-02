@@ -23,7 +23,7 @@ string mais curta do fornecedor), `VERSION_ID=3.24.1`.
 
 ## Correlação de CVEs
 
-Sem correlação — as CVEs de uma distribuição de uso geral são vulnerabilidades de pacotes, e o número da versão não informa quais pacotes foram corrigidos desde então. Consulte [Correlação de CVEs](/pt-br/cve/#quais-produtos-têm-correspondência).
+Correlacionado **por pacote instalado** com o secdb do Alpine para o branch do host (`main.json` e `community.json`, em `cve.alpine.path`), não pela versão. O branch é o major.minor de `VERSION_ID` (3.20.3 → v3.20); o edge não tem branch numerado e não recebe achados. A sonda também lê `/lib/apk/db/installed` na mesma ida e volta SSH e identifica os pacotes pela **origem** (a própria chave do secdb: `libcrypto3` e `libssl3` são ambos `openssl`) — armazenados como `packages` da observação, além de `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. Só são informadas as CVEs com uma correção mais nova do que a instalada, um achado por origem, com link para a sua página em security.alpinelinux.org; o secdb não traz severidade. Consulte [Correlação de CVEs](/pt-br/cve/#cves-por-pacote-para-distribuições-linux).
 
 ## Resolvedor de ciclo de vida
 

@@ -43,11 +43,15 @@ Verificat live pe `debian:bookworm-slim`: `ID=debian`,
   câte ori fișierul există și nu este gol, chiar și atunci când nu a fost
   un număr simplu cu puncte (cum este `forky/sid` din Debian testing, util
   de văzut ca atare în loc să fie eliminat în tăcere)
+- `extra.codename` — os-release `VERSION_CODENAME`, care alege versiunea
+  din tracker
+- `extra.kernel` — versiunea Debian a kernelului care rulează, din `uname -v`
+- `packages` — pachetele sursă instalate și versiunile lor (vezi mai jos)
 - `extra.hostKeyVerified`
 
 ## Corelare CVE
 
-Nu se corelează — CVE-urile unei distribuții de uz general sunt vulnerabilități ale pachetelor, iar numărul versiunii nu poate spune ce pachete au fost corectate între timp. Consultați [Corelare CVE](/ro/cve/#ce-produse-sunt-potrivite).
+Se corelează **per pachet instalat** cu Debian Security Tracker (`cve.debian.path`), nu după versiune. Sonda citește pachetele *sursă* instalate (`source:Package`/`source:Version` din `dpkg-query` — cheia proprie a trackerului) și versiunea Debian a kernelului care rulează (din `uname -v`) în aceeași interogare SSH cu versiunea însăși. Sunt raportate doar CVE-urile pe care Debian le-a corectat deja într-o versiune mai nouă decât cea instalată, câte o constatare per pachet sursă, cu link către pagina sa din tracker. Trackerul acoperă doar versiunile încă susținute de echipa de securitate Debian (bookworm, trixie, testing, sid); gazdele mai vechi nu primesc constatări la nivel de pachet. O gazdă Proxmox VE este acoperită de o țintă `debian` ca aceasta — consultați [Corelare CVE](/ro/cve/#cve-uri-la-nivel-de-pachet-pentru-distribuțiile-linux).
 
 ## Rezolvatorul ciclului de viață
 

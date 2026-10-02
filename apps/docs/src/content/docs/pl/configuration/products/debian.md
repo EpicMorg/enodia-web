@@ -42,11 +42,15 @@ Zweryfikowano na żywo na `debian:bookworm-slim`: `ID=debian`,
   gdy plik istnieje i nie jest pusty, nawet jeśli nie był to zwykły numer
   z kropkami (jak w przypadku `forky/sid` z Debiana testing — warto go
   zobaczyć w oryginalnej postaci, zamiast go po cichu pomijać)
+- `extra.codename` — `VERSION_CODENAME` z os-release, które wybiera
+  wydanie w trackerze
+- `extra.kernel` — wersja działającego jądra w Debianie, z `uname -v`
+- `packages` — zainstalowane pakiety źródłowe i ich wersje (zobacz niżej)
 - `extra.hostKeyVerified`
 
 ## Korelacja CVE
 
-Brak dopasowania — CVE dystrybucji ogólnego przeznaczenia to podatności pakietów, a numer wydania nie mówi, które pakiety załatano od tego czasu. Zobacz stronę [Korelacja CVE](/pl/cve/#które-produkty-są-dopasowywane).
+Dopasowywany **według zainstalowanych pakietów** do Debian Security Tracker (`cve.debian.path`), a nie według wydania. Sonda odczytuje zainstalowane pakiety *źródłowe* (`source:Package`/`source:Version` z `dpkg-query` — własny klucz trackera) oraz wersję działającego jądra w Debianie (z `uname -v`) w tym samym przebiegu SSH co samą wersję. Zgłaszane są tylko CVE, które Debian już naprawił w wersji nowszej niż zainstalowana, jedno znalezisko na pakiet źródłowy, z linkiem do jego strony w trackerze. Tracker obejmuje tylko wydania nadal wspierane przez zespół bezpieczeństwa Debiana (bookworm, trixie, testing, sid); starsze hosty nie otrzymują znalezisk pakietów. Host Proxmox VE jest obejmowany celem `debian` takim jak ten — zobacz stronę [Korelacja CVE](/pl/cve/#cve-na-poziomie-pakietów-dla-dystrybucji-linuksa).
 
 ## Resolver cyklu życia
 

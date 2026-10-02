@@ -28,11 +28,14 @@ major.minor 前缀，本探针就会优先采用它——与[Debian](/zh-cn/conf
 
 - `version` — 当 `VERSION` 中有精确小版本号时使用它，例如
   `22.04.5`；否则使用裸的 `VERSION_ID`
+- `extra.codename` — os-release 的 `VERSION_CODENAME`
+- `extra.kernelRelease`、`extra.arch`、`extra.kernelVersion` — `uname -r`、`-m`、`-v`
+- `packages` — 已安装的二进制软件包及其版本（见下文）
 - `extra.hostKeyVerified`
 
 ## CVE 关联
 
-不进行匹配——通用发行版的 CVE 属于软件包漏洞，而发行版版本号无法说明此后哪些软件包已打过补丁。参见 [CVE 关联](/zh-cn/cve/#哪些产品会被匹配)。
+**按已安装的软件包**与主机所在版本的 Canonical OVAL（`com.ubuntu.<codename>.usn.oval.xml.bz2`，放在 `cve.oval.path` 中）进行匹配，而不是按发行版版本。探针还会在同一次 SSH 往返中列出已安装的二进制软件包（`dpkg-query`）并读取 `uname -r`/`-m`/`-v`——存储为观测结果的 `packages`，以及 `extra.kernelRelease`、`extra.arch`、`extra.kernelVersion`。正在运行的内核的版本会用 `uname -v` 中的上传编号补全，因此已包含修复的内核不会被误判为仍然缺少修复；内核的发现命名为 `kernel <flavour> (<uname -r>)`。只报告已有比已安装版本更新的修复的 CVE，每个软件包一项发现，链接到对应的 USN。参见 [CVE 关联](/zh-cn/cve/#linux-发行版的软件包级-cve)。
 
 ## 生命周期解析器
 

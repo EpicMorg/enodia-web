@@ -41,11 +41,15 @@ Verificat live pe `ubuntu:24.04`: `ID=ubuntu`, `VERSION_ID="24.04"`.
 
 - `version` — versiunea de întreținere precisă atunci când `VERSION` o
   conține, de exemplu `22.04.5`; altfel, simplul `VERSION_ID`
+- `extra.codename` — os-release `VERSION_CODENAME`
+- `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion` — `uname -r`,
+  `-m`, `-v`
+- `packages` — pachetele binare instalate și versiunile lor (vezi mai jos)
 - `extra.hostKeyVerified`
 
 ## Corelare CVE
 
-Nu se corelează — CVE-urile unei distribuții de uz general sunt vulnerabilități ale pachetelor, iar numărul versiunii nu poate spune ce pachete au fost corectate între timp. Consultați [Corelare CVE](/ro/cve/#ce-produse-sunt-potrivite).
+Se corelează **per pachet instalat** cu OVAL-ul Canonical pentru versiunea gazdei (`com.ubuntu.<codename>.usn.oval.xml.bz2`, în `cve.oval.path`), nu după versiune. Sonda listează, de asemenea, pachetele binare instalate (`dpkg-query`) și citește `uname -r`/`-m`/`-v` în aceeași interogare SSH — stocate ca `packages` ale observației, respectiv `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. Versiunea kernelului care rulează este completată din numărul de upload din `uname -v`, astfel încât un kernel care conține corecția să nu fie interpretat greșit ca încă lipsit de ea; constatările pentru kernel sunt denumite `kernel <flavour> (<uname -r>)`. Sunt raportate doar CVE-urile care au o corecție mai nouă decât ce este instalat, câte o constatare per pachet, cu link către USN-ul său. Consultați [Corelare CVE](/ro/cve/#cve-uri-la-nivel-de-pachet-pentru-distribuțiile-linux).
 
 ## Rezolvatorul ciclului de viață
 

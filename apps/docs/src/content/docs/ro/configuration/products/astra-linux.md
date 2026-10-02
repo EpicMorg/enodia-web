@@ -33,7 +33,7 @@ Astra însăși.
 
 ## Corelare CVE
 
-Nu se corelează — CVE-urile unei distribuții de uz general sunt vulnerabilități ale pachetelor, iar numărul versiunii nu poate spune ce pachete au fost corectate între timp. Consultați [Corelare CVE](/ro/cve/#ce-produse-sunt-potrivite).
+Se corelează **per pachet instalat** cu OVAL-ul propriu al Astra Linux pentru SE 1.7 sau 1.8 (`oval-definitions-alse-<1.7|1.8>.xml`, în `cve.oval.path`) — datele Debian nu se aplică, deoarece versiunile pachetelor Astra sunt propriile sale recompilări. Versiunea se potrivește după major.minor (`1.8.6` → 1.8). Sonda listează, de asemenea, pachetele binare instalate (`dpkg-query`) în aceeași interogare SSH cu `/etc/astra_version` — stocate ca `packages` ale observației, plus `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. Constatările au link către buletinul propriu al Astra sau către BDU atunci când producătorul nu citează niciunul (1.7). Datele Astra nu conțin severitate, iar pachetele sale de kernel sunt comparate așa cum sunt instalate, nu așa cum rulează. Consultați [Corelare CVE](/ro/cve/#cve-uri-la-nivel-de-pachet-pentru-distribuțiile-linux).
 
 ## Rezolvatorul ciclului de viață
 

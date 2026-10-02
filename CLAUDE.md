@@ -462,7 +462,11 @@ this blindly if it's been a while. As of writing:
   `InstallTabs.astro` takes a `lang` prop now) and to
   `getting-started.md` (en/ru). winget is still pending moderation — add
   it the same way (third block in that same panel) once the user says
-  it's published; don't add it before.
+  it's published; don't add it before. **Update, 2026-09-24**:
+  `get.enodia.sh` got the same Windows panel (`irm` / localized "or" /
+  `choco install enodia`, `.alt`/`.or` styles in `Get.astro`,
+  [PR #23](https://github.com/EpicMorg/enodia-web/pull/23)) — winget
+  goes into **both** panels, landing and get.
 - **Homebrew tap / MacPorts port**: investigated, both paused/parked, not
   started:
   - Homebrew: a personal tap (`homebrew-tap` repo, no review needed,
@@ -1045,6 +1049,47 @@ and `productCPENames` (NVD) keys — `ssh` maps via `openssh`/`dropbear`);
 Landing's pitch (en/ru) gained one clause about CVE correlation; the
 upstream README's own pitch paragraph is unchanged, so this is the one
 place landing deliberately goes beyond paraphrasing it.
+
+**Synced with enodia 2.1.0+0, 2026-10-02** — the first release synced
+across all 8 docs locales. en/ru written by hand from `CHANGELOG.md`,
+`docs/DECISIONS.md` D36–D46 and the probe sources; the other 6 locales
+got the same diff (`git diff` of `en/` plus the new pages) through one
+subagent per locale, told to reuse their locale's existing wording for
+recurring headings/sentences. What changed:
+
+- **Package-level CVEs** (D42–D44, D46) for 10 distros: `debian`
+  (Debian Security Tracker, `cve.debian.path`), `ubuntu`/`linuxmint`/
+  `rhel`/`rocky-linux`/`almalinux`/`oracle-linux`/`astra-linux`/`redos`
+  (vendor OVAL, `cve.oval.path` — Rocky matched against **Red Hat's**
+  file, Rocky's own refused), `alpine-linux` (secdb, `cve.alpine.path`).
+  New `cve.md` section "Package-level CVEs for Linux distributions"
+  (anchor used from products.md/changelog/distro pages), download
+  instructions for all three sources (every URL checked live
+  2026-10-02), each distro page's CVE section rewritten with what the
+  probe now collects (`packages`/`modules` top-level observation
+  fields, `extra.kernelRelease`/`arch`/`kernelVersion`, debian's
+  `extra.codename`/`extra.kernel`). Upstream's CHANGELOG says "twelve
+  distributions" — it's **10 probes** (Astra and RED OS each cover two
+  releases); docs say 10.
+- **6 new probes** (D36, D37, D40, D45): `mariadb`, `pfsense` (SSH, CE
+  only, Plus rejected on documentation alone), `supermicro-bmc`,
+  `dell-idrac`, `hp-ilo4` (Redfish/Basic auth), `freeradius` (SSH,
+  `options.container`/`container_runtime`, new `github-tag-branches`
+  resolver). 96 probes. Count: 63 of 96 CVE-matched (53 by product name
+  incl. new freeradius + 10 by package); mariadb/pfsense/BMCs **not
+  mapped yet** (ROADMAP: deliberate, later CVE pass).
+- Fixes documented: VMware `8.0 U3k` → `8.0.3` (D38, esxi/vcenter
+  pages), clean LATEST/CYCLE for GitHub resolvers (D39), `config
+  validate` now checks `cve.*.path` existence (D41 — reversed what
+  2.0's cve.md said).
+- `cli-reference` needed no change (help texts identical modulo D-refs).
+- Docker: no 2.1.0 image on any registry as of 2026-10-02 — docs keep
+  `2`/`2.0.0`. **The stray docker.io `2.1` tag is now actively
+  misleading** (it's the 1.2.1 image, and 2.1.0 is real) — re-flagged to
+  the user; still theirs to fix (EpicMorg/docker x-mirrors typo, see the
+  2.0.0 entry).
+- `tools/i18n-linkcheck.py` added (the session-scratch link checker kept
+  getting lost with /tmp).
 
 ### `apps/landing` — done, 2026-09-07
 

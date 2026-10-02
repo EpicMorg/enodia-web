@@ -9,7 +9,7 @@ zamrożony słownik `json`/`xml`/`header`/`plaintext`/`regex` oraz uwaga
 o pisowni pola `clean_regex` znajdują się w
 [Konfiguracja → Sonda generyczna](/pl/configuration/#sonda-generyczna);
 ta strona istnieje tylko po to, by `generic` pojawiał się na pasku bocznym
-obok pozostałych 89 produktów.
+obok pozostałych 95 produktów.
 
 ```yaml
 targets:
@@ -33,7 +33,7 @@ Brak dopasowania — ręcznie napisany parser nie ma tożsamości produktu, wed�
 ## Resolver cyklu życia
 
 Brak — ręcznie przygotowany cel z definicji nie ma kalendarza, który
-można by sprawdzić. Brakuje produktu na liście 89 dedykowanych
+można by sprawdzić. Brakuje produktu na liście 95 dedykowanych
 sond? Na stronie [Obsługiwane produkty](/pl/products/#nie-ma-tu-potrzebnego-produktu)
 opisano dwie drogi: to wyjście awaryjne albo zgłoszenie prośby o prawdziwą
 sondę.

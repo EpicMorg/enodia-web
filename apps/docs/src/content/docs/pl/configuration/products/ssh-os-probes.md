@@ -1,10 +1,10 @@
 ---
 title: Identyfikacja systemów operacyjnych przez SSH
-description: Jak działa rodzina sond enodia opartych na SSH/os-release/uname — wspólna dla 30 produktów OS.
+description: Jak działa rodzina sond enodia opartych na SSH/os-release/uname — wspólna dla 31 produktów OS.
 ---
 
-30 produktów enodia — każda dystrybucja Linuksa, FreeBSD, OpenBSD,
-NetBSD, macOS, Oracle Solaris, OPNsense oraz starszy CentOS — jest
+31 produktów enodia — każda dystrybucja Linuksa, FreeBSD, OpenBSD,
+NetBSD, macOS, Oracle Solaris, OPNsense, pfSense oraz starszy CentOS — jest
 identyfikowanych przez **SSH**, a nie HTTP. Ta strona raz opisuje wspólny
 mechanizm; strona każdego systemu (dostępna z listy
 [Obsługiwane produkty](/pl/products/)) podaje tylko jego konkretną wartość
@@ -15,7 +15,7 @@ jego resolver cyklu życia.
 
 Jedno połączenie SSH, jedno polecenie, jedno rozłączenie — to nie jest
 klient zdalnego wykonywania ogólnego przeznaczenia, tylko tyle, ile trzeba,
-by odczytać jeden fakt o tożsamości:
+by odczytać potrzebne fakty o tożsamości:
 
 - **21 produktów** odczytuje `/etc/os-release` (ustandaryzowany przez
   systemd plik tożsamości, dostarczany przez każdą współczesną dystrybucję
@@ -36,9 +36,17 @@ by odczytać jeden fakt o tożsamości:
 - **2 produkty** (OpenBSD, NetBSD) w ogóle nie mają odpowiednika pliku
   os-release — źródłem tożsamości jest zamiast tego `uname -sr`
   (`"<kernel name> <release>"`, np. `"OpenBSD 7.9"`).
-- **5 kolejnych** (Astra Linux, starszy CentOS, macOS, OPNsense, Oracle
-  Solaris) odczytuje każdy własny, specyficzny dla produktu plik lub
+- **6 kolejnych** (Astra Linux, starszy CentOS, macOS, OPNsense, pfSense,
+  Oracle Solaris) odczytuje każdy własny, specyficzny dla produktu plik lub
   polecenie tożsamości — zobacz ich własne strony.
+
+Od wersji 2.1 dziesięć z nich — Debian, Ubuntu, Linux Mint, RHEL, Rocky
+Linux, AlmaLinux, Oracle Linux, Astra Linux, RED OS i Alpine — w tym
+samym poleceniu wyświetla też listę zainstalowanych pakietów i odczytuje
+działające jądro (`uname -r`/`-m`/`-v`) na potrzeby
+[dopasowywania CVE na poziomie pakietów](/pl/cve/#cve-na-poziomie-pakietów-dla-dystrybucji-linuksa).
+Lista pakietów jest zapisywana w obserwacji, więc inwentarz takich
+hostów jest większy — dziesiątki KB na host.
 
 `product:` jest zawsze deklarowany jawnie i weryfikowany względem
 rzeczywistego pola tożsamości, nigdy nie jest zgadywany z odpowiedzi (ta

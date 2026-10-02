@@ -13,6 +13,90 @@ description: Значимые изменения в enodia, релиз за ре
 пересборки без функциональных изменений, а не для того, чтобы обойти
 настоящее повышение версии.
 
+## 2.1.0+0 — 2026-10-01
+
+Сопоставление с CVE опускается до установленных пакетов на десяти
+дистрибутивах Linux, и появляются шесть новых проб. Ничего не ломается:
+новые ключи `cve:` опциональны, а в инвентаре только добавились
+опциональные поля, так что конфиги и инвентари 2.0 работают без
+изменений.
+
+### Добавлено
+
+- **[CVE на уровне пакетов для дистрибутивов Linux](/ru/cve/#cve-на-уровне-пакетов-для-дистрибутивов-linux).**
+  OS-пробы теперь в том же единственном SSH-обращении читают ещё и
+  установленные пакеты и работающее ядро, и каждый пакет сверяется с
+  собственными данными безопасности дистрибутива. Каждый источник — это
+  файл, который вы скачиваете сами, как БДУ и NVD:
+  - `cve.debian.path` — JSON Debian Security Tracker, для
+    [`debian`](/ru/configuration/products/debian/).
+  - `cve.oval.path` — OVAL-файлы вендоров, по одному на релиз, для
+    [`ubuntu`](/ru/configuration/products/ubuntu/),
+    [`linuxmint`](/ru/configuration/products/linuxmint/) (через его
+    базу Ubuntu), [`rhel`](/ru/configuration/products/rhel/),
+    [`rocky-linux`](/ru/configuration/products/rocky-linux/) (по файлу Red
+    Hat — собственный файл Rocky отклоняется как непригодный),
+    [`almalinux`](/ru/configuration/products/almalinux/),
+    [`oracle-linux`](/ru/configuration/products/oracle-linux/),
+    [`astra-linux`](/ru/configuration/products/astra-linux/) (SE 1.7/1.8)
+    и [`redos`](/ru/configuration/products/redos/) (7.3/8.0). Разобранный
+    OVAL кешируется так же, как БДУ и NVD.
+  - `cve.alpine.path` — secdb Alpine, для
+    [`alpine-linux`](/ru/configuration/products/alpine-linux/).
+- Сообщаются только CVE, для которых уже есть исправление новее
+  установленного, — то, что закроет обновление (а для ядра —
+  перезагрузка). Одна находка на пакет со ссылкой на бюллетень с
+  исправлением (USN, RHSA, ALSA, ELSA, бюллетень Astra, ROS, страница
+  трекера Debian/Alpine); все CVE пакета в HTML-отчёте свёрнуты под ней.
+- Сравнение следует правилам каждого пакетного менеджера: порядку версий
+  dpkg, rpm и apk, потокам модулей AppStream, вариантам Oracle по
+  архитектуре, FIPS и Ksplice, и работающему ядру, а не тем пакетам ядра,
+  что установлены. Каждый источник сверен с эталонным инструментом
+  (`oscap oval eval`, `dnf updateinfo`, python3-apt, `apk version -t`) на
+  реальных контейнерах, с идентичным результатом.
+- Новые пробы: [`mariadb`](/ru/configuration/products/mariadb/),
+  [`pfsense`](/ru/configuration/products/pfsense/) (Community Edition,
+  через SSH), [`supermicro-bmc`](/ru/configuration/products/supermicro-bmc/),
+  [`dell-idrac`](/ru/configuration/products/dell-idrac/) и
+  [`hp-ilo4`](/ru/configuration/products/hp-ilo4/) (через Redfish), а
+  также [`freeradius`](/ru/configuration/products/freeradius/) (через SSH,
+  с `options.container` для FreeRADIUS в Docker или Podman). Всего
+  96 проб.
+- Резолвер `github-tag-branches`: по одному циклу поддержки на
+  каждую major.minor по тегам GitHub — для проектов, которые
+  поддерживают несколько веток одновременно (FreeRADIUS 3.0.x и 3.2.x).
+- FreeRADIUS сопоставляется и в NVD, и в БДУ.
+
+### Исправлено
+
+- Сокращение VMware «8.0 U3k» в календаре жизненного цикла теперь
+  считается равным «8.0.3»: пропатченный хост
+  [vCenter](/ru/configuration/products/vcenter/) или
+  [ESXi](/ru/configuration/products/esxi/) 8.0 больше не показывается как
+  `ahead`.
+- Колонки LATEST/CYCLE для продуктов с резолвингом через GitHub
+  показывают очищенную версию, а не сырой тег (`2026.9.1`, а не
+  `v2026.9.1`).
+- `config validate` сообщает об отсутствующем файле `cve.*.path`, а не
+  проходит успешно, чтобы потом упасть в `check`.
+
+### Примечания
+
+- Хост [Proxmox VE](/ru/configuration/products/proxmox/) получает
+  находки по пакетам как второй, SSH-таргет `debian` рядом со своим
+  API-таргетом `proxmox`; пакет Debian `linux` сопоставляется только с
+  работающим ядром Debian, так что собственное ядро Proxmox за него не
+  принимается.
+- Со всеми источниками сразу (БДУ, NVD, Debian, восемь OVAL-файлов,
+  Alpine) `check` занимал ~22 с без кеша и ~3,4 с с кешем, с пиком
+  ~0,5–0,6 ГБ памяти — меньше, если в `cve.oval.path` лежат только те
+  релизы, которые у вас реально есть.
+- История репозитория переписана и заново подписана, чтобы убрать
+  внутренние имена хостов; все теги пересозданы на новой истории.
+  Бинарники релизов до 2.0.0+0 включительно сообщают хеши коммитов из
+  старой истории.
+- У MariaDB, pfSense и BMC-проб пока нет сопоставления с CVE.
+
 ## 2.0.0+0 — 2026-09-23
 
 Мажорная версия ради крупной функции, а не ради поломки совместимости:

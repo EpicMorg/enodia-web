@@ -40,4 +40,9 @@ Sem correlação — quase todas as suas entradas são literais no estilo `7.0` 
 
 ## Resolvedor de ciclo de vida
 
-`endoflife:esxi`.
+`endoflife:esxi`. O calendário escreve o nível de patch mais recente do branch 8.0 da
+VMware na abreviação própria da VMware (`8.0 U3k` / `8.0 Update 3k`);
+desde a 2.1 isso é lido como `8.0.3`, então um host 8.0 Update 3
+totalmente atualizado aparece como `current` em vez de `ahead`. A letra
+de patch final é descartada — a própria string de versão do host não tem
+com o que compará-la.

@@ -21,7 +21,7 @@ os-release propio de Oracle, distinto del nombre de `product:`) y
 
 ## Correlación de CVE
 
-No se contrasta: los CVE de una distribución de propósito general son vulnerabilidades de paquetes, y el número de versión no indica qué paquetes se han parcheado desde entonces. Consulte [Correlación de CVE](/es/cve/#qué-productos-tienen-correspondencia).
+Se coteja **por paquete instalado** con el OVAL de Oracle (`com.oracle.elsa-ol<N>.xml.bz2`, en `cve.oval.path`), no por versión. La sonda también enumera los paquetes binarios instalados (`rpm -qa`, con el stream de módulo de AppStream de cada paquete) y lee `uname -r`/`-m`/`-v` en el mismo viaje de ida y vuelta por SSH; se almacenan como `packages` y `modules` de la observación, y como `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. De varios kernels instalados, se compara el que está en ejecución. Las ramas separadas x86_64 y aarch64 de Oracle se cotejan según `uname -m`, y las recompilaciones FIPS y Ksplice solo se cotejan con las correcciones de su propia variante. Solo se informan las CVE con una corrección más reciente que lo instalado, un hallazgo por paquete, enlazado a su ELSA. Consulte [Correlación de CVE](/es/cve/#cve-a-nivel-de-paquete-para-distribuciones-linux).
 
 ## Resolvedor del ciclo de vida
 

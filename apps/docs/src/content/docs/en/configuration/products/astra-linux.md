@@ -32,7 +32,7 @@ the real point-release Astra itself tracks.
 
 ## CVE correlation
 
-Not matched — a general-purpose distribution's CVEs are package vulnerabilities, and the release number can't say which packages have been patched since. See [CVE correlation](/en/cve/#which-products-are-matched).
+Matched **per installed package** against Astra Linux's own OVAL for SE 1.7 or 1.8 (`oval-definitions-alse-<1.7|1.8>.xml`, in `cve.oval.path`) — Debian's data doesn't apply, since Astra's package versions are its own rebuilds. The release is matched on the version's major.minor (`1.8.6` → 1.8). The probe also lists the installed binary packages (`dpkg-query`) in the same SSH round trip as `/etc/astra_version` — stored as the observation's `packages`, plus `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. Findings link to Astra's own bulletin, or to БДУ when the vendor cites none (1.7). Astra's data carries no severity, and its kernel packages are compared as installed, not as running. See [CVE correlation](/en/cve/#package-level-cves-for-linux-distributions).
 
 ## Lifecycle resolver
 

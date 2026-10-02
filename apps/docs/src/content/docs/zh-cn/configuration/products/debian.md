@@ -28,11 +28,14 @@ Debian 的 `/etc/os-release` `VERSION_ID` 从不包含小版本号——已实�
 - `version` — 当 `/etc/debian_version` 中有小版本号时使用它，例如
   `13.6`；否则使用裸的 `VERSION_ID`
 - `extra.debianVersion` — `/etc/debian_version` 的原始内容，只要该文件存在且非空就会记录，即使其内容不是简单的点分数字（例如 Debian testing 的 `forky/sid`——原样显示出来比悄无声息地丢弃更有用）
+- `extra.codename` — os-release 的 `VERSION_CODENAME`，用于选择跟踪器中的发行版本
+- `extra.kernel` — 正在运行的内核的 Debian 版本，来自 `uname -v`
+- `packages` — 已安装的源码包及其版本（见下文）
 - `extra.hostKeyVerified`
 
 ## CVE 关联
 
-不进行匹配——通用发行版的 CVE 属于软件包漏洞，而发行版版本号无法说明此后哪些软件包已打过补丁。参见 [CVE 关联](/zh-cn/cve/#哪些产品会被匹配)。
+**按已安装的软件包**与 Debian Security Tracker（`cve.debian.path`）进行匹配，而不是按发行版版本。探针在读取版本本身的同一次 SSH 往返中读取已安装的*源码*包（`dpkg-query` 的 `source:Package`/`source:Version`——即跟踪器自己的键）以及正在运行的内核的 Debian 版本（来自 `uname -v`）。只报告 Debian 已在比已安装版本更新的版本中修复的 CVE，每个源码包一项发现，链接到其跟踪器页面。跟踪器只覆盖 Debian 安全团队仍在支持的版本（bookworm、trixie、testing、sid）；更旧的主机不会有任何软件包级发现。Proxmox VE 主机也由这样的 `debian` 目标覆盖——参见 [CVE 关联](/zh-cn/cve/#linux-发行版的软件包级-cve)。
 
 ## 生命周期解析器
 

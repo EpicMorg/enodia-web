@@ -48,4 +48,9 @@ Brak dopasowania — prawie wszystkie jego wpisy to literały w stylu `7.0` + `u
 
 ## Resolver cyklu życia
 
-`endoflife:vcenter`.
+`endoflife:vcenter`. Kalendarz zapisuje najnowszy poziom poprawek gałęzi
+8.0 VMware we własnym skrócie VMware (`8.0 U3k` / `8.0 Update 3k`); od
+wersji 2.1 jest on odczytywany jako `8.0.3`, więc w pełni załatany host
+8.0 Update 3 wyświetla się jako `current`, a nie `ahead`. Końcowa litera
+poprawki jest pomijana — własny ciąg wersji hosta nie ma z czym jej
+porównać.

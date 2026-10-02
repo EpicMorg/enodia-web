@@ -20,7 +20,7 @@ os-release `ID` 值，与 `product:` 名称不同——以及
 
 ## CVE 关联
 
-不进行匹配——通用发行版的 CVE 属于软件包漏洞，而发行版版本号无法说明此后哪些软件包已打过补丁。参见 [CVE 关联](/zh-cn/cve/#哪些产品会被匹配)。
+**按已安装的软件包**与 **Red Hat 的** OVAL（`rhel-<N>.oval.xml.bz2`，放在 `cve.oval.path` 中）进行匹配——Rocky 以相同的版本号重新构建 Red Hat 的软件包，而 Rocky 自己的 OVAL 文件会被拒绝（它只包含 Rocky 公告中的一小部分，并且无法通过 OVAL 模式校验）。探针还会在同一次 SSH 往返中列出已安装的二进制软件包（`rpm -qa`，附带每个软件包的 AppStream 模块流）并读取 `uname -r`/`-m`/`-v`——分别存储为观测结果的 `packages` 和 `modules`，以及 `extra.kernelRelease`、`extra.arch`、`extra.kernelVersion`。安装了多个内核时，比较的是正在运行的那个。只报告已有比已安装版本更新的修复的 CVE，每个软件包一项发现。其中一些来自 Red Hat 以缺陷修复公告（RHBA）形式发布的修复，`dnf updateinfo --security` 不会列出它们。参见 [CVE 关联](/zh-cn/cve/#linux-发行版的软件包级-cve)。
 
 ## 生命周期解析器
 

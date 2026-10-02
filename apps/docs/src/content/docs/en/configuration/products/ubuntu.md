@@ -40,11 +40,15 @@ Verified live against `ubuntu:24.04`: `ID=ubuntu`, `VERSION_ID="24.04"`.
 
 - `version` — the precise point release when `VERSION` has one, e.g.
   `22.04.5`; otherwise the bare `VERSION_ID`
+- `extra.codename` — os-release `VERSION_CODENAME`
+- `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion` — `uname -r`,
+  `-m`, `-v`
+- `packages` — installed binary packages and their versions (see below)
 - `extra.hostKeyVerified`
 
 ## CVE correlation
 
-Not matched — a general-purpose distribution's CVEs are package vulnerabilities, and the release number can't say which packages have been patched since. See [CVE correlation](/en/cve/#which-products-are-matched).
+Matched **per installed package** against Canonical's OVAL for the host's release (`com.ubuntu.<codename>.usn.oval.xml.bz2`, in `cve.oval.path`), not by release. The probe also lists the installed binary packages (`dpkg-query`) and reads `uname -r`/`-m`/`-v` in the same SSH round trip — stored as the observation's `packages`, and `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. The running kernel's version is completed from `uname -v`'s upload number, so a kernel carrying the fix isn't misread as still missing it; kernel findings are named `kernel <flavour> (<uname -r>)`. Only CVEs with a fix newer than what's installed are reported, one finding per package, linked to its USN. See [CVE correlation](/en/cve/#package-level-cves-for-linux-distributions).
 
 ## Lifecycle resolver
 

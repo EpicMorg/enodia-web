@@ -30,10 +30,9 @@ MariaDB masks its real version behind a `5.5.5-` prefix for MySQL clients
 that predate MariaDB's own version scheme — still true on a current
 MariaDB 10.11 image. `product: mysql` pointed at a MariaDB server detects
 this and **fails on purpose**, naming the real MariaDB version in the
-error, rather than silently recording it as a MySQL fact. There's no
-dedicated `mariadb` probe yet — this is a hard stop, not something to
-route around with the [generic probe](/en/configuration/products/generic/)
-today.
+error, rather than silently recording it as a MySQL fact. Since 2.1,
+MariaDB has its own probe — use
+[`product: mariadb`](/en/configuration/products/mariadb/) for it.
 
 ## CVE correlation
 

@@ -44,6 +44,15 @@ tokenul API pentru automatizarea nesupravegheată.
 
 Se corelează cu NVD și BDU FSTEC atunci când este configurat un [bloc `cve:`](/ro/cve/).
 
+Această țintă acoperă Proxmox VE însuși. Pentru CVE-urile din pachetele
+instalate pe gazdă, adăugați o a doua țintă pentru aceeași gazdă cu
+[`product: debian`](/ro/configuration/products/debian/) prin SSH —
+os-release-ul ei este cel al Debian. Pachetul `linux` al Debian este
+potrivit doar cu un kernel Debian care rulează, astfel încât kernelul
+propriu al Proxmox nu este confundat cu unul, iar pachetele compilate de
+Proxmox nu primesc constatări (nu există un flux public pentru ele).
+Consultați [Corelare CVE](/ro/cve/#cve-uri-la-nivel-de-pachet-pentru-distribuțiile-linux).
+
 ## Rezolvatorul ciclului de viață
 
 `endoflife:proxmox-ve`.

@@ -44,6 +44,15 @@ automatización desatendida.
 
 Se contrasta con NVD y BDU FSTEC cuando hay configurado un [bloque `cve:`](/es/cve/).
 
+Este destino cubre el propio Proxmox VE. Para las CVE de los paquetes
+instalados en el host, añada un segundo destino para el mismo host con
+[`product: debian`](/es/configuration/products/debian/) por SSH: su
+os-release es el de Debian. El paquete `linux` de Debian solo se coteja
+con un kernel de Debian en ejecución, así que el kernel propio de Proxmox
+no se confunde con uno, y los paquetes compilados por Proxmox no obtienen
+hallazgos (no existe un feed público para ellos). Consulte
+[Correlación de CVE](/es/cve/#cve-a-nivel-de-paquete-para-distribuciones-linux).
+
 ## Resolvedor del ciclo de vida
 
 `endoflife:proxmox-ve`.

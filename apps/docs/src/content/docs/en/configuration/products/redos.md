@@ -21,7 +21,7 @@ Verified live against `alrdockerhub/redos:7.3.1` (real RED OS content —
 
 ## CVE correlation
 
-Not matched — a general-purpose distribution's CVEs are package vulnerabilities, and the release number can't say which packages have been patched since. See [CVE correlation](/en/cve/#which-products-are-matched).
+Matched **per installed package** against RED OS's own OVAL for 7.3 or 8.0 (`redos.xml` from `redos.red-soft.ru/support/secure/<7.3|8.0>/`, in `cve.oval.path`) — RHEL's data doesn't apply, since RED OS's package versions are its own (`.el7` on 7.3, `.red80` on 8.0). The release is matched on the version's major.minor. The probe also lists the installed binary packages (`rpm -qa`, with each package's AppStream module stream) and reads `uname -r`/`-m`/`-v` in the same SSH round trip — stored as the observation's `packages` and `modules`, and `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. Of several installed kernels, the running one is compared. Findings link to RED OS's `ROS-…` bulletins and carry the vendor's own severity. See [CVE correlation](/en/cve/#package-level-cves-for-linux-distributions).
 
 ## Lifecycle resolver
 

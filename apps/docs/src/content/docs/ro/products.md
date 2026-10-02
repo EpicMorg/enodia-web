@@ -1,9 +1,9 @@
 ---
 title: Produse acceptate
-description: Toate cele 90 de sonde integrate, direct din `enodia products`.
+description: Toate cele 96 de sonde integrate, direct din `enodia products`.
 ---
 
-90 de produse, fiecare cu o sondă compilată (consultați
+96 de produse, fiecare cu o sondă compilată (consultați
 [Concepte](/ro/concepts/#sondele-sunt-compilate-nu-un-dsl-yaml)). Folosiți
 valoarea din coloana **Produs** ca `product:` într-o țintă.
 **Rezolvator** este identificatorul datelor ciclului de viață —
@@ -15,7 +15,11 @@ pentru un repository fără niciun Release, doar cu tag-uri git (aceeași
 limitare „doar cea mai recentă versiune” ca la `github:`, folosit atunci
 când tag-urile proprii ale unui produs nu sunt nici măcar o versiune
 simplă cu puncte — consultați
-[pgAdmin](/ro/configuration/products/pgadmin/)) — iar un `—` înseamnă că
+[pgAdmin](/ro/configuration/products/pgadmin/)) sau
+`github-tag-branches:<owner/repo>` pentru un proiect care întreține mai
+multe ramuri de lansare simultan (câte un ciclu de viață per
+major.minor, fiecare cu propriul tag cel mai recent — consultați
+[FreeRADIUS](/ro/configuration/products/freeradius/)) — iar un `—` înseamnă că
 enodia are detectare a versiunii pentru acel produs, dar încă nicio
 potrivire a ciclului de viață (axele patch/ramură funcționează în
 continuare; axa ciclului de viață rămâne `unknown`). Faceți clic pe un
@@ -32,7 +36,11 @@ neautentificată, nimic nu se strică în niciun caz.
 
 **CVE** indică bazele de date cu care este potrivit produsul atunci când
 este configurat un [bloc `cve:`](/ro/cve/) — `NVD`, `BDU` (BDU FSTEC)
-sau `—` pentru nicio căutare CVE (fiecare caz nepotrivit are motivul
+sau `—` pentru nicio căutare CVE. Zece distribuții Linux sunt potrivite
+per pachet instalat în loc de după versiune — `(pachete)` numește sursa:
+Debian Security Tracker, OVAL-ul producătorului sau secdb-ul Alpine
+(vedeți
+[CVE-uri la nivel de pachet](/ro/cve/#cve-uri-la-nivel-de-pachet-pentru-distribuțiile-linux)) (fiecare caz nepotrivit are motivul
 său pe pagina [Corelare CVE](/ro/cve/#ce-produse-sunt-potrivite)).
 Această coloană provine din tabelele de produse proprii ale enodia, nu
 din `enodia products`.
@@ -48,13 +56,15 @@ de versiune în sine; consultați [pagina sa](/ro/configuration/products/sonarqu
 
 ## Aplicații și servicii de infrastructură
 
-60 de produse, sondate prin HTTP(S) sau printr-un protocol de rețea
-direct (MySQL, Redis, MongoDB, ...) — fără SSH. Două dintre ele,
+65 de produse, sondate prin HTTP(S) sau printr-un protocol de rețea
+direct (MySQL, Redis, MongoDB, ...). Trei sunt excepții:
 [`p4d`](/ro/configuration/products/p4d/) și
-[`p4p`](/ro/configuration/products/p4p/), reprezintă o excepție
-suplimentară: niciunul nu vorbește un protocol de rețea implementat de
-enodia — ambele apelează CLI-ul `p4` al operatorului, care trebuie să fie
-instalat alături de enodia, nu doar accesibil prin rețea.
+[`p4p`](/ro/configuration/products/p4p/) nu vorbesc niciun protocol de
+rețea implementat de enodia — ambele apelează CLI-ul `p4` al
+operatorului, care trebuie să fie instalat alături de enodia, nu doar
+accesibil prin rețea — iar
+[`freeradius`](/ro/configuration/products/freeradius/) este citit prin
+SSH, deoarece RADIUS nu are nicio modalitate de a raporta o versiune.
 
 | Produs | Descriere | Rezolvator | CVE |
 |---|---|---|---|
@@ -65,16 +75,19 @@ instalat alături de enodia, nu doar accesibil prin rețea.
 | [`bitwarden`](/ro/configuration/products/bitwarden/) | Bitwarden (găzduit local) | `github:bitwarden/server` | NVD |
 | [`clickhouse`](/ro/configuration/products/clickhouse/) | ClickHouse | `endoflife:clickhouse` | NVD, BDU |
 | [`confluence`](/ro/configuration/products/confluence/) | Atlassian Confluence (Data Center) | `endoflife:confluence` | NVD, BDU |
+| [`dell-idrac`](/ro/configuration/products/dell-idrac/) | Dell iDRAC | — | — |
 | [`elasticsearch`](/ro/configuration/products/elasticsearch/) | Elasticsearch | `endoflife:elasticsearch` | NVD, BDU |
 | [`esxi`](/ro/configuration/products/esxi/) | VMware ESXi | `endoflife:esxi` | — |
 | [`forgejo`](/ro/configuration/products/forgejo/) | Forgejo | `endoflife:forgejo` | NVD, BDU |
 | [`fortios`](/ro/configuration/products/fortios/) | Fortinet FortiOS (FortiGate) | `endoflife:fortios` | NVD, BDU |
+| [`freeradius`](/ro/configuration/products/freeradius/) | FreeRADIUS | `github-tag-branches:FreeRADIUS/freeradius-server` | NVD, BDU |
 | [`generic`](/ro/configuration/products/generic/) | Parser scris manual pentru sisteme pe care enodia nu le cunoaște — consultați [Configurare](/ro/configuration/#sonda-generică) | — | — |
 | [`gitlab`](/ro/configuration/products/gitlab/) | GitLab | `endoflife:gitlab` | NVD, BDU |
 | [`grafana`](/ro/configuration/products/grafana/) | Grafana | `endoflife:grafana` | NVD, BDU |
 | [`graylog`](/ro/configuration/products/graylog/) | Graylog | `endoflife:graylog` | NVD, BDU |
 | [`haproxy`](/ro/configuration/products/haproxy/) | HAProxy | `endoflife:haproxy` | NVD, BDU |
 | [`harbor`](/ro/configuration/products/harbor/) | Harbor (registru de containere) | `endoflife:harbor` | NVD, BDU |
+| [`hp-ilo4`](/ro/configuration/products/hp-ilo4/) | HP iLO 4 | — | — |
 | [`jaeger`](/ro/configuration/products/jaeger/) | Jaeger | `endoflife:jaeger` | NVD |
 | [`jellyfin`](/ro/configuration/products/jellyfin/) | Jellyfin | `github:jellyfin/jellyfin` | NVD |
 | [`jenkins`](/ro/configuration/products/jenkins/) | Jenkins | `endoflife:jenkins` | NVD, BDU |
@@ -83,6 +96,7 @@ instalat alături de enodia, nu doar accesibil prin rețea.
 | [`kibana`](/ro/configuration/products/kibana/) | Kibana | `endoflife:kibana` | NVD, BDU |
 | [`kitsu`](/ro/configuration/products/kitsu/) | Kitsu (frontend CG-Wire / Zou) | `github:cgwire/kitsu` | — |
 | [`logstash`](/ro/configuration/products/logstash/) | Logstash | `endoflife:logstash` | NVD, BDU |
+| [`mariadb`](/ro/configuration/products/mariadb/) | MariaDB Server | `endoflife:mariadb` | — |
 | [`mattermost`](/ro/configuration/products/mattermost/) | Mattermost | `endoflife:mattermost` | NVD, BDU |
 | [`mongodb`](/ro/configuration/products/mongodb/) | MongoDB | `endoflife:mongodb` | NVD, BDU |
 | [`mysql`](/ro/configuration/products/mysql/) | MySQL Server | `endoflife:mysql` | NVD, BDU |
@@ -106,6 +120,7 @@ instalat alături de enodia, nu doar accesibil prin rețea.
 | [`routeros`](/ro/configuration/products/routeros/) | MikroTik RouterOS | `endoflife:routeros` | NVD, BDU |
 | [`sonarqube`](/ro/configuration/products/sonarqube/) | SonarQube (Server sau Community Build) | `endoflife:sonarqube-server`\* | NVD, BDU |
 | [`ssh`](/ro/configuration/products/ssh/) | Banner SSH (orice implementare) | — | NVD, BDU |
+| [`supermicro-bmc`](/ro/configuration/products/supermicro-bmc/) | Supermicro BMC | — | — |
 | [`synology-dsm`](/ro/configuration/products/synology-dsm/) | Synology DSM | — | — |
 | [`teamcity`](/ro/configuration/products/teamcity/) | JetBrains TeamCity | — | NVD, BDU |
 | [`testrail`](/ro/configuration/products/testrail/) | TestRail | — | NVD |
@@ -121,25 +136,25 @@ instalat alături de enodia, nu doar accesibil prin rețea.
 
 ## Sisteme de operare
 
-30 de produse, toate identificate prin **SSH** în loc de HTTP —
+31 de produse, toate identificate prin **SSH** în loc de HTTP —
 consultați [Identificarea sistemului de operare prin SSH](/ro/configuration/products/ssh-os-probes/)
 pentru mecanismul comun pe care îl folosește fiecare dintre acestea.
 
 | Produs | Descriere | Rezolvator | CVE |
 |---|---|---|---|
-| [`almalinux`](/ro/configuration/products/almalinux/) | AlmaLinux | `endoflife:almalinux` | — |
-| [`alpine-linux`](/ro/configuration/products/alpine-linux/) | Alpine Linux | `endoflife:alpine-linux` | — |
+| [`almalinux`](/ro/configuration/products/almalinux/) | AlmaLinux | `endoflife:almalinux` | OVAL (pachete) |
+| [`alpine-linux`](/ro/configuration/products/alpine-linux/) | Alpine Linux | `endoflife:alpine-linux` | secdb Alpine (pachete) |
 | [`amazon-linux`](/ro/configuration/products/amazon-linux/) | Amazon Linux | `endoflife:amazon-linux` | — |
-| [`astra-linux`](/ro/configuration/products/astra-linux/) | Astra Linux | — | — |
+| [`astra-linux`](/ro/configuration/products/astra-linux/) | Astra Linux | — | OVAL (pachete) |
 | [`centos`](/ro/configuration/products/centos/) | CentOS Linux (vechi, EOL) | `endoflife:centos` | — |
 | [`centos-stream`](/ro/configuration/products/centos-stream/) | CentOS Stream | `endoflife:centos-stream` | — |
-| [`debian`](/ro/configuration/products/debian/) | Debian | `endoflife:debian` | — |
+| [`debian`](/ro/configuration/products/debian/) | Debian | `endoflife:debian` | tracker Debian (pachete) |
 | [`eurolinux`](/ro/configuration/products/eurolinux/) | EuroLinux | `endoflife:eurolinux` | — |
 | [`fedora`](/ro/configuration/products/fedora/) | Fedora Linux | `endoflife:fedora` | — |
 | [`freebsd`](/ro/configuration/products/freebsd/) | FreeBSD | `endoflife:freebsd` | — |
 | [`gentoo`](/ro/configuration/products/gentoo/) | Gentoo Linux | — | — |
 | [`kali-linux`](/ro/configuration/products/kali-linux/) | Kali Linux | — | — |
-| [`linuxmint`](/ro/configuration/products/linuxmint/) | Linux Mint | `endoflife:linuxmint` | — |
+| [`linuxmint`](/ro/configuration/products/linuxmint/) | Linux Mint | `endoflife:linuxmint` | OVAL (pachete) |
 | [`macos`](/ro/configuration/products/macos/) | macOS | `endoflife:macos` | NVD, BDU |
 | [`netbsd`](/ro/configuration/products/netbsd/) | NetBSD | `endoflife:netbsd` | — |
 | [`nixos`](/ro/configuration/products/nixos/) | NixOS | `endoflife:nixos` | — |
@@ -147,16 +162,17 @@ pentru mecanismul comun pe care îl folosește fiecare dintre acestea.
 | [`openeuler`](/ro/configuration/products/openeuler/) | openEuler | — | — |
 | [`opensuse`](/ro/configuration/products/opensuse/) | openSUSE | `endoflife:opensuse` | — |
 | [`opnsense`](/ro/configuration/products/opnsense/) | OPNsense | `endoflife:opnsense` | NVD, BDU |
-| [`oracle-linux`](/ro/configuration/products/oracle-linux/) | Oracle Linux | `endoflife:oracle-linux` | — |
+| [`oracle-linux`](/ro/configuration/products/oracle-linux/) | Oracle Linux | `endoflife:oracle-linux` | OVAL (pachete) |
 | [`oracle-solaris`](/ro/configuration/products/oracle-solaris/) | Oracle Solaris | `endoflife:oracle-solaris` | — |
+| [`pfsense`](/ro/configuration/products/pfsense/) | pfSense Community Edition | — | — |
 | [`photon`](/ro/configuration/products/photon/) | VMware Photon OS | `endoflife:photon` | — |
 | [`postmarketos`](/ro/configuration/products/postmarketos/) | postmarketOS | `endoflife:postmarketos` | — |
-| [`redos`](/ro/configuration/products/redos/) | RED OS | — | — |
-| [`rhel`](/ro/configuration/products/rhel/) | Red Hat Enterprise Linux | `endoflife:rhel` | — |
-| [`rocky-linux`](/ro/configuration/products/rocky-linux/) | Rocky Linux | `endoflife:rocky-linux` | — |
+| [`redos`](/ro/configuration/products/redos/) | RED OS | — | OVAL (pachete) |
+| [`rhel`](/ro/configuration/products/rhel/) | Red Hat Enterprise Linux | `endoflife:rhel` | OVAL (pachete) |
+| [`rocky-linux`](/ro/configuration/products/rocky-linux/) | Rocky Linux | `endoflife:rocky-linux` | OVAL (pachete) |
 | [`slackware`](/ro/configuration/products/slackware/) | Slackware | `endoflife:slackware` | — |
 | [`steamos`](/ro/configuration/products/steamos/) | SteamOS | `endoflife:steamos` | — |
-| [`ubuntu`](/ro/configuration/products/ubuntu/) | Ubuntu | `endoflife:ubuntu` | — |
+| [`ubuntu`](/ro/configuration/products/ubuntu/) | Ubuntu | `endoflife:ubuntu` | OVAL (pachete) |
 
 ## Produse Atlassian
 

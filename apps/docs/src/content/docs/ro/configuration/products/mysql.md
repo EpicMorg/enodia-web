@@ -32,9 +32,9 @@ pentru clienții MySQL anteriori schemei de versionare proprii a MariaDB —
 lucru valabil și pe o imagine actuală MariaDB 10.11. `product: mysql`
 îndreptat spre un server MariaDB detectează acest lucru și **eșuează
 intenționat**, indicând în eroare versiunea reală MariaDB, în loc să o
-înregistreze în tăcere ca un fapt MySQL. Nu există încă o sondă dedicată
-`mariadb` — aceasta este o oprire fermă, nu ceva de ocolit astăzi cu
-[sonda generică](/ro/configuration/products/generic/).
+înregistreze în tăcere ca un fapt MySQL. Începând cu 2.1, MariaDB are
+propria sondă — folosiți
+[`product: mariadb`](/ro/configuration/products/mariadb/) pentru ea.
 
 ## Corelare CVE
 

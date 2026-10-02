@@ -24,7 +24,7 @@ subjacente e teria sido a coisa errada para usar na correspondência.
 
 ## Correlação de CVEs
 
-Sem correlação — as CVEs de uma distribuição de uso geral são vulnerabilidades de pacotes, e o número da versão não informa quais pacotes foram corrigidos desde então. Consulte [Correlação de CVEs](/pt-br/cve/#quais-produtos-têm-correspondência).
+Correlacionado **por pacote instalado** com o OVAL da Canonical para a base Ubuntu do host (`UBUNTU_CODENAME` do os-release, registrado como `extra.codename`; o arquivo vai em `cve.oval.path`). A sonda também lista os pacotes binários instalados (`dpkg-query`) e lê `uname -r`/`-m`/`-v` na mesma ida e volta SSH — armazenados como `packages` da observação, e `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. Só são informadas as CVEs com uma correção mais nova do que a instalada, um achado por pacote, com link para o seu USN. Consulte [Correlação de CVEs](/pt-br/cve/#cves-por-pacote-para-distribuições-linux).
 
 ## Resolvedor de ciclo de vida
 

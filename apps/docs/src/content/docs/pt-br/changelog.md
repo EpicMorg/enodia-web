@@ -12,6 +12,88 @@ seguem o formato `MAJOR.MINOR.PATCH+BUILD`, sem prefixo `v`; `+BUILD` são
 metadados de build do semver, usados apenas para uma recompilação sem
 mudança funcional, e não para evitar um incremento de versão real.
 
+## 2.1.0+0 — 2026-10-01
+
+A correlação de CVEs desce até os pacotes instalados em dez distribuições
+Linux, e chegam seis novas sondas. Nada quebra: as novas chaves de `cve:`
+são opcionais, e os inventários apenas ganham campos opcionais, então as
+configurações e os inventários da 2.0 funcionam sem alterações.
+
+### Adicionado
+
+- **[CVEs por pacote para distribuições Linux](/pt-br/cve/#cves-por-pacote-para-distribuições-linux).**
+  As sondas de SO agora também leem os pacotes instalados e o kernel em
+  execução na sua única ida e volta SSH, e os dados de segurança próprios
+  de cada distribuição são correlacionados pacote a pacote. Cada fonte é
+  um arquivo que você baixa, como o BDU e o NVD:
+  - `cve.debian.path` — o JSON do Debian Security Tracker, para
+    [`debian`](/pt-br/configuration/products/debian/).
+  - `cve.oval.path` — arquivos OVAL dos fornecedores, um por versão, para
+    [`ubuntu`](/pt-br/configuration/products/ubuntu/),
+    [`linuxmint`](/pt-br/configuration/products/linuxmint/) (pela sua base
+    Ubuntu), [`rhel`](/pt-br/configuration/products/rhel/),
+    [`rocky-linux`](/pt-br/configuration/products/rocky-linux/) (com o
+    arquivo da Red Hat — o próprio do Rocky é recusado por ser inutilizável),
+    [`almalinux`](/pt-br/configuration/products/almalinux/),
+    [`oracle-linux`](/pt-br/configuration/products/oracle-linux/),
+    [`astra-linux`](/pt-br/configuration/products/astra-linux/) (SE 1.7/1.8)
+    e [`redos`](/pt-br/configuration/products/redos/) (7.3/8.0). O OVAL
+    processado fica em cache, como o BDU e o NVD.
+  - `cve.alpine.path` — o secdb do Alpine, para
+    [`alpine-linux`](/pt-br/configuration/products/alpine-linux/).
+- Só são informadas as CVEs que já têm uma correção mais nova do que a
+  instalada — o que uma atualização (e, para o kernel, uma reinicialização)
+  resolveria. Um achado por pacote, com link para o aviso que traz a
+  correção (USN, RHSA, ALSA, ELSA, boletim do Astra, ROS, página do tracker
+  do Debian/Alpine), com todas as CVEs agrupadas sob ele no relatório HTML.
+- A correlação segue as regras de cada gerenciador de pacotes: a ordenação
+  de versões do dpkg, do rpm e do apk, os streams de módulos AppStream, as
+  variantes de arquitetura, FIPS e Ksplice da Oracle, e o kernel em
+  execução em vez de quaisquer pacotes de kernel instalados. Cada fonte foi
+  conferida com a ferramenta de referência (`oscap oval eval`,
+  `dnf updateinfo`, python3-apt, `apk version -t`) em contêineres reais,
+  com resultados idênticos.
+- Novas sondas: [`mariadb`](/pt-br/configuration/products/mariadb/),
+  [`pfsense`](/pt-br/configuration/products/pfsense/) (Community Edition,
+  via SSH), [`supermicro-bmc`](/pt-br/configuration/products/supermicro-bmc/),
+  [`dell-idrac`](/pt-br/configuration/products/dell-idrac/) e
+  [`hp-ilo4`](/pt-br/configuration/products/hp-ilo4/) (via Redfish), e
+  [`freeradius`](/pt-br/configuration/products/freeradius/) (via SSH, com
+  `options.container` para um FreeRADIUS no Docker ou no Podman). 96 sondas
+  no total.
+- Resolvedor `github-tag-branches`: um ciclo de vida por major.minor a
+  partir das tags do GitHub, para projetos que mantêm vários branches ao
+  mesmo tempo (FreeRADIUS 3.0.x e 3.2.x).
+- O FreeRADIUS é correlacionado tanto no NVD quanto no BDU.
+
+### Corrigido
+
+- A abreviação "8.0 U3k" da VMware no calendário de ciclo de vida agora é
+  considerada igual a "8.0.3": um host [vCenter](/pt-br/configuration/products/vcenter/)
+  ou [ESXi](/pt-br/configuration/products/esxi/) 8.0 atualizado não aparece
+  mais como `ahead`.
+- As colunas LATEST/CYCLE mostram versões limpas para produtos resolvidos
+  pelo GitHub, e não a tag bruta (`2026.9.1`, e não `v2026.9.1`).
+- `config validate` informa um arquivo `cve.*.path` ausente, em vez de
+  passar e falhar depois, no `check`.
+
+### Notas
+
+- Um host [Proxmox VE](/pt-br/configuration/products/proxmox/) recebe
+  achados de pacotes como um segundo alvo `debian` via SSH, ao lado do seu
+  alvo `proxmox` via API; o `linux` do Debian só é correlacionado com um
+  kernel Debian em execução, então o kernel próprio do Proxmox não é
+  confundido com um.
+- Com todas as fontes configuradas ao mesmo tempo (BDU, NVD, Debian, oito
+  arquivos OVAL, Alpine), o `check` levou ~22 s a frio e ~3,4 s com cache,
+  com pico de ~0,5–0,6 GB — menos se `cve.oval.path` contiver apenas as
+  versões que você usa.
+- O histórico do repositório foi reescrito e assinado novamente para
+  remover nomes de host internos; todas as tags foram recriadas sobre o
+  histórico reescrito. Os binários das versões até a 2.0.0+0 informam
+  hashes de commit anteriores à reescrita.
+- MariaDB, pfSense e as sondas de BMC ainda não têm mapeamento de CVEs.
+
 ## 2.0.0+0 — 2026-09-23
 
 Uma versão major por causa de um recurso importante, e não por uma quebra

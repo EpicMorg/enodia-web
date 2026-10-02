@@ -7,6 +7,35 @@ description: enodia 各版本的重要变更。
 ——本页是它的镜像，每次发布时与本站其余内容一同保持同步，并在某项变更会影响您实际配置方式的地方，附上指向本文档其他部分的链接。标签遵循 `MAJOR.MINOR.PATCH+BUILD` 格式，不带 `v` 前缀；
 `+BUILD` 是 semver 的构建元数据，仅用于没有功能变化的重新构建，而不是用来规避真正的版本号提升。
 
+## 2.1.0+0 — 2026-10-01
+
+CVE 关联深入到十个 Linux 发行版上已安装的软件包，并新增六个探针。没有任何破坏性变更：新的 `cve:` 键是可选的，清单只会新增可选字段，因此 2.0 的配置和清单无需修改即可继续使用。
+
+### 新增
+
+- **[Linux 发行版的软件包级 CVE](/zh-cn/cve/#linux-发行版的软件包级-cve)**。操作系统探针现在还会在同一次 SSH 往返中读取已安装的软件包和正在运行的内核，并按软件包与各发行版自己的安全数据进行匹配。每个来源都是一个由您下载的文件，与 BDU 和 NVD 相同：
+  - `cve.debian.path` — Debian Security Tracker 的 JSON，用于 [`debian`](/zh-cn/configuration/products/debian/)。
+  - `cve.oval.path` — 厂商的 OVAL 文件，每个版本一个，用于 [`ubuntu`](/zh-cn/configuration/products/ubuntu/)、[`linuxmint`](/zh-cn/configuration/products/linuxmint/)（通过其 Ubuntu 基础）、[`rhel`](/zh-cn/configuration/products/rhel/)、[`rocky-linux`](/zh-cn/configuration/products/rocky-linux/)（使用 Red Hat 的文件——Rocky 自己的文件因不可用而被拒绝）、[`almalinux`](/zh-cn/configuration/products/almalinux/)、[`oracle-linux`](/zh-cn/configuration/products/oracle-linux/)、[`astra-linux`](/zh-cn/configuration/products/astra-linux/)（SE 1.7/1.8）和 [`redos`](/zh-cn/configuration/products/redos/)（7.3/8.0）。解析后的 OVAL 与 BDU 和 NVD 一样会被缓存。
+  - `cve.alpine.path` — Alpine 的 secdb，用于 [`alpine-linux`](/zh-cn/configuration/products/alpine-linux/)。
+- 只报告已有比已安装版本更新的修复的 CVE——也就是一次升级（对于内核，还需一次重启）就能消除的那些。每个软件包一项发现，链接到包含该修复的公告（USN、RHSA、ALSA、ELSA、Astra 公告、ROS、Debian/Alpine 跟踪页面），在 HTML 报告中其所有 CVE 都折叠在该项之下。
+- 匹配遵循各包管理器自己的规则：dpkg、rpm 和 apk 的版本排序，AppStream 模块流，Oracle 的架构、FIPS 和 Ksplice 变体，以及正在运行的内核，而不是碰巧安装的任何内核软件包。每个来源都在真实容器上与参考工具（`oscap oval eval`、`dnf updateinfo`、python3-apt、`apk version -t`）进行了交叉核对，结果完全一致。
+- 新探针：[`mariadb`](/zh-cn/configuration/products/mariadb/)、[`pfsense`](/zh-cn/configuration/products/pfsense/)（Community Edition，通过 SSH）、[`supermicro-bmc`](/zh-cn/configuration/products/supermicro-bmc/)、[`dell-idrac`](/zh-cn/configuration/products/dell-idrac/) 和 [`hp-ilo4`](/zh-cn/configuration/products/hp-ilo4/)（通过 Redfish），以及 [`freeradius`](/zh-cn/configuration/products/freeradius/)（通过 SSH，可用 `options.container` 指定运行在 Docker 或 Podman 中的 FreeRADIUS）。共计 96 个探针。
+- `github-tag-branches` 解析器：根据 GitHub 标签，为每个 major.minor 生成一个生命周期周期，用于同时维护多个分支的项目（FreeRADIUS 3.0.x 和 3.2.x）。
+- FreeRADIUS 同时在 NVD 和 BDU 中进行匹配。
+
+### 修复
+
+- 生命周期日历中 VMware 的“8.0 U3k”简写现在与“8.0.3”比较为相等：已打补丁的 [vCenter](/zh-cn/configuration/products/vcenter/) 或 [ESXi](/zh-cn/configuration/products/esxi/) 8.0 主机不再显示为 `ahead`。
+- 对于通过 GitHub 解析的产品，LATEST/CYCLE 列显示清理后的版本，而不是原始标签（`2026.9.1`，而不是 `v2026.9.1`）。
+- `config validate` 会报告缺失的 `cve.*.path` 文件，而不是先通过校验、之后才在 `check` 中失败。
+
+### 说明
+
+- [Proxmox VE](/zh-cn/configuration/products/proxmox/) 主机的软件包级发现，通过在其 API `proxmox` 目标旁边再加一个 SSH `debian` 目标来获得；Debian 的 `linux` 只与正在运行的 Debian 内核匹配，因此 Proxmox 自己的内核不会被误认为 Debian 内核。
+- 同时配置所有来源（BDU、NVD、Debian、八个 OVAL 文件、Alpine）时，`check` 冷启动约需 22 秒，热启动约需 3.4 秒，内存峰值约 0.5–0.6 GB——如果 `cve.oval.path` 中只放您实际运行的版本，则会更少。
+- 代码仓库的历史已被重写并重新签名，以去除内部主机名；所有标签都在重写后的历史上重新创建。2.0.0+0 及更早版本的发布二进制文件报告的是重写之前的提交哈希。
+- MariaDB、pfSense 和各 BMC 探针目前还没有 CVE 映射。
+
 ## 2.0.0+0 — 2026-09-23
 
 这是为一项重大功能而发布的主版本，而不是因为有破坏性变更：CVE 关联是第一个与生命周期无关的评估维度。现有的 `enodia.yaml`、`settings.yaml` 和清单文件无需修改即可继续使用——新的 `cve:` 块是可选的，没有它的配置，其行为与 1.2 完全相同。

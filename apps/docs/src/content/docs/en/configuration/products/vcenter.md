@@ -48,4 +48,9 @@ Not matched — almost all of its entries are `7.0` + `update_1`-style literals 
 
 ## Lifecycle resolver
 
-`endoflife:vcenter`.
+`endoflife:vcenter`. The calendar writes the latest patch level of VMware's
+8.0 branch in VMware's own shorthand (`8.0 U3k` / `8.0 Update 3k`);
+since 2.1 that's read as `8.0.3`, so a fully patched 8.0 Update 3 host
+shows as `current` rather than `ahead`. The trailing patch letter is
+dropped — the host's own version string has nothing to compare it
+against.

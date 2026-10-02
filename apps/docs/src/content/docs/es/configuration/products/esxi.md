@@ -42,3 +42,10 @@ No se contrasta: casi todas sus entradas son literales del estilo `7.0` + `updat
 ## Resolvedor del ciclo de vida
 
 `endoflife:esxi`.
+
+La versión más reciente de la rama 8.0 de VMware figura en el calendario
+con la abreviatura propia de VMware (`8.0 U3k` / `8.0 Update 3k`); desde
+la 2.1 se interpreta como `8.0.3`, de modo que un host 8.0 Update 3 con
+todos los parches aparece como `current` en lugar de `ahead`. La letra
+final del parche se descarta: la cadena de versión del propio host no
+tiene nada con lo que compararla.

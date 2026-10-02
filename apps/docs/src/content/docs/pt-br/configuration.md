@@ -25,6 +25,12 @@ cve:                                 # opcional, veja "Correlação de CVEs"
     path: vulxml.zip
   nvd:
     path: nvd/
+  debian:
+    path: debian.json
+  oval:
+    path: oval/
+  alpine:
+    path: alpine/
 credentials: {}                      # opcional, veja "Credenciais"
 targets: []                          # os seus serviços
 ```
@@ -50,8 +56,11 @@ As durações usam a sintaxe de duration do Go: `500ms`, `10s`, `2m`,
 ### `cve`
 
 Opcional. Aponta o enodia para uma exportação do BDU FSTEC
-(`cve.bdu.path`) e/ou para feeds JSON do NVD (`cve.nvd.path`) que você
-mesmo baixou — o enodia nunca os busca. Caminhos relativos são resolvidos
+(`cve.bdu.path`), para feeds JSON do NVD (`cve.nvd.path`) e, para a
+correlação por pacote em hosts Linux, para o Debian Security Tracker
+(`cve.debian.path`), arquivos OVAL dos fornecedores (`cve.oval.path`) e o
+secdb do Alpine (`cve.alpine.path`) — qualquer um deles, cada um funciona
+sozinho, todos baixados por você mesmo; o enodia nunca os busca. Caminhos relativos são resolvidos
 em relação ao diretório desta própria configuração, e um caminho
 configurado que não existe é um erro. O que ele faz, como obter os
 arquivos e quais produtos têm correspondência:
@@ -91,11 +100,13 @@ sem enviar nenhuma credencial.
 O `options` é um mapa livre por produto — a maioria das sondas o ignora
 completamente. [`p4d`/`p4p`](/pt-br/configuration/products/p4d/) são as
 primeiras a de fato ler um: `options.binary` sobrescreve o caminho da CLI
-`p4` que elas chamam.
+`p4` que elas chamam. [`freeradius`](/pt-br/configuration/products/freeradius/)
+lê `options.container` (e `options.container_runtime`) para encontrar um
+FreeRADIUS rodando no Docker ou no Podman.
 
 Consulte **Configuração de produtos** na barra lateral (ou a tabela de
 [Produtos suportados](/pt-br/products/)) para o endpoint exato, os
-requisitos de autenticação e os campos registrados de cada uma das 90
+requisitos de autenticação e os campos registrados de cada uma das 96
 sondas embutidas — `path`, `credentials` e `options` acima são o formato
 geral; a página de cada produto diz o que ele realmente precisa.
 

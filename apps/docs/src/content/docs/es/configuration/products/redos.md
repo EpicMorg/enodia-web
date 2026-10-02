@@ -21,7 +21,7 @@ RED OS: `HOME_URL`/`BUG_REPORT_URL` apuntan a red-soft.ru): `ID="redos"`,
 
 ## Correlación de CVE
 
-No se contrasta: los CVE de una distribución de propósito general son vulnerabilidades de paquetes, y el número de versión no indica qué paquetes se han parcheado desde entonces. Consulte [Correlación de CVE](/es/cve/#qué-productos-tienen-correspondencia).
+Se coteja **por paquete instalado** con el OVAL propio de RED OS para la 7.3 o la 8.0 (`redos.xml` de `redos.red-soft.ru/support/secure/<7.3|8.0>/`, en `cve.oval.path`): los datos de RHEL no son aplicables, ya que las versiones de los paquetes de RED OS son propias (`.el7` en la 7.3, `.red80` en la 8.0). La versión se coteja por su major.minor. La sonda también enumera los paquetes binarios instalados (`rpm -qa`, con el stream de módulo de AppStream de cada paquete) y lee `uname -r`/`-m`/`-v` en el mismo viaje de ida y vuelta por SSH; se almacenan como `packages` y `modules` de la observación, y como `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. De varios kernels instalados, se compara el que está en ejecución. Los hallazgos enlazan a los boletines `ROS-…` de RED OS e incluyen la severidad propia del fabricante. Consulte [Correlación de CVE](/es/cve/#cve-a-nivel-de-paquete-para-distribuciones-linux).
 
 ## Resolvedor del ciclo de vida
 

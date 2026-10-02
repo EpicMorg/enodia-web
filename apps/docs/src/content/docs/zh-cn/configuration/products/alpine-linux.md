@@ -20,7 +20,7 @@ targets:
 
 ## CVE 关联
 
-不进行匹配——通用发行版的 CVE 属于软件包漏洞，而发行版版本号无法说明此后哪些软件包已打过补丁。参见 [CVE 关联](/zh-cn/cve/#哪些产品会被匹配)。
+**按已安装的软件包**与主机所在分支的 Alpine secdb（`main.json` 和 `community.json`，放在 `cve.alpine.path` 中）进行匹配，而不是按发行版版本。分支取 `VERSION_ID` 的 major.minor（3.20.3 → v3.20）；edge 没有编号分支，因此不会有任何发现。探针还会在同一次 SSH 往返中读取 `/lib/apk/db/installed`，并按 **origin** 为软件包建立索引（secdb 自己的键：`libcrypto3` 和 `libssl3` 都属于 `openssl`）——存储为观测结果的 `packages`，以及 `extra.kernelRelease`、`extra.arch`、`extra.kernelVersion`。只报告已有比已安装版本更新的修复的 CVE，每个 origin 一项发现，链接到其在 security.alpinelinux.org 上的页面；secdb 不包含严重程度。参见 [CVE 关联](/zh-cn/cve/#linux-发行版的软件包级-cve)。
 
 ## 生命周期解析器
 

@@ -44,6 +44,15 @@ assistida de qualquer forma.
 
 Correlacionado com o NVD e o BDU FSTEC quando um [bloco `cve:`](/pt-br/cve/) está configurado.
 
+Este alvo cobre o próprio Proxmox VE. Para CVEs nos pacotes instalados
+no host, adicione um segundo alvo para o mesmo host com
+[`product: debian`](/pt-br/configuration/products/debian/) via SSH — o
+seu os-release é o do Debian. O pacote `linux` do Debian só é
+correlacionado com um kernel Debian em execução, então o kernel próprio
+do Proxmox não é confundido com um, e os pacotes compilados pelo Proxmox
+não recebem achados (não há um feed público para eles). Consulte
+[Correlação de CVEs](/pt-br/cve/#cves-por-pacote-para-distribuições-linux).
+
 ## Resolvedor de ciclo de vida
 
 `endoflife:proxmox-ve`.

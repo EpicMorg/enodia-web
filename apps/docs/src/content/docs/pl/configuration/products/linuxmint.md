@@ -23,7 +23,7 @@ Ubuntu i byłby niewłaściwym punktem odniesienia do dopasowania.
 
 ## Korelacja CVE
 
-Brak dopasowania — CVE dystrybucji ogólnego przeznaczenia to podatności pakietów, a numer wydania nie mówi, które pakiety załatano od tego czasu. Zobacz stronę [Korelacja CVE](/pl/cve/#które-produkty-są-dopasowywane).
+Dopasowywany **według zainstalowanych pakietów** do OVAL Canonical dla bazy Ubuntu hosta (`UBUNTU_CODENAME` z os-release, zapisywany jako `extra.codename`; plik trafia do `cve.oval.path`). Sonda wyświetla też listę zainstalowanych pakietów binarnych (`dpkg-query`) i odczytuje `uname -r`/`-m`/`-v` w tym samym przebiegu SSH — zapisywane jako `packages` obserwacji oraz `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. Zgłaszane są tylko CVE z poprawką nowszą niż zainstalowana wersja, jedno znalezisko na pakiet, z linkiem do jego USN. Zobacz stronę [Korelacja CVE](/pl/cve/#cve-na-poziomie-pakietów-dla-dystrybucji-linuksa).
 
 ## Resolver cyklu życia
 
