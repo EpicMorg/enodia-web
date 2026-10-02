@@ -1,9 +1,9 @@
 ---
 title: Підтримувані продукти
-description: Усі 90 вбудованих проб, прямо з `enodia products`.
+description: Усі 96 вбудованих проб, прямо з `enodia products`.
 ---
 
-90 продуктів, кожен — вкомпільована проба (див.
+96 продуктів, кожен — вкомпільована проба (див.
 [Концепції](/uk/concepts/#проби-вкомпільовано-а-не-описано-yaml-dsl)).
 Значення зі стовпця **Продукт** вказуйте як `product:` у цілі.
 **Резолвер** — це ідентифікатор даних життєвого циклу: `endoflife:<slug>`
@@ -14,7 +14,11 @@ eol/support/lts — GitHub не має жодної думки щодо полі
 Releases, лише з git-тегами (те саме обмеження «лише остання версія», що
 й у `github:`; використовується, коли власні теги продукту навіть не є
 звичайною версією з крапками, — див.
-[pgAdmin](/uk/configuration/products/pgadmin/)), а `—` означає, що enodia
+[pgAdmin](/uk/configuration/products/pgadmin/)), або
+`github-tag-branches:<owner/repo>` для проєкту, що підтримує кілька
+гілок релізів одночасно (один цикл підтримки на кожну гілку
+major.minor, кожна зі своїм останнім тегом, — див.
+[FreeRADIUS](/uk/configuration/products/freeradius/)), а `—` означає, що enodia
 вміє визначати версію цього продукту, але відповідності для життєвого
 циклу поки немає (осі патча та гілки все одно працюють; вісь життєвого
 циклу залишається `unknown`). Натисніть на продукт, щоб побачити його
@@ -30,7 +34,11 @@ GitHub Actions), щоб підняти ліміт до 5000 на годину; �
 
 **CVE** показує, з якими базами даних зіставляється продукт, коли
 налаштовано [блок `cve:`](/uk/cve/): `NVD`, `BDU` (БДУ ФСТЕК) або `—`,
-якщо пошук CVE не виконується (причину для кожного незіставленого випадку
+якщо пошук CVE не виконується. Десять дистрибутивів Linux натомість
+зіставляються за кожним встановленим пакетом, а не за релізом, —
+`(пакети)` називає джерело: Debian Security Tracker, OVAL вендора або
+secdb Alpine (див.
+[CVE на рівні пакетів](/uk/cve/#cve-на-рівні-пакетів-для-дистрибутивів-linux)) (причину для кожного незіставленого випадку
 наведено на сторінці [Зіставлення з CVE](/uk/cve/#які-продукти-зіставляються)).
 Цей стовпець береться з власних таблиць продуктів enodia, а не з `enodia
 products`.
@@ -46,13 +54,15 @@ products`.
 
 ## Застосунки та інфраструктурні сервіси
 
-60 продуктів, що опитуються через HTTP(S) або «сирий» мережевий протокол
-(MySQL, Redis, MongoDB, ...) — без участі SSH. Два з них,
+65 продуктів, що опитуються через HTTP(S) або «сирий» мережевий протокол
+(MySQL, Redis, MongoDB, ...). Три з них — винятки:
 [`p4d`](/uk/configuration/products/p4d/) і
-[`p4p`](/uk/configuration/products/p4p/), є ще одним винятком: жоден не
-говорить мережевим протоколом, який реалізує enodia, — обидва викликають
-власний CLI `p4` оператора, який має бути встановлено поряд із самою
-enodia, а не просто зробити досяжним по мережі.
+[`p4p`](/uk/configuration/products/p4p/) не говорять жодним мережевим
+протоколом, який реалізує enodia, — обидва викликають власний CLI `p4`
+оператора, який має бути встановлено поряд із самою enodia, а не просто
+зробити досяжним по мережі, — а
+[`freeradius`](/uk/configuration/products/freeradius/) читається через SSH,
+бо RADIUS не має способу повідомити версію.
 
 | Продукт | Опис | Резолвер | CVE |
 |---|---|---|---|
@@ -63,16 +73,19 @@ enodia, а не просто зробити досяжним по мережі.
 | [`bitwarden`](/uk/configuration/products/bitwarden/) | Bitwarden (self-hosted) | `github:bitwarden/server` | NVD |
 | [`clickhouse`](/uk/configuration/products/clickhouse/) | ClickHouse | `endoflife:clickhouse` | NVD, BDU |
 | [`confluence`](/uk/configuration/products/confluence/) | Atlassian Confluence (Data Center) | `endoflife:confluence` | NVD, BDU |
+| [`dell-idrac`](/uk/configuration/products/dell-idrac/) | Dell iDRAC | — | — |
 | [`elasticsearch`](/uk/configuration/products/elasticsearch/) | Elasticsearch | `endoflife:elasticsearch` | NVD, BDU |
 | [`esxi`](/uk/configuration/products/esxi/) | VMware ESXi | `endoflife:esxi` | — |
 | [`forgejo`](/uk/configuration/products/forgejo/) | Forgejo | `endoflife:forgejo` | NVD, BDU |
 | [`fortios`](/uk/configuration/products/fortios/) | Fortinet FortiOS (FortiGate) | `endoflife:fortios` | NVD, BDU |
+| [`freeradius`](/uk/configuration/products/freeradius/) | FreeRADIUS | `github-tag-branches:FreeRADIUS/freeradius-server` | NVD, BDU |
 | [`generic`](/uk/configuration/products/generic/) | Власноруч написаний парсер для систем, яких enodia не знає, — див. [Конфігурація](/uk/configuration/#проба-generic) | — | — |
 | [`gitlab`](/uk/configuration/products/gitlab/) | GitLab | `endoflife:gitlab` | NVD, BDU |
 | [`grafana`](/uk/configuration/products/grafana/) | Grafana | `endoflife:grafana` | NVD, BDU |
 | [`graylog`](/uk/configuration/products/graylog/) | Graylog | `endoflife:graylog` | NVD, BDU |
 | [`haproxy`](/uk/configuration/products/haproxy/) | HAProxy | `endoflife:haproxy` | NVD, BDU |
 | [`harbor`](/uk/configuration/products/harbor/) | Harbor (реєстр контейнерів) | `endoflife:harbor` | NVD, BDU |
+| [`hp-ilo4`](/uk/configuration/products/hp-ilo4/) | HP iLO 4 | — | — |
 | [`jaeger`](/uk/configuration/products/jaeger/) | Jaeger | `endoflife:jaeger` | NVD |
 | [`jellyfin`](/uk/configuration/products/jellyfin/) | Jellyfin | `github:jellyfin/jellyfin` | NVD |
 | [`jenkins`](/uk/configuration/products/jenkins/) | Jenkins | `endoflife:jenkins` | NVD, BDU |
@@ -81,6 +94,7 @@ enodia, а не просто зробити досяжним по мережі.
 | [`kibana`](/uk/configuration/products/kibana/) | Kibana | `endoflife:kibana` | NVD, BDU |
 | [`kitsu`](/uk/configuration/products/kitsu/) | Kitsu (фронтенд CG-Wire / Zou) | `github:cgwire/kitsu` | — |
 | [`logstash`](/uk/configuration/products/logstash/) | Logstash | `endoflife:logstash` | NVD, BDU |
+| [`mariadb`](/uk/configuration/products/mariadb/) | MariaDB Server | `endoflife:mariadb` | — |
 | [`mattermost`](/uk/configuration/products/mattermost/) | Mattermost | `endoflife:mattermost` | NVD, BDU |
 | [`mongodb`](/uk/configuration/products/mongodb/) | MongoDB | `endoflife:mongodb` | NVD, BDU |
 | [`mysql`](/uk/configuration/products/mysql/) | MySQL Server | `endoflife:mysql` | NVD, BDU |
@@ -104,6 +118,7 @@ enodia, а не просто зробити досяжним по мережі.
 | [`routeros`](/uk/configuration/products/routeros/) | MikroTik RouterOS | `endoflife:routeros` | NVD, BDU |
 | [`sonarqube`](/uk/configuration/products/sonarqube/) | SonarQube (Server або Community Build) | `endoflife:sonarqube-server`\* | NVD, BDU |
 | [`ssh`](/uk/configuration/products/ssh/) | SSH-банер (будь-яка реалізація) | — | NVD, BDU |
+| [`supermicro-bmc`](/uk/configuration/products/supermicro-bmc/) | Supermicro BMC | — | — |
 | [`synology-dsm`](/uk/configuration/products/synology-dsm/) | Synology DSM | — | — |
 | [`teamcity`](/uk/configuration/products/teamcity/) | JetBrains TeamCity | — | NVD, BDU |
 | [`testrail`](/uk/configuration/products/testrail/) | TestRail | — | NVD |
@@ -119,25 +134,25 @@ enodia, а не просто зробити досяжним по мережі.
 
 ## Операційні системи
 
-30 продуктів, усі ідентифікуються через **SSH**, а не HTTP, — спільний
+31 продукт, усі ідентифікуються через **SSH**, а не HTTP, — спільний
 механізм, який використовує кожен із них, описано на сторінці
 [Ідентифікація ОС через SSH](/uk/configuration/products/ssh-os-probes/).
 
 | Продукт | Опис | Резолвер | CVE |
 |---|---|---|---|
-| [`almalinux`](/uk/configuration/products/almalinux/) | AlmaLinux | `endoflife:almalinux` | — |
-| [`alpine-linux`](/uk/configuration/products/alpine-linux/) | Alpine Linux | `endoflife:alpine-linux` | — |
+| [`almalinux`](/uk/configuration/products/almalinux/) | AlmaLinux | `endoflife:almalinux` | OVAL (пакети) |
+| [`alpine-linux`](/uk/configuration/products/alpine-linux/) | Alpine Linux | `endoflife:alpine-linux` | secdb Alpine (пакети) |
 | [`amazon-linux`](/uk/configuration/products/amazon-linux/) | Amazon Linux | `endoflife:amazon-linux` | — |
-| [`astra-linux`](/uk/configuration/products/astra-linux/) | Astra Linux | — | — |
+| [`astra-linux`](/uk/configuration/products/astra-linux/) | Astra Linux | — | OVAL (пакети) |
 | [`centos`](/uk/configuration/products/centos/) | CentOS Linux (застаріла, EOL) | `endoflife:centos` | — |
 | [`centos-stream`](/uk/configuration/products/centos-stream/) | CentOS Stream | `endoflife:centos-stream` | — |
-| [`debian`](/uk/configuration/products/debian/) | Debian | `endoflife:debian` | — |
+| [`debian`](/uk/configuration/products/debian/) | Debian | `endoflife:debian` | трекер Debian (пакети) |
 | [`eurolinux`](/uk/configuration/products/eurolinux/) | EuroLinux | `endoflife:eurolinux` | — |
 | [`fedora`](/uk/configuration/products/fedora/) | Fedora Linux | `endoflife:fedora` | — |
 | [`freebsd`](/uk/configuration/products/freebsd/) | FreeBSD | `endoflife:freebsd` | — |
 | [`gentoo`](/uk/configuration/products/gentoo/) | Gentoo Linux | — | — |
 | [`kali-linux`](/uk/configuration/products/kali-linux/) | Kali Linux | — | — |
-| [`linuxmint`](/uk/configuration/products/linuxmint/) | Linux Mint | `endoflife:linuxmint` | — |
+| [`linuxmint`](/uk/configuration/products/linuxmint/) | Linux Mint | `endoflife:linuxmint` | OVAL (пакети) |
 | [`macos`](/uk/configuration/products/macos/) | macOS | `endoflife:macos` | NVD, BDU |
 | [`netbsd`](/uk/configuration/products/netbsd/) | NetBSD | `endoflife:netbsd` | — |
 | [`nixos`](/uk/configuration/products/nixos/) | NixOS | `endoflife:nixos` | — |
@@ -145,16 +160,17 @@ enodia, а не просто зробити досяжним по мережі.
 | [`openeuler`](/uk/configuration/products/openeuler/) | openEuler | — | — |
 | [`opensuse`](/uk/configuration/products/opensuse/) | openSUSE | `endoflife:opensuse` | — |
 | [`opnsense`](/uk/configuration/products/opnsense/) | OPNsense | `endoflife:opnsense` | NVD, BDU |
-| [`oracle-linux`](/uk/configuration/products/oracle-linux/) | Oracle Linux | `endoflife:oracle-linux` | — |
+| [`oracle-linux`](/uk/configuration/products/oracle-linux/) | Oracle Linux | `endoflife:oracle-linux` | OVAL (пакети) |
 | [`oracle-solaris`](/uk/configuration/products/oracle-solaris/) | Oracle Solaris | `endoflife:oracle-solaris` | — |
+| [`pfsense`](/uk/configuration/products/pfsense/) | pfSense Community Edition | — | — |
 | [`photon`](/uk/configuration/products/photon/) | VMware Photon OS | `endoflife:photon` | — |
 | [`postmarketos`](/uk/configuration/products/postmarketos/) | postmarketOS | `endoflife:postmarketos` | — |
-| [`redos`](/uk/configuration/products/redos/) | RED OS | — | — |
-| [`rhel`](/uk/configuration/products/rhel/) | Red Hat Enterprise Linux | `endoflife:rhel` | — |
-| [`rocky-linux`](/uk/configuration/products/rocky-linux/) | Rocky Linux | `endoflife:rocky-linux` | — |
+| [`redos`](/uk/configuration/products/redos/) | RED OS | — | OVAL (пакети) |
+| [`rhel`](/uk/configuration/products/rhel/) | Red Hat Enterprise Linux | `endoflife:rhel` | OVAL (пакети) |
+| [`rocky-linux`](/uk/configuration/products/rocky-linux/) | Rocky Linux | `endoflife:rocky-linux` | OVAL (пакети) |
 | [`slackware`](/uk/configuration/products/slackware/) | Slackware | `endoflife:slackware` | — |
 | [`steamos`](/uk/configuration/products/steamos/) | SteamOS | `endoflife:steamos` | — |
-| [`ubuntu`](/uk/configuration/products/ubuntu/) | Ubuntu | `endoflife:ubuntu` | — |
+| [`ubuntu`](/uk/configuration/products/ubuntu/) | Ubuntu | `endoflife:ubuntu` | OVAL (пакети) |
 
 ## Продукти Atlassian
 

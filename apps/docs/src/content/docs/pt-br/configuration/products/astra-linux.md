@@ -32,7 +32,7 @@ de versão. `/etc/astra_version` não tem nada disso: um simples
 
 ## Correlação de CVEs
 
-Sem correlação — as CVEs de uma distribuição de uso geral são vulnerabilidades de pacotes, e o número da versão não informa quais pacotes foram corrigidos desde então. Consulte [Correlação de CVEs](/pt-br/cve/#quais-produtos-têm-correspondência).
+Correlacionado **por pacote instalado** com o OVAL próprio do Astra Linux para o SE 1.7 ou 1.8 (`oval-definitions-alse-<1.7|1.8>.xml`, em `cve.oval.path`) — os dados do Debian não se aplicam, já que as versões de pacotes do Astra são recompilações próprias. A versão é correlacionada pelo major.minor (`1.8.6` → 1.8). A sonda também lista os pacotes binários instalados (`dpkg-query`) na mesma ida e volta SSH que `/etc/astra_version` — armazenados como `packages` da observação, além de `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. Os achados apontam para o boletim próprio do Astra, ou para o BDU quando o fornecedor não cita nenhum (1.7). Os dados do Astra não trazem severidade, e os seus pacotes de kernel são comparados como instalados, não como em execução. Consulte [Correlação de CVEs](/pt-br/cve/#cves-por-pacote-para-distribuições-linux).
 
 ## Resolvedor de ciclo de vida
 

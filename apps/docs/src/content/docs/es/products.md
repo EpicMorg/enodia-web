@@ -1,9 +1,9 @@
 ---
 title: Productos compatibles
-description: "Las 90 sondas integradas, tal como las muestra `enodia products`."
+description: "Las 96 sondas integradas, tal como las muestra `enodia products`."
 ---
 
-90 productos, cada uno una sonda compilada (consulte
+96 productos, cada uno una sonda compilada (consulte
 [Conceptos](/es/concepts/#las-sondas-están-compiladas-no-son-un-dsl-en-yaml)). Use el
 valor de **Producto** como `product:` en un destino. **Resolvedor** es el
 identificador de los datos del ciclo de vida: `endoflife:<slug>` para
@@ -14,7 +14,11 @@ ciclo de vida), o `github-tags:<owner/repo>` para un repositorio sin
 ninguna Release, solo con etiquetas de git (la misma limitación de «solo
 la última versión» que `github:`, que se usa cuando las propias
 etiquetas de un producto ni siquiera son una versión simple con puntos;
-consulte [pgAdmin](/es/configuration/products/pgadmin/)); un `—`
+consulte [pgAdmin](/es/configuration/products/pgadmin/)), o
+`github-tag-branches:<owner/repo>` para un proyecto que mantiene varias
+ramas de versiones a la vez (un ciclo de vida por cada major.minor, cada
+uno con su propia etiqueta más reciente; consulte
+[FreeRADIUS](/es/configuration/products/freeradius/)); un `—`
 significa que enodia detecta la versión de ese producto pero aún no
 tiene correspondencia de ciclo de vida (sus ejes de parche/rama siguen
 funcionando; su eje de ciclo de vida queda en `unknown`). Haga clic en un
@@ -31,7 +35,11 @@ autenticación, y nada se rompe en ningún caso.
 
 **CVE** indica con qué bases de datos se coteja el producto cuando hay
 un [bloque `cve:`](/es/cve/) configurado: `NVD`, `BDU` (BDU FSTEC) o `—`
-si no hay búsqueda de CVE (cada caso sin correspondencia tiene su motivo
+si no hay búsqueda de CVE. Diez distribuciones Linux se cotejan por
+paquete instalado en lugar de por versión: `(paquetes)` indica la
+fuente: el Debian Security Tracker, el OVAL del fabricante o el secdb de
+Alpine (consulte
+[CVE a nivel de paquete](/es/cve/#cve-a-nivel-de-paquete-para-distribuciones-linux)) (cada caso sin correspondencia tiene su motivo
 en la página [Correlación de CVE](/es/cve/#qué-productos-tienen-correspondencia)).
 Esta columna procede de las propias tablas de productos de enodia, no de
 `enodia products`.
@@ -48,13 +56,15 @@ propia cadena de versión; consulte
 
 ## Aplicaciones y servicios de infraestructura
 
-60 productos, sondeados por HTTP(S) o mediante un protocolo de red
-propio (MySQL, Redis, MongoDB, ...), sin intervención de SSH. Dos de
-ellos, [`p4d`](/es/configuration/products/p4d/) y
-[`p4p`](/es/configuration/products/p4p/), son una excepción adicional:
-ninguno habla un protocolo de red que enodia implemente; ambos invocan la
-propia CLI `p4` del operador, que debe estar instalada junto a enodia, y
-no solo ser accesible por la red.
+65 productos, sondeados por HTTP(S) o mediante un protocolo de red
+propio (MySQL, Redis, MongoDB, ...). Tres son excepciones:
+[`p4d`](/es/configuration/products/p4d/) y
+[`p4p`](/es/configuration/products/p4p/) no hablan ningún protocolo de
+red que enodia implemente: ambos invocan la propia CLI `p4` del
+operador, que debe estar instalada junto a enodia, y no solo ser
+accesible por la red; y
+[`freeradius`](/es/configuration/products/freeradius/) se lee por SSH,
+porque RADIUS no tiene forma de informar de una versión.
 
 | Producto | Resumen | Resolvedor | CVE |
 |---|---|---|---|
@@ -65,16 +75,19 @@ no solo ser accesible por la red.
 | [`bitwarden`](/es/configuration/products/bitwarden/) | Bitwarden (autoalojado) | `github:bitwarden/server` | NVD |
 | [`clickhouse`](/es/configuration/products/clickhouse/) | ClickHouse | `endoflife:clickhouse` | NVD, BDU |
 | [`confluence`](/es/configuration/products/confluence/) | Atlassian Confluence (Data Center) | `endoflife:confluence` | NVD, BDU |
+| [`dell-idrac`](/es/configuration/products/dell-idrac/) | Dell iDRAC | — | — |
 | [`elasticsearch`](/es/configuration/products/elasticsearch/) | Elasticsearch | `endoflife:elasticsearch` | NVD, BDU |
 | [`esxi`](/es/configuration/products/esxi/) | VMware ESXi | `endoflife:esxi` | — |
 | [`forgejo`](/es/configuration/products/forgejo/) | Forgejo | `endoflife:forgejo` | NVD, BDU |
 | [`fortios`](/es/configuration/products/fortios/) | Fortinet FortiOS (FortiGate) | `endoflife:fortios` | NVD, BDU |
+| [`freeradius`](/es/configuration/products/freeradius/) | FreeRADIUS | `github-tag-branches:FreeRADIUS/freeradius-server` | NVD, BDU |
 | [`generic`](/es/configuration/products/generic/) | Analizador escrito a mano para sistemas que enodia no conoce; consulte [Configuración](/es/configuration/#la-sonda-genérica) | — | — |
 | [`gitlab`](/es/configuration/products/gitlab/) | GitLab | `endoflife:gitlab` | NVD, BDU |
 | [`grafana`](/es/configuration/products/grafana/) | Grafana | `endoflife:grafana` | NVD, BDU |
 | [`graylog`](/es/configuration/products/graylog/) | Graylog | `endoflife:graylog` | NVD, BDU |
 | [`haproxy`](/es/configuration/products/haproxy/) | HAProxy | `endoflife:haproxy` | NVD, BDU |
 | [`harbor`](/es/configuration/products/harbor/) | Harbor (registro de contenedores) | `endoflife:harbor` | NVD, BDU |
+| [`hp-ilo4`](/es/configuration/products/hp-ilo4/) | HP iLO 4 | — | — |
 | [`jaeger`](/es/configuration/products/jaeger/) | Jaeger | `endoflife:jaeger` | NVD |
 | [`jellyfin`](/es/configuration/products/jellyfin/) | Jellyfin | `github:jellyfin/jellyfin` | NVD |
 | [`jenkins`](/es/configuration/products/jenkins/) | Jenkins | `endoflife:jenkins` | NVD, BDU |
@@ -83,6 +96,7 @@ no solo ser accesible por la red.
 | [`kibana`](/es/configuration/products/kibana/) | Kibana | `endoflife:kibana` | NVD, BDU |
 | [`kitsu`](/es/configuration/products/kitsu/) | Kitsu (frontend de CG-Wire / Zou) | `github:cgwire/kitsu` | — |
 | [`logstash`](/es/configuration/products/logstash/) | Logstash | `endoflife:logstash` | NVD, BDU |
+| [`mariadb`](/es/configuration/products/mariadb/) | MariaDB Server | `endoflife:mariadb` | — |
 | [`mattermost`](/es/configuration/products/mattermost/) | Mattermost | `endoflife:mattermost` | NVD, BDU |
 | [`mongodb`](/es/configuration/products/mongodb/) | MongoDB | `endoflife:mongodb` | NVD, BDU |
 | [`mysql`](/es/configuration/products/mysql/) | MySQL Server | `endoflife:mysql` | NVD, BDU |
@@ -106,6 +120,7 @@ no solo ser accesible por la red.
 | [`routeros`](/es/configuration/products/routeros/) | MikroTik RouterOS | `endoflife:routeros` | NVD, BDU |
 | [`sonarqube`](/es/configuration/products/sonarqube/) | SonarQube (Server o Community Build) | `endoflife:sonarqube-server`\* | NVD, BDU |
 | [`ssh`](/es/configuration/products/ssh/) | Banner SSH (cualquier implementación) | — | NVD, BDU |
+| [`supermicro-bmc`](/es/configuration/products/supermicro-bmc/) | BMC de Supermicro | — | — |
 | [`synology-dsm`](/es/configuration/products/synology-dsm/) | Synology DSM | — | — |
 | [`teamcity`](/es/configuration/products/teamcity/) | JetBrains TeamCity | — | NVD, BDU |
 | [`testrail`](/es/configuration/products/testrail/) | TestRail | — | NVD |
@@ -121,25 +136,25 @@ no solo ser accesible por la red.
 
 ## Sistemas operativos
 
-30 productos, todos identificados por **SSH** en lugar de HTTP; consulte
+31 productos, todos identificados por **SSH** en lugar de HTTP; consulte
 [Identificación del SO por SSH](/es/configuration/products/ssh-os-probes/)
 para ver el mecanismo común que usan todos ellos.
 
 | Producto | Resumen | Resolvedor | CVE |
 |---|---|---|---|
-| [`almalinux`](/es/configuration/products/almalinux/) | AlmaLinux | `endoflife:almalinux` | — |
-| [`alpine-linux`](/es/configuration/products/alpine-linux/) | Alpine Linux | `endoflife:alpine-linux` | — |
+| [`almalinux`](/es/configuration/products/almalinux/) | AlmaLinux | `endoflife:almalinux` | OVAL (paquetes) |
+| [`alpine-linux`](/es/configuration/products/alpine-linux/) | Alpine Linux | `endoflife:alpine-linux` | secdb de Alpine (paquetes) |
 | [`amazon-linux`](/es/configuration/products/amazon-linux/) | Amazon Linux | `endoflife:amazon-linux` | — |
-| [`astra-linux`](/es/configuration/products/astra-linux/) | Astra Linux | — | — |
+| [`astra-linux`](/es/configuration/products/astra-linux/) | Astra Linux | — | OVAL (paquetes) |
 | [`centos`](/es/configuration/products/centos/) | CentOS Linux (heredado, EOL) | `endoflife:centos` | — |
 | [`centos-stream`](/es/configuration/products/centos-stream/) | CentOS Stream | `endoflife:centos-stream` | — |
-| [`debian`](/es/configuration/products/debian/) | Debian | `endoflife:debian` | — |
+| [`debian`](/es/configuration/products/debian/) | Debian | `endoflife:debian` | tracker de Debian (paquetes) |
 | [`eurolinux`](/es/configuration/products/eurolinux/) | EuroLinux | `endoflife:eurolinux` | — |
 | [`fedora`](/es/configuration/products/fedora/) | Fedora Linux | `endoflife:fedora` | — |
 | [`freebsd`](/es/configuration/products/freebsd/) | FreeBSD | `endoflife:freebsd` | — |
 | [`gentoo`](/es/configuration/products/gentoo/) | Gentoo Linux | — | — |
 | [`kali-linux`](/es/configuration/products/kali-linux/) | Kali Linux | — | — |
-| [`linuxmint`](/es/configuration/products/linuxmint/) | Linux Mint | `endoflife:linuxmint` | — |
+| [`linuxmint`](/es/configuration/products/linuxmint/) | Linux Mint | `endoflife:linuxmint` | OVAL (paquetes) |
 | [`macos`](/es/configuration/products/macos/) | macOS | `endoflife:macos` | NVD, BDU |
 | [`netbsd`](/es/configuration/products/netbsd/) | NetBSD | `endoflife:netbsd` | — |
 | [`nixos`](/es/configuration/products/nixos/) | NixOS | `endoflife:nixos` | — |
@@ -147,16 +162,17 @@ para ver el mecanismo común que usan todos ellos.
 | [`openeuler`](/es/configuration/products/openeuler/) | openEuler | — | — |
 | [`opensuse`](/es/configuration/products/opensuse/) | openSUSE | `endoflife:opensuse` | — |
 | [`opnsense`](/es/configuration/products/opnsense/) | OPNsense | `endoflife:opnsense` | NVD, BDU |
-| [`oracle-linux`](/es/configuration/products/oracle-linux/) | Oracle Linux | `endoflife:oracle-linux` | — |
+| [`oracle-linux`](/es/configuration/products/oracle-linux/) | Oracle Linux | `endoflife:oracle-linux` | OVAL (paquetes) |
 | [`oracle-solaris`](/es/configuration/products/oracle-solaris/) | Oracle Solaris | `endoflife:oracle-solaris` | — |
+| [`pfsense`](/es/configuration/products/pfsense/) | pfSense Community Edition | — | — |
 | [`photon`](/es/configuration/products/photon/) | VMware Photon OS | `endoflife:photon` | — |
 | [`postmarketos`](/es/configuration/products/postmarketos/) | postmarketOS | `endoflife:postmarketos` | — |
-| [`redos`](/es/configuration/products/redos/) | RED OS | — | — |
-| [`rhel`](/es/configuration/products/rhel/) | Red Hat Enterprise Linux | `endoflife:rhel` | — |
-| [`rocky-linux`](/es/configuration/products/rocky-linux/) | Rocky Linux | `endoflife:rocky-linux` | — |
+| [`redos`](/es/configuration/products/redos/) | RED OS | — | OVAL (paquetes) |
+| [`rhel`](/es/configuration/products/rhel/) | Red Hat Enterprise Linux | `endoflife:rhel` | OVAL (paquetes) |
+| [`rocky-linux`](/es/configuration/products/rocky-linux/) | Rocky Linux | `endoflife:rocky-linux` | OVAL (paquetes) |
 | [`slackware`](/es/configuration/products/slackware/) | Slackware | `endoflife:slackware` | — |
 | [`steamos`](/es/configuration/products/steamos/) | SteamOS | `endoflife:steamos` | — |
-| [`ubuntu`](/es/configuration/products/ubuntu/) | Ubuntu | `endoflife:ubuntu` | — |
+| [`ubuntu`](/es/configuration/products/ubuntu/) | Ubuntu | `endoflife:ubuntu` | OVAL (paquetes) |
 
 ## Productos de Atlassian
 

@@ -21,7 +21,7 @@ zawartość RED OS — `HOME_URL`/`BUG_REPORT_URL` wskazują na red-soft.ru):
 
 ## Korelacja CVE
 
-Brak dopasowania — CVE dystrybucji ogólnego przeznaczenia to podatności pakietów, a numer wydania nie mówi, które pakiety załatano od tego czasu. Zobacz stronę [Korelacja CVE](/pl/cve/#które-produkty-są-dopasowywane).
+Dopasowywany **według zainstalowanych pakietów** do własnego OVAL RED OS dla 7.3 lub 8.0 (`redos.xml` z `redos.red-soft.ru/support/secure/<7.3|8.0>/`, w `cve.oval.path`) — dane RHEL nie mają tu zastosowania, ponieważ wersje pakietów RED OS są jego własne (`.el7` w 7.3, `.red80` w 8.0). Wydanie jest dopasowywane według major.minor wersji. Sonda wyświetla też listę zainstalowanych pakietów binarnych (`rpm -qa`, ze strumieniem modułu AppStream każdego pakietu) i odczytuje `uname -r`/`-m`/`-v` w tym samym przebiegu SSH — zapisywane jako `packages` i `modules` obserwacji oraz `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. Spośród kilku zainstalowanych jąder porównywane jest to działające. Znaleziska prowadzą do biuletynów `ROS-…` RED OS i niosą własną ważność dostawcy. Zobacz stronę [Korelacja CVE](/pl/cve/#cve-na-poziomie-pakietów-dla-dystrybucji-linuksa).
 
 ## Resolver cyklu życia
 

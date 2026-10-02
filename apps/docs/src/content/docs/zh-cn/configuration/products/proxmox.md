@@ -36,6 +36,8 @@ credentials:
 
 配置了 [`cve:` 块](/zh-cn/cve/)时，会与 NVD 和 BDU FSTEC 进行匹配。
 
+此目标覆盖的是 Proxmox VE 本身。要获得主机上已安装软件包的 CVE，请为同一台主机再添加一个通过 SSH 的 [`product: debian`](/zh-cn/configuration/products/debian/) 目标——它的 os-release 就是 Debian 的。Debian 的 `linux` 软件包只与正在运行的 Debian 内核匹配，因此 Proxmox 自己的内核不会被误认为 Debian 内核；Proxmox 构建的软件包不会有任何发现（它们没有公开的数据源）。参见 [CVE 关联](/zh-cn/cve/#linux-发行版的软件包级-cve)。
+
 ## 生命周期解析器
 
 `endoflife:proxmox-ve`。

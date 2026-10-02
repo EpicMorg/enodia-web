@@ -41,4 +41,9 @@ Nu se corelează — aproape toate intrările sale sunt literale de forma `7.0` 
 
 ## Rezolvatorul ciclului de viață
 
-`endoflife:esxi`.
+`endoflife:esxi`. Calendarul scrie cel mai recent nivel de patch al ramurii
+8.0 a VMware în notația prescurtată proprie a VMware (`8.0 U3k` / `8.0 Update 3k`);
+începând cu 2.1, aceasta este citită ca `8.0.3`, astfel încât o gazdă 8.0
+Update 3 complet actualizată apare ca `current`, nu ca `ahead`. Litera de
+patch de la final este eliminată — șirul de versiune al gazdei nu are
+nimic cu care să o compare.

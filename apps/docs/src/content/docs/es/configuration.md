@@ -25,6 +25,12 @@ cve:                                 # opcional, véase "Correlación de CVE"
     path: vulxml.zip
   nvd:
     path: nvd/
+  debian:
+    path: debian.json
+  oval:
+    path: oval/
+  alpine:
+    path: alpine/
 credentials: {}                      # opcional, véase "Credenciales"
 targets: []                          # sus servicios
 ```
@@ -48,9 +54,12 @@ Las duraciones usan la sintaxis de duración de Go: `500ms`, `10s`, `2m`,
 
 ### `cve`
 
-Opcional. Indica a enodia una exportación de BDU FSTEC (`cve.bdu.path`)
-y/o fuentes JSON de NVD (`cve.nvd.path`) que usted mismo haya
-descargado: enodia nunca las descarga. Las rutas relativas se resuelven
+Opcional. Indica a enodia una exportación de BDU FSTEC (`cve.bdu.path`),
+fuentes JSON de NVD (`cve.nvd.path`) y, para el cotejo a nivel de
+paquete en hosts Linux, el Debian Security Tracker (`cve.debian.path`),
+archivos OVAL del fabricante (`cve.oval.path`) y el secdb de Alpine
+(`cve.alpine.path`): cualquiera de ellos, cada uno funciona por
+separado, todos descargados por usted mismo; enodia nunca los descarga. Las rutas relativas se resuelven
 respecto al directorio de esta configuración, y una ruta configurada que
 no existe es un error. Qué hace, cómo obtener los archivos y qué
 productos tienen correspondencia:
@@ -91,12 +100,14 @@ destino sin enviar ninguna credencial.
 `options` es un mapa libre por producto: la mayoría de las sondas lo
 ignoran por completo. [`p4d`/`p4p`](/es/configuration/products/p4d/) son
 las primeras que realmente leen uno: `options.binary` sobrescribe la ruta
-de la CLI `p4` que invocan.
+de la CLI `p4` que invocan. [`freeradius`](/es/configuration/products/freeradius/)
+lee `options.container` (y `options.container_runtime`) para encontrar un
+FreeRADIUS que se ejecute en Docker o Podman.
 
 Consulte **Configuración de productos** en la barra lateral (o la tabla
 de [Productos compatibles](/es/products/)) para ver el endpoint exacto,
 los requisitos de autenticación y los campos registrados de cada una de
-las 90 sondas integradas: `path`, `credentials` y `options` de arriba son
+las 96 sondas integradas: `path`, `credentials` y `options` de arriba son
 la forma general; la página de cada producto indica lo que realmente
 necesita.
 

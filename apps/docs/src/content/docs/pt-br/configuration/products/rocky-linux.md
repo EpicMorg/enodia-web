@@ -22,7 +22,7 @@ os-release do próprio Rocky, diferente do nome em `product:` — e
 
 ## Correlação de CVEs
 
-Sem correlação — as CVEs de uma distribuição de uso geral são vulnerabilidades de pacotes, e o número da versão não informa quais pacotes foram corrigidos desde então. Consulte [Correlação de CVEs](/pt-br/cve/#quais-produtos-têm-correspondência).
+Correlacionado **por pacote instalado** com o OVAL **da Red Hat** (`rhel-<N>.oval.xml.bz2`, em `cve.oval.path`) — o Rocky recompila os pacotes da Red Hat com as mesmas versões, e o arquivo OVAL próprio do Rocky é recusado (ele contém uma pequena fração dos avisos do Rocky e não passa na validação do esquema OVAL). A sonda também lista os pacotes binários instalados (`rpm -qa`, com o stream de módulo AppStream de cada pacote) e lê `uname -r`/`-m`/`-v` na mesma ida e volta SSH — armazenados como `packages` e `modules` da observação, e `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. Entre vários kernels instalados, é comparado o que está em execução. Só são informadas as CVEs com uma correção mais nova do que a instalada, um achado por pacote. Algumas delas vêm de correções que a Red Hat publicou como avisos de correção de bugs (RHBA), que `dnf updateinfo --security` não lista. Consulte [Correlação de CVEs](/pt-br/cve/#cves-por-pacote-para-distribuições-linux).
 
 ## Resolvedor de ciclo de vida
 

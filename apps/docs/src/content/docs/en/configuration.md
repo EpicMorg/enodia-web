@@ -25,6 +25,12 @@ cve:                                 # optional, see "CVE correlation"
     path: vulxml.zip
   nvd:
     path: nvd/
+  debian:
+    path: debian.json
+  oval:
+    path: oval/
+  alpine:
+    path: alpine/
 credentials: {}                      # optional, see "Credentials"
 targets: []                          # your services
 ```
@@ -47,9 +53,11 @@ Durations use Go's duration syntax: `500ms`, `10s`, `2m`, `1h30m`.
 
 ### `cve`
 
-Optional. Points enodia at a БДУ ФСТЭК export (`cve.bdu.path`) and/or
-NVD JSON feeds (`cve.nvd.path`) you've downloaded yourself — enodia
-never fetches them. Relative paths resolve against this config's own
+Optional. Points enodia at a БДУ ФСТЭК export (`cve.bdu.path`), NVD
+JSON feeds (`cve.nvd.path`) and, for package-level matching on Linux
+hosts, the Debian Security Tracker (`cve.debian.path`), vendor OVAL files
+(`cve.oval.path`) and Alpine's secdb (`cve.alpine.path`) — any of them,
+each works alone, all downloaded yourself; enodia never fetches them. Relative paths resolve against this config's own
 directory, and a configured path that doesn't exist is an error. What
 it does, how to get the files, and which products are matched:
 [CVE correlation](/en/cve/).
@@ -88,11 +96,13 @@ without sending any credentials.
 `options` is a per-product free-form map — most probes ignore it
 entirely. [`p4d`/`p4p`](/en/configuration/products/p4d/) are the first
 to actually read one: `options.binary` overrides the `p4` CLI path they
-shell out to.
+shell out to. [`freeradius`](/en/configuration/products/freeradius/)
+reads `options.container` (and `options.container_runtime`) to find a
+FreeRADIUS running in Docker or Podman.
 
 See **Product setup** in the sidebar (or the
 [Supported products](/en/products/) table) for the exact endpoint, auth
-requirements, and recorded fields for each of the 90 built-in probes —
+requirements, and recorded fields for each of the 96 built-in probes —
 `path`, `credentials`, and `options` above are the general shape; each
 product's own page says what it actually needs.
 

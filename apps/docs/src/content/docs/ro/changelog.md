@@ -13,6 +13,90 @@ configura efectiv ceva. Tag-urile urmează formatul
 metadate de build semver, folosite doar pentru un rebuild fără
 modificări funcționale, nu pentru a evita o creștere reală a versiunii.
 
+## 2.1.0+0 — 2026-10-01
+
+Corelarea CVE ajunge până la pachetele instalate pe zece distribuții
+Linux și apar șase sonde noi. Nimic nu se strică: noile chei `cve:` sunt
+opționale, iar inventarele doar primesc câmpuri opționale, așa că
+configurațiile și inventarele 2.0 funcționează nemodificate.
+
+### Adăugat
+
+- **[CVE-uri la nivel de pachet pentru distribuțiile Linux](/ro/cve/#cve-uri-la-nivel-de-pachet-pentru-distribuțiile-linux).**
+  Sondele de sistem de operare citesc acum și pachetele instalate și
+  kernelul care rulează, în aceeași unică interogare SSH, iar datele de
+  securitate proprii fiecărei distribuții sunt potrivite per pachet.
+  Fiecare sursă este un fișier pe care îl descărcați, ca BDU și NVD:
+  - `cve.debian.path` — JSON-ul Debian Security Tracker, pentru
+    [`debian`](/ro/configuration/products/debian/).
+  - `cve.oval.path` — fișiere OVAL ale producătorilor, câte unul per
+    versiune, pentru [`ubuntu`](/ro/configuration/products/ubuntu/),
+    [`linuxmint`](/ro/configuration/products/linuxmint/) (prin baza sa
+    Ubuntu), [`rhel`](/ro/configuration/products/rhel/),
+    [`rocky-linux`](/ro/configuration/products/rocky-linux/) (cu fișierul
+    Red Hat — cel propriu al Rocky este refuzat ca inutilizabil),
+    [`almalinux`](/ro/configuration/products/almalinux/),
+    [`oracle-linux`](/ro/configuration/products/oracle-linux/),
+    [`astra-linux`](/ro/configuration/products/astra-linux/) (SE 1.7/1.8)
+    și [`redos`](/ro/configuration/products/redos/) (7.3/8.0). OVAL-ul
+    parsat este memorat în cache, ca BDU și NVD.
+  - `cve.alpine.path` — secdb-ul Alpine, pentru
+    [`alpine-linux`](/ro/configuration/products/alpine-linux/).
+- Sunt raportate doar CVE-urile care au deja o corecție mai nouă decât
+  ce este instalat — ceea ce ar închide un upgrade (și, pentru kernel, o
+  repornire). O constatare per pachet, cu link către avizul care conține
+  corecția (USN, RHSA, ALSA, ELSA, buletin Astra, ROS, pagina din
+  trackerul Debian/Alpine), cu toate CVE-urile pliate sub ea în raportul
+  HTML.
+- Potrivirea urmează regulile proprii fiecărui manager de pachete:
+  ordonarea versiunilor dpkg, rpm și apk, fluxurile de module AppStream,
+  arhitectura și variantele FIPS și Ksplice ale Oracle, precum și
+  kernelul care rulează, nu orice pachete de kernel ar fi instalate.
+  Fiecare sursă a fost verificată încrucișat cu instrumentul de referință
+  (`oscap oval eval`, `dnf updateinfo`, python3-apt, `apk version -t`) pe
+  containere reale, cu rezultate identice.
+- Sonde noi: [`mariadb`](/ro/configuration/products/mariadb/),
+  [`pfsense`](/ro/configuration/products/pfsense/) (Community Edition,
+  prin SSH), [`supermicro-bmc`](/ro/configuration/products/supermicro-bmc/),
+  [`dell-idrac`](/ro/configuration/products/dell-idrac/) și
+  [`hp-ilo4`](/ro/configuration/products/hp-ilo4/) (prin Redfish), precum
+  și [`freeradius`](/ro/configuration/products/freeradius/) (prin SSH, cu
+  `options.container` pentru un FreeRADIUS în Docker sau Podman). 96 de
+  sonde în total.
+- Rezolvatorul `github-tag-branches`: câte un ciclu de viață per
+  major.minor din tag-urile GitHub, pentru proiectele care întrețin mai
+  multe ramuri simultan (FreeRADIUS 3.0.x și 3.2.x).
+- FreeRADIUS este potrivit atât în NVD, cât și în BDU.
+
+### Corectat
+
+- Notația prescurtată „8.0 U3k” a VMware din calendarul ciclului de
+  viață este acum considerată egală cu „8.0.3”: o gazdă
+  [vCenter](/ro/configuration/products/vcenter/) sau
+  [ESXi](/ro/configuration/products/esxi/) 8.0 actualizată nu mai apare
+  ca `ahead`.
+- Coloanele LATEST/CYCLE afișează versiuni curățate pentru produsele
+  rezolvate prin GitHub, nu tag-ul brut (`2026.9.1`, nu `v2026.9.1`).
+- `config validate` raportează un fișier `cve.*.path` lipsă, în loc să
+  treacă și să eșueze mai târziu în `check`.
+
+### Note
+
+- O gazdă [Proxmox VE](/ro/configuration/products/proxmox/) primește
+  constatări la nivel de pachet printr-o a doua țintă SSH `debian`,
+  alături de ținta sa API `proxmox`; pachetul `linux` al Debian este
+  potrivit doar cu un kernel Debian care rulează, astfel încât kernelul
+  propriu al Proxmox nu este confundat cu unul.
+- Cu toate sursele configurate simultan (BDU, NVD, Debian, opt fișiere
+  OVAL, Alpine), `check` a durat ~22 s la rece și ~3,4 s la cald, cu un
+  vârf de ~0,5–0,6 GB — mai puțin dacă `cve.oval.path` conține doar
+  versiunile pe care le rulați.
+- Istoricul depozitului a fost rescris și resemnat pentru a elimina
+  numele de gazdă interne; fiecare tag a fost recreat pe istoricul
+  rescris. Binarele de lansare până la 2.0.0+0 raportează hash-uri de
+  commit de dinainte de rescriere.
+- MariaDB, pfSense și sondele BMC nu au încă o mapare CVE.
+
 ## 2.0.0+0 — 2026-09-23
 
 O versiune majoră pentru o funcționalitate majoră, nu pentru o

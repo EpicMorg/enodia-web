@@ -27,7 +27,7 @@ Astra Linux 基于 Debian，也确实带有 `/etc/os-release`
 
 ## CVE 关联
 
-不进行匹配——通用发行版的 CVE 属于软件包漏洞，而发行版版本号无法说明此后哪些软件包已打过补丁。参见 [CVE 关联](/zh-cn/cve/#哪些产品会被匹配)。
+**按已安装的软件包**与 Astra Linux 自己针对 SE 1.7 或 1.8 的 OVAL（`oval-definitions-alse-<1.7|1.8>.xml`，放在 `cve.oval.path` 中）进行匹配——Debian 的数据不适用，因为 Astra 的软件包版本是它自己的重新构建。版本按其 major.minor 匹配（`1.8.6` → 1.8）。探针还会在读取 `/etc/astra_version` 的同一次 SSH 往返中列出已安装的二进制软件包（`dpkg-query`）——存储为观测结果的 `packages`，以及 `extra.kernelRelease`、`extra.arch`、`extra.kernelVersion`。发现链接到 Astra 自己的公告；厂商未引用公告时（1.7）则链接到 BDU。Astra 的数据不包含严重程度，其内核软件包按已安装的版本比较，而不是按正在运行的版本。参见 [CVE 关联](/zh-cn/cve/#linux-发行版的软件包级-cve)。
 
 ## 生命周期解析器
 

@@ -22,7 +22,7 @@ Verificado ao vivo com `alrdockerhub/redos:7.3.1` (conteúdo real do RED OS
 
 ## Correlação de CVEs
 
-Sem correlação — as CVEs de uma distribuição de uso geral são vulnerabilidades de pacotes, e o número da versão não informa quais pacotes foram corrigidos desde então. Consulte [Correlação de CVEs](/pt-br/cve/#quais-produtos-têm-correspondência).
+Correlacionado **por pacote instalado** com o OVAL próprio do RED OS para o 7.3 ou 8.0 (`redos.xml` de `redos.red-soft.ru/support/secure/<7.3|8.0>/`, em `cve.oval.path`) — os dados do RHEL não se aplicam, já que as versões de pacotes do RED OS são próprias (`.el7` no 7.3, `.red80` no 8.0). A versão é correlacionada pelo major.minor. A sonda também lista os pacotes binários instalados (`rpm -qa`, com o stream de módulo AppStream de cada pacote) e lê `uname -r`/`-m`/`-v` na mesma ida e volta SSH — armazenados como `packages` e `modules` da observação, e `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. Entre vários kernels instalados, é comparado o que está em execução. Os achados apontam para os boletins `ROS-…` do RED OS e trazem a severidade do próprio fornecedor. Consulte [Correlação de CVEs](/pt-br/cve/#cves-por-pacote-para-distribuições-linux).
 
 ## Resolvedor de ciclo de vida
 

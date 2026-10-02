@@ -53,6 +53,17 @@ en ambas fuentes, así que las puntuaciones de una misma lista se
 mantienen en la misma escala. La columna `CVES` de las vistas en tabla
 cuenta las CVE distintas entre estas entradas, no las entradas en sí.
 
+Los hallazgos a nivel de paquete de los hosts Linux (consulte
+[Correlación de CVE](/es/cve/#cve-a-nivel-de-paquete-para-distribuciones-linux))
+usan la misma forma, con `Source` igual a `debian`, `oval` o `alpine`,
+`MatchedName` igual al paquete, y cuatro campos más:
+`InstalledVersion`, `FixedVersion` (la versión que cierra todas las CVE
+de `CVEIDs`), `AdvisoryURL` y `Advisories` (todos los avisos que le
+faltan al paquete). El propio inventario también crece para estos hosts:
+cada observación incluye un mapa `packages` (paquete → versión
+instalada) y, en los hosts de la familia RHEL, `modules` (streams de
+AppStream): decenas de KB por host.
+
 ## `--format prometheus`
 
 Un archivo de texto de Prometheus, pensado para el
@@ -113,6 +124,9 @@ grave, con enlaces a NVD, a cve.org y, para los hallazgos de BDU, a la
 página de bdu.fstec.ru, y la puntuación como insignias de color
 (`CRITICAL · CVSS 3.1 9.8`). La descripción es el texto en ruso de BDU
 cuando BDU tiene la CVE y, en caso contrario, el texto en inglés de NVD.
+Los hallazgos a nivel de paquete son una línea por paquete
+(`linux 6.12.107-1 → 6.12.111-1`), enlazada al aviso que incluye la
+corrección, con la lista de CVE del paquete plegada debajo.
 Es CSS puro (un modal `:target`), así que funciona igual en el modo
 `inline` sin ningún script.
 

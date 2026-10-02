@@ -26,6 +26,12 @@ cve:                                 # opțional, vedeți „Corelare CVE”
     path: vulxml.zip
   nvd:
     path: nvd/
+  debian:
+    path: debian.json
+  oval:
+    path: oval/
+  alpine:
+    path: alpine/
 credentials: {}                      # opțional, vedeți „Credențiale”
 targets: []                          # serviciile dumneavoastră
 ```
@@ -51,9 +57,12 @@ Duratele folosesc sintaxa de durată din Go: `500ms`, `10s`, `2m`,
 
 ### `cve`
 
-Opțional. Indică enodia un export BDU FSTEC (`cve.bdu.path`) și/sau
-feed-uri JSON NVD (`cve.nvd.path`) pe care le-ați descărcat singuri —
-enodia nu le descarcă niciodată. Căile relative se rezolvă față de
+Opțional. Indică enodia un export BDU FSTEC (`cve.bdu.path`), feed-uri
+JSON NVD (`cve.nvd.path`) și, pentru potrivirea la nivel de pachet pe
+gazdele Linux, Debian Security Tracker (`cve.debian.path`), fișiere OVAL
+ale producătorilor (`cve.oval.path`) și secdb-ul Alpine
+(`cve.alpine.path`) — oricare dintre ele, fiecare funcționează singură,
+toate descărcate de dumneavoastră; enodia nu le descarcă niciodată. Căile relative se rezolvă față de
 directorul acestei configurații, iar o cale configurată care nu există
 reprezintă o eroare. Ce face, cum obțineți fișierele și ce produse sunt
 potrivite: [Corelare CVE](/ro/cve/).
@@ -93,11 +102,14 @@ folosi fiecare țintă, fără a trimite nicio credențială.
 sondelor o ignoră complet. [`p4d`/`p4p`](/ro/configuration/products/p4d/)
 sunt primele care citesc efectiv o astfel de hartă: `options.binary`
 suprascrie calea către CLI-ul `p4` pe care îl apelează.
+[`freeradius`](/ro/configuration/products/freeradius/) citește
+`options.container` (și `options.container_runtime`) pentru a găsi un
+FreeRADIUS care rulează în Docker sau Podman.
 
 Consultați **Configurarea produselor** în bara laterală (sau tabelul
 [Produse acceptate](/ro/products/)) pentru endpoint-ul exact, cerințele
 de autentificare și câmpurile înregistrate pentru fiecare dintre cele
-90 de sonde integrate — `path`, `credentials` și `options` de mai sus
+96 de sonde integrate — `path`, `credentials` și `options` de mai sus
 reprezintă forma generală; pagina fiecărui produs spune de ce are
 nevoie efectiv.
 

@@ -1,6 +1,6 @@
 ---
 title: Correlação de CVEs
-description: Comparação de cada versão sondada com o BDU FSTEC e o NIST NVD, a partir de arquivos que você mesmo baixa.
+description: Comparação de cada versão sondada com o BDU FSTEC e o NIST NVD, e dos pacotes instalados em hosts Linux com os dados de segurança dos próprios fornecedores — a partir de arquivos que você mesmo baixa.
 ---
 
 Desde a 2.0, o enodia consegue dizer quais vulnerabilidades conhecidas
@@ -14,14 +14,22 @@ com dois bancos de dados públicos:
   [nvd.nist.gov](https://nvd.nist.gov/).
 
 Qualquer um dos dois funciona sozinho; com ambos configurados, os achados
-são mesclados por CVE. É totalmente opcional: uma configuração sem bloco
-`cve:` se comporta exatamente como na 1.x.
+são mesclados por CVE.
+
+Desde a 2.1, dez distribuições Linux também têm correspondência **por
+pacote instalado** com os dados de segurança dos próprios fornecedores — o
+Debian Security Tracker, arquivos OVAL dos fornecedores e o secdb do
+Alpine (consulte
+[CVEs por pacote para distribuições Linux](#cves-por-pacote-para-distribuições-linux)).
+
+Tudo é opcional: uma configuração sem bloco `cve:` se comporta exatamente
+como na 1.x, e cada fonte funciona por conta própria.
 
 ## O enodia nunca baixa os bancos de dados por conta própria
 
 Você baixa os arquivos, decide quando atualizá-los e aponta o enodia para
-eles. O enodia não tem nenhum caminho de código que acesse bdu.fstec.ru ou
-nvd.nist.gov sozinho — o mesmo raciocínio de rede fechada do
+eles. O enodia não tem nenhum caminho de código que acesse qualquer uma
+dessas fontes sozinho — o mesmo raciocínio de rede fechada do
 [design em duas fases](/pt-br/concepts/#duas-fases-separáveis-de-propósito):
 a máquina que executa o `check` não precisa de acesso à internet para a
 correspondência de CVEs, apenas de uma cópia dos arquivos.
@@ -76,6 +84,71 @@ raramente. Cada arquivo tem um arquivo `.meta` associado
 (`nvdcve-2.0-<year>.meta`) com o seu tamanho e `sha256` — observe que o
 hash é do JSON *descompactado*, e não do `.gz`.
 
+### Debian Security Tracker
+
+Um arquivo, a exportação JSON completa do tracker (cerca de 80 MB), para
+alvos `debian`:
+
+```bash
+curl -fsSL -o /var/lib/enodia/cve/debian.json \
+  https://security-tracker.debian.org/tracker/data/json
+```
+
+Cópias `.json.gz` e `.json.zip` também funcionam.
+
+### OVAL dos fornecedores
+
+Um arquivo por versão de distribuição presente na sua frota, todos em um
+mesmo diretório, para alvos `ubuntu`, `linuxmint`, `rhel`, `rocky-linux`,
+`almalinux`, `oracle-linux`, `astra-linux` e `redos`:
+
+| Alvos | Arquivo |
+|---|---|
+| Ubuntu, Linux Mint (a sua base Ubuntu) | `https://security-metadata.canonical.com/oval/com.ubuntu.<codename>.usn.oval.xml.bz2` |
+| RHEL **e Rocky Linux** | `https://security.access.redhat.com/data/oval/v2/RHEL<N>/rhel-<N>.oval.xml.bz2` |
+| AlmaLinux | `https://security.almalinux.org/oval/org.almalinux.alsa-<N>.xml.bz2` |
+| Oracle Linux | `https://linux.oracle.com/security/oval/com.oracle.elsa-ol<N>.xml.bz2` |
+| Astra Linux SE 1.7, 1.8 | `https://dl.astralinux.ru/astra/oval/<1.7\|1.8>_x86-64/oval-definitions-alse-<1.7\|1.8>.xml` |
+| RED OS 7.3, 8.0 | `https://redos.red-soft.ru/support/secure/<7.3\|8.0>/redos.xml` |
+
+```bash
+mkdir -p /var/lib/enodia/cve/oval && cd /var/lib/enodia/cve/oval
+curl -fsSLO https://security-metadata.canonical.com/oval/com.ubuntu.noble.usn.oval.xml.bz2
+curl -fsSLO https://security.access.redhat.com/data/oval/v2/RHEL9/rhel-9.oval.xml.bz2
+curl -fsSL -o redos-8.0.xml https://redos.red-soft.ru/support/secure/8.0/redos.xml
+```
+
+Os arquivos são usados como são publicados, `.xml` ou `.xml.bz2`. A versão
+a que um arquivo se refere é lida do seu conteúdo, nunca do seu nome — por
+isso os dois arquivos do RED OS, ambos publicados como `redos.xml`, só
+precisam ter nomes distintos no disco. Dois arquivos são recusados de
+propósito, com um erro que indica o arquivo a usar no lugar:
+
+- **O OVAL próprio do Rocky Linux** (`org.rockylinux.rlsa-<N>.xml`) — ele
+  contém uma pequena fração dos avisos do Rocky e não passa na validação do
+  esquema OVAL. O Rocky recompila os pacotes da Red Hat com as mesmas
+  versões, então os hosts Rocky são correlacionados com o arquivo da Red
+  Hat.
+- **A variante `oci.` do Ubuntu** — ela verifica o arquivo de status do
+  dpkg com expressões regulares em vez de pacotes.
+
+Todas as URLs verificadas na prática em 2026-10-02.
+
+### secdb do Alpine
+
+Dois arquivos por branch do Alpine presente na sua frota, `main` e
+`community`, para alvos `alpine-linux`. Eles têm os mesmos nomes em todos
+os branches, então salve-os com nomes distintos:
+
+```bash
+mkdir -p /var/lib/enodia/cve/alpine && cd /var/lib/enodia/cve/alpine
+for b in v3.20 v3.22; do
+  for r in main community; do
+    curl -fsSL -o "$b-$r.json" "https://secdb.alpinelinux.org/$b/$r.json"
+  done
+done
+```
+
 ## Configuração
 
 Um bloco `cve:` no `enodia.yaml` — e não no `settings.yaml`, já que ele
@@ -88,6 +161,12 @@ cve:
     path: /var/lib/enodia/cve/bdu/vulxml.zip
   nvd:
     path: /var/lib/enodia/cve/nvd
+  debian:
+    path: /var/lib/enodia/cve/debian.json
+  oval:
+    path: /var/lib/enodia/cve/oval
+  alpine:
+    path: /var/lib/enodia/cve/alpine
 targets:
   - id: gitlab-main
     product: gitlab
@@ -99,6 +178,9 @@ targets:
 |---|---|
 | `cve.bdu.path` | um `.xml`, um `.zip` (a exportação como é publicada) ou um `.tar.gz`/`.tgz` |
 | `cve.nvd.path` | um único arquivo `.json`, `.json.gz` ou `.json.zip`, ou um diretório com eles |
+| `cve.debian.path` | a exportação do tracker: `.json`, `.json.gz` ou `.json.zip` |
+| `cve.oval.path` | um arquivo OVAL (`.xml` ou `.xml.bz2`), ou um diretório com eles |
+| `cve.alpine.path` | um arquivo `.json` do secdb, ou um diretório com eles |
 
 Caminhos relativos são resolvidos em relação ao diretório do arquivo de
 configuração que os menciona, assim como `credentials_file`. O bloco é lido
@@ -112,10 +194,11 @@ CVEs.
 
 **Um caminho configurado que não existe é um erro**, e não algo ignorado em
 silêncio — o `check` termina com `stat ...: no such file or directory` em
-vez de produzir um relatório que simplesmente não tem CVEs. O `enodia config
-validate` verifica o formato do bloco (incluindo a verificação de
-caracteres de controle abaixo), mas não se os arquivos existem — isso só é
-verificado quando uma execução de fato os carrega.
+vez de produzir um relatório que simplesmente não tem CVEs. Desde a 2.1,
+o `enodia config validate` também verifica se cada caminho configurado
+existe, então um erro de digitação aparece já ali. Se um arquivo de fato
+pode ser processado continua sendo descoberto apenas quando uma execução o
+carrega.
 
 :::caution[Caminhos no Windows]
 Escreva um caminho do Windows sem aspas, entre aspas simples, com barras
@@ -128,7 +211,7 @@ dica.
 
 ## Primeira execução e cache
 
-As duas fontes são processadas em streaming e o resultado fica em cache no
+O BDU e o NVD são processados em streaming e o resultado fica em cache no
 diretório de cache do SO (`$XDG_CACHE_HOME/enodia/cve`, ou seja,
 `~/.cache/enodia/cve` por padrão no Linux; `~/Library/Caches/enodia/cve` no
 macOS; `%LocalAppData%\enodia\cve` no Windows). A primeira execução depois
@@ -140,6 +223,16 @@ próprios arquivos (tamanho e data de modificação) e pelas tabelas de
 produtos do próprio enodia, então substituir um arquivo, adicionar um ano
 ao diretório do NVD ou atualizar o enodia disparam, cada um por si, uma
 reconstrução.
+
+O OVAL processado fica em cache da mesma forma — cerca de 11 s para
+processar juntos os arquivos do Ubuntu noble, do RHEL 9, do AlmaLinux 9 e
+do Oracle Linux 9, a maior parte disso em bzip2. A exportação do tracker do
+Debian (cerca de um segundo para processar) e o secdb do Alpine (algumas
+centenas de KB) não ficam em cache. Com todas as fontes configuradas ao
+mesmo tempo (BDU, NVD, Debian, oito arquivos OVAL, Alpine), o upstream
+mediu o `check` em cerca de 22 s a frio e 3,4 s com cache, com pico de
+0,5–0,6 GB de memória — menos se `cve.oval.path` contiver apenas as
+versões que você de fato usa.
 
 O `enodia serve` relê o bloco `cve:` e os arquivos a cada ciclo de
 `--interval` (a baixo custo, a partir do cache), então substituir os
@@ -159,8 +252,10 @@ arquivos via cron passa a valer sem reiniciar o servidor.
   bdu.fstec.ru; o texto em russo do BDU quando o BDU tem a CVE, e a
   descrição em inglês do NVD caso contrário; e a classificação como badges
   coloridos, por exemplo `CRITICAL · CVSS 3.1
-  9.8`. É CSS puro — o relatório offline padrão continua sem nenhum
-  JavaScript.
+  9.8`. Os achados por pacote são, em vez disso, uma linha por pacote —
+  `linux 6.12.107-1 → 6.12.111-1`, com link para o aviso que traz a
+  correção e a sua lista de CVEs recolhida logo abaixo. É CSS puro — o
+  relatório offline padrão continua sem nenhum JavaScript.
 - **`export --format json`** — todos os achados por fonte, por completo, no
   array `cves` de cada avaliação: a fonte (`bdu`/`nvd`), o ID do boletim,
   os IDs de CVE, o título, o texto de severidade da própria fonte, o nome do
@@ -168,7 +263,9 @@ arquivos via cron passa a valer sem reiniciar o servidor.
   CVSS extraída. Ao contrário da tabela e da lista HTML, que contam uma
   linha por CVE, o JSON mantém separado o achado de cada fonte — a mesma
   CVE pode aparecer uma vez vinda do BDU e uma vez para cada CPE
-  correspondente do NVD.
+  correspondente do NVD. Os achados por pacote (fonte `debian`, `oval` ou
+  `alpine`) também trazem as versões instalada e corrigida — consulte
+  [Relatórios](/pt-br/reporting/#--format-json).
 - **`export --format prometheus`** — nenhum dado de CVE.
 
 **As CVEs não afetam a severidade nem o código de saída.** A `SEVERITY`
@@ -179,16 +276,18 @@ uma CVE deveria elevar a severidade é uma questão em aberto upstream.
 
 ## Quais produtos têm correspondência
 
-52 dos 90 produtos, cada nome de fornecedor/produto conferido literalmente
-contra as exportações completas reais — consulte a página de cada produto
-em [Configuração de produtos](/pt-br/products/) para ver as suas fontes.
+63 dos 96 produtos: 53 pelo nome do produto no BDU e no NVD, cada nome de
+fornecedor/produto conferido literalmente contra as exportações completas
+reais, e 10 distribuições Linux por pacote instalado (veja a próxima
+seção). Consulte a página de cada produto em
+[Configuração de produtos](/pt-br/products/) para ver as suas fontes.
 
 Sem correspondência, cada um por um motivo:
 
-- **Distribuições Linux de uso geral** (Debian, Ubuntu, RHEL, Alma, Rocky,
-  Fedora, RED OS, Astra Linux, …) — as CVEs delas são vulnerabilidades de
-  pacotes; um número de versão não diz quais pacotes foram corrigidos desde
-  então.
+- **As demais distribuições Linux de uso geral** (Fedora, CentOS Stream,
+  Amazon Linux, openSUSE, …) — as CVEs delas são vulnerabilidades de
+  pacotes, um número de versão não diz quais pacotes foram corrigidos desde
+  então, e ainda não há uma fonte por pacote para elas.
 - **Os BSDs e o Oracle Solaris** — o NVD registra os seus níveis de patch
   (o `-p5` do FreeBSD, as erratas do OpenBSD) em um campo de CPE que este
   mecanismo de correspondência não lê; fazer a correspondência só pela
@@ -204,6 +303,58 @@ Sem correspondência, cada um por um motivo:
   postgres_exporter, Perforce Proxy, Perforce Helix Swarm.
 - **`generic`** — um parser escrito à mão não tem uma identidade de produto
   para consultar.
+- **Ainda não mapeados** — MariaDB, pfSense e as três sondas de BMC
+  (Supermicro, Dell iDRAC, HP iLO 4), todas novas na 2.1. O upstream deixou
+  o mapeamento de CVEs delas para uma etapa posterior, dedicada.
+
+## CVEs por pacote para distribuições Linux
+
+Um número de versão não diz quais pacotes de um host foram corrigidos desde
+então, por isso estas dez distribuições têm correspondência por pacote
+instalado. As suas sondas leem os pacotes instalados e o kernel em execução
+na mesma ida e volta SSH que a própria versão, e cada pacote é conferido
+com os dados de segurança da sua própria distribuição:
+
+| Sonda | Fonte | Chave |
+|---|---|---|
+| `debian` | Debian Security Tracker | `cve.debian.path` |
+| `ubuntu` | OVAL da Canonical | `cve.oval.path` |
+| `linuxmint` | OVAL da Canonical, para a sua base Ubuntu | `cve.oval.path` |
+| `rhel`, `rocky-linux` | OVAL da Red Hat | `cve.oval.path` |
+| `almalinux` | OVAL do AlmaLinux | `cve.oval.path` |
+| `oracle-linux` | OVAL da Oracle | `cve.oval.path` |
+| `astra-linux` | OVAL do Astra Linux (SE 1.7, 1.8) | `cve.oval.path` |
+| `redos` | OVAL do RED OS (7.3, 8.0) | `cve.oval.path` |
+| `alpine-linux` | secdb do Alpine | `cve.alpine.path` |
+
+**Só são informadas as CVEs que já têm uma correção mais nova do que a
+instalada** — o que uma atualização (e, para o kernel, uma reinicialização)
+resolveria. As CVEs que o fornecedor ainda não corrigiu ficam de fora: elas
+são as mesmas em todos os hosts de uma versão e ninguém pode agir sobre
+elas, então soterrariam as que exigem ação.
+
+**Um achado por pacote, e não por CVE.** Só um kernel desatualizado pode
+trazer mais de mil CVEs; uma lista por CVE seria ilegível. Cada achado
+indica o pacote, a sua versão instalada, a versão que resolve todas as
+CVEs dele e o aviso que traz essa correção (USN, RHSA, ALSA, ELSA, boletim
+do Astra, ROS ou a página do tracker do Debian/Alpine). A coluna `CVES`
+continua contando CVEs, e não pacotes.
+
+**As versões são comparadas pelas regras de cada gerenciador de pacotes** —
+a ordenação do dpkg, do rpm e do apk, conferida upstream com `apt_pkg`, o
+rpm e o apk-tools em milhares de pares de versões reais cada —, além dos
+streams de módulos AppStream (um pacote só é correlacionado com as
+correções do seu próprio stream), da arquitetura e das variantes FIPS e
+Ksplice do Oracle Linux, e do kernel **em execução**, e não de quaisquer
+pacotes de kernel que por acaso estejam instalados. Cada fonte foi
+conferida upstream com `oscap oval eval`, `dnf updateinfo`, python3-apt ou
+`apk version -t` em hosts e contêineres reais, com resultados idênticos.
+
+**O Proxmox VE** recebe achados de pacotes como um segundo alvo: um alvo
+SSH [`debian`](/pt-br/configuration/products/debian/) no mesmo host, ao
+lado do seu alvo [`proxmox`](/pt-br/configuration/products/proxmox/) via
+API. O pacote `linux` do Debian só é correlacionado com um kernel Debian em
+execução, então o kernel próprio do Proxmox não é confundido com um.
 
 ### Correspondência sensível à edição
 
@@ -238,6 +389,15 @@ OpenSSH.
   Medido contra as exportações completas, eram quase todas CVEs de décadas
   atrás associadas a versões atuais; o custo é a rara CVE realmente não
   corrigida registrada dessa forma.
+- **A cobertura por pacote tem as suas próprias lacunas.** O tracker do
+  Debian só cobre as versões que a equipe de segurança do Debian ainda
+  suporta (bookworm, trixie, testing, sid) — hosts mais antigos não recebem
+  achados de pacotes. O Alpine edge não tem branch numerado e também não
+  recebe nenhum. O OVAL não é avaliado como um interpretador completo: as
+  chaves de assinatura dos pacotes não são verificadas, então um pacote de
+  terceiros com o nome de um pacote da distribuição é comparado como se
+  fosse da distribuição. Os pacotes de kernel do Astra Linux são comparados
+  como instalados, e não como em execução.
 - **As condições multiproduto do NVD** ("vulnerável apenas com a
   biblioteca Y") não são avaliadas — uma sonda informa um produto por alvo,
   então cada entrada vulnerável de um produto com correspondência conta por

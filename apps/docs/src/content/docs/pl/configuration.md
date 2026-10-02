@@ -25,6 +25,12 @@ cve:                                 # opcjonalne, zobacz „Korelacja CVE”
     path: vulxml.zip
   nvd:
     path: nvd/
+  debian:
+    path: debian.json
+  oval:
+    path: oval/
+  alpine:
+    path: alpine/
 credentials: {}                      # opcjonalne, zobacz „Poświadczenia”
 targets: []                          # usługi do monitorowania
 ```
@@ -50,9 +56,12 @@ Czasy trwania używają składni duration z Go: `500ms`, `10s`, `2m`,
 
 ### `cve`
 
-Opcjonalne. Wskazuje enodia eksport BDU FSTEC (`cve.bdu.path`) i/lub
-kanały JSON NVD (`cve.nvd.path`) pobrane samodzielnie — enodia nigdy ich
-nie pobiera. Ścieżki względne są rozwiązywane względem katalogu tego
+Opcjonalne. Wskazuje enodia eksport BDU FSTEC (`cve.bdu.path`), kanały
+JSON NVD (`cve.nvd.path`) oraz, na potrzeby dopasowywania na poziomie
+pakietów na hostach z Linuksem, Debian Security Tracker
+(`cve.debian.path`), pliki OVAL dostawców (`cve.oval.path`) i secdb
+Alpine (`cve.alpine.path`) — dowolne z nich, każde działa samodzielnie,
+wszystkie pobrane samodzielnie; enodia nigdy ich nie pobiera. Ścieżki względne są rozwiązywane względem katalogu tego
 pliku konfiguracyjnego, a skonfigurowana ścieżka, która nie istnieje,
 jest błędem. Co to robi, jak zdobyć pliki i które produkty są
 dopasowywane: [Korelacja CVE](/pl/cve/).
@@ -92,10 +101,12 @@ schematu użyłby każdy cel, bez wysyłania jakichkolwiek poświadczeń.
 `options` to dowolna mapa zależna od produktu — większość sond całkowicie
 ją ignoruje. [`p4d`/`p4p`](/pl/configuration/products/p4d/) są pierwszymi,
 które faktycznie ją odczytują: `options.binary` nadpisuje ścieżkę do CLI
-`p4`, które wywołują.
+`p4`, które wywołują. [`freeradius`](/pl/configuration/products/freeradius/)
+odczytuje `options.container` (oraz `options.container_runtime`), aby
+znaleźć FreeRADIUS działający w Dockerze lub Podmanie.
 
 Dokładny endpoint, wymagania dotyczące uwierzytelniania i rejestrowane
-pola dla każdej z 90 wbudowanych sond opisuje sekcja **Konfiguracja
+pola dla każdej z 96 wbudowanych sond opisuje sekcja **Konfiguracja
 produktów** w panelu bocznym (lub tabela
 [Obsługiwane produkty](/pl/products/)) — `path`, `credentials`
 i `options` powyżej to ogólny kształt; strona każdego produktu mówi, czego

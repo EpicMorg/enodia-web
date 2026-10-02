@@ -42,11 +42,15 @@ Verificado ao vivo com `debian:bookworm-slim`: `ID=debian`,
   sempre que o arquivo existe e não está vazio, mesmo quando não era um
   número simples com pontos (como o `forky/sid` do Debian testing, útil
   de ver como está em vez de descartado silenciosamente)
+- `extra.codename` — `VERSION_CODENAME` do os-release, que escolhe a
+  versão no tracker
+- `extra.kernel` — a versão Debian do kernel em execução, de `uname -v`
+- `packages` — os pacotes fonte instalados e as suas versões (veja abaixo)
 - `extra.hostKeyVerified`
 
 ## Correlação de CVEs
 
-Sem correlação — as CVEs de uma distribuição de uso geral são vulnerabilidades de pacotes, e o número da versão não informa quais pacotes foram corrigidos desde então. Consulte [Correlação de CVEs](/pt-br/cve/#quais-produtos-têm-correspondência).
+Correlacionado **por pacote instalado** com o Debian Security Tracker (`cve.debian.path`), não pela versão. A sonda lê os pacotes *fonte* instalados (`source:Package`/`source:Version` do `dpkg-query` — a própria chave do tracker) e a versão Debian do kernel em execução (de `uname -v`) na mesma ida e volta SSH que a própria versão. Só são informadas as CVEs que o Debian já corrigiu em uma versão mais nova do que a instalada, um achado por pacote fonte, com link para a sua página no tracker. O tracker só cobre as versões que a equipe de segurança do Debian ainda suporta (bookworm, trixie, testing, sid); hosts mais antigos não recebem achados de pacotes. Um host Proxmox VE é coberto por um alvo `debian` como este — consulte [Correlação de CVEs](/pt-br/cve/#cves-por-pacote-para-distribuições-linux).
 
 ## Resolvedor de ciclo de vida
 

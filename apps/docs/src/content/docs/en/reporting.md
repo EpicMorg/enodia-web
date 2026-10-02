@@ -51,6 +51,17 @@ so scores in one list stay on the same scale. The `CVES` column in the
 table views counts distinct CVEs across these entries, not the entries
 themselves.
 
+Package-level findings for Linux hosts (see
+[CVE correlation](/en/cve/#package-level-cves-for-linux-distributions))
+use the same shape, with `Source` set to `debian`, `oval` or `alpine`,
+`MatchedName` set to the package, and four more fields:
+`InstalledVersion`, `FixedVersion` (the version that closes every CVE in
+`CVEIDs`), `AdvisoryURL` and `Advisories` (every advisory the package is
+missing). The inventory itself also grows for these hosts: each
+observation carries a `packages` map (package → installed version) and,
+on RHEL-family hosts, `modules` (AppStream streams) — tens of KB per
+host.
+
 ## `--format prometheus`
 
 A Prometheus textfile, meant for
@@ -104,7 +115,10 @@ sections' `CVES` cell becomes a link opening that target's CVE list: one
 line per CVE, most severe first, with links to NVD, cve.org and, for
 БДУ findings, the bdu.fstec.ru page, and the rating as colored badges
 (`CRITICAL · CVSS 3.1 9.8`). The description is БДУ's Russian text when
-БДУ has the CVE, NVD's English one otherwise. It's pure CSS (a `:target`
+БДУ has the CVE, NVD's English one otherwise. Package-level findings are one
+line per package (`linux 6.12.107-1 → 6.12.111-1`), linked to the
+advisory carrying the fix, with the package's CVE list folded
+underneath. It's pure CSS (a `:target`
 modal), so it works the same in `inline` mode with no script at all.
 
 ### Row colors in CDN mode

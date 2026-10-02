@@ -1,10 +1,10 @@
 ---
 title: Identificación del SO por SSH
-description: "Cómo funciona la familia de sondas SSH/os-release/uname de enodia, compartida por 30 productos de sistema operativo."
+description: "Cómo funciona la familia de sondas SSH/os-release/uname de enodia, compartida por 31 productos de sistema operativo."
 ---
 
-30 de los productos de enodia (todas las distribuciones Linux, FreeBSD,
-OpenBSD, NetBSD, macOS, Oracle Solaris, OPNsense y el CentOS heredado)
+31 de los productos de enodia (todas las distribuciones Linux, FreeBSD,
+OpenBSD, NetBSD, macOS, Oracle Solaris, OPNsense, pfSense y el CentOS heredado)
 se identifican por **SSH**, no por HTTP. Esta página explica el mecanismo
 común una sola vez; la página de cada sistema operativo (enlazada desde
 [Productos compatibles](/es/products/)) solo indica su valor concreto de
@@ -14,8 +14,8 @@ resolvedor del ciclo de vida.
 ## Cómo funciona
 
 Una conexión SSH, un comando, una desconexión: no es un cliente de
-ejecución remota de propósito general, solo lo justo para leer un único
-dato de identidad:
+ejecución remota de propósito general, solo lo justo para leer los datos
+de identidad que necesita:
 
 - **21 productos** leen `/etc/os-release` (el archivo de identidad
   estandarizado por systemd que incluye toda distribución Linux moderna,
@@ -36,9 +36,17 @@ dato de identidad:
 - **2 productos** (OpenBSD, NetBSD) no tienen ningún archivo equivalente a
   os-release: la fuente de identidad es `uname -sr` (`"<kernel name>
   <release>"`, p. ej. `"OpenBSD 7.9"`).
-- **5 más** (Astra Linux, el CentOS heredado, macOS, OPNsense, Oracle
-  Solaris) leen cada uno un archivo o comando de identidad distinto y
-  propio del producto; consulte sus propias páginas.
+- **6 más** (Astra Linux, el CentOS heredado, macOS, OPNsense, pfSense,
+  Oracle Solaris) leen cada uno un archivo o comando de identidad
+  distinto y propio del producto; consulte sus propias páginas.
+
+Desde la 2.1, diez de ellos (Debian, Ubuntu, Linux Mint, RHEL, Rocky
+Linux, AlmaLinux, Oracle Linux, Astra Linux, RED OS y Alpine) también
+enumeran los paquetes instalados y leen el kernel en ejecución
+(`uname -r`/`-m`/`-v`) en ese mismo comando, para el
+[cotejo de CVE a nivel de paquete](/es/cve/#cve-a-nivel-de-paquete-para-distribuciones-linux).
+La lista de paquetes se almacena en la observación, así que el inventario
+de estos hosts es más grande: decenas de KB por host.
 
 `product:` siempre se declara de forma explícita y se verifica con el
 campo de identidad real, nunca se deduce de la respuesta (el mismo

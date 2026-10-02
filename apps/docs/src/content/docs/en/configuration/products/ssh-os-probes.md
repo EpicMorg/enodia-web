@@ -1,10 +1,10 @@
 ---
 title: SSH-based OS identification
-description: How enodia's SSH/os-release/uname family of probes works — shared by 30 OS products.
+description: How enodia's SSH/os-release/uname family of probes works — shared by 31 OS products.
 ---
 
-30 of enodia's products — every Linux distribution, FreeBSD, OpenBSD,
-NetBSD, macOS, Oracle Solaris, OPNsense, and legacy CentOS — are
+31 of enodia's products — every Linux distribution, FreeBSD, OpenBSD,
+NetBSD, macOS, Oracle Solaris, OPNsense, pfSense, and legacy CentOS — are
 identified over **SSH**, not HTTP. This page explains the shared
 mechanism once; each OS's own page (linked from
 [Supported products](/en/products/)) only states its specific `product:`
@@ -14,8 +14,8 @@ resolver.
 ## How it works
 
 One SSH connection, one command, one disconnect — this is not a
-general-purpose remote-exec client, just enough to read a single identity
-fact:
+general-purpose remote-exec client, just enough to read the identity
+facts it needs:
 
 - **21 products** read `/etc/os-release` (the systemd-standardized
   identity file every modern Linux distribution ships, plus FreeBSD's own
@@ -34,9 +34,17 @@ fact:
 - **2 products** (OpenBSD, NetBSD) have no os-release-equivalent file at
   all — `uname -sr` is the identity source instead (`"<kernel name>
   <release>"`, e.g. `"OpenBSD 7.9"`).
-- **5 more** (Astra Linux, legacy CentOS, macOS, OPNsense, Oracle
-  Solaris) read a distinct, product-specific identity file or command
-  each — see their own pages.
+- **6 more** (Astra Linux, legacy CentOS, macOS, OPNsense, pfSense,
+  Oracle Solaris) read a distinct, product-specific identity file or
+  command each — see their own pages.
+
+Since 2.1, ten of these — Debian, Ubuntu, Linux Mint, RHEL, Rocky Linux,
+AlmaLinux, Oracle Linux, Astra Linux, RED OS and Alpine — also list the
+installed packages and read the running kernel (`uname -r`/`-m`/`-v`) in
+that same command, for
+[package-level CVE matching](/en/cve/#package-level-cves-for-linux-distributions).
+The package list is stored in the observation, so an inventory of such
+hosts is larger — tens of KB per host.
 
 `product:` is always declared explicitly and verified against the real
 identity field, never guessed from the response (the same principle the

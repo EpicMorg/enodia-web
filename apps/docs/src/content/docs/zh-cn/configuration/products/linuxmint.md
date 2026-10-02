@@ -21,7 +21,7 @@ chroot）报告的却是其底层的 Ubuntu 基础系统，用它来匹配是错
 
 ## CVE 关联
 
-不进行匹配——通用发行版的 CVE 属于软件包漏洞，而发行版版本号无法说明此后哪些软件包已打过补丁。参见 [CVE 关联](/zh-cn/cve/#哪些产品会被匹配)。
+**按已安装的软件包**与主机 Ubuntu 基础版本的 Canonical OVAL 进行匹配（os-release 的 `UBUNTU_CODENAME`，记录为 `extra.codename`；文件放在 `cve.oval.path` 中）。探针还会在同一次 SSH 往返中列出已安装的二进制软件包（`dpkg-query`）并读取 `uname -r`/`-m`/`-v`——存储为观测结果的 `packages`，以及 `extra.kernelRelease`、`extra.arch`、`extra.kernelVersion`。只报告已有比已安装版本更新的修复的 CVE，每个软件包一项发现，链接到对应的 USN。参见 [CVE 关联](/zh-cn/cve/#linux-发行版的软件包级-cve)。
 
 ## 生命周期解析器
 

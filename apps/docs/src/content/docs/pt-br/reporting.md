@@ -52,6 +52,17 @@ fontes, então as pontuações de uma mesma lista ficam na mesma escala. A
 coluna `CVES` das visões em tabela conta as CVEs distintas entre essas
 entradas, e não as entradas em si.
 
+Os achados por pacote para hosts Linux (consulte
+[Correlação de CVEs](/pt-br/cve/#cves-por-pacote-para-distribuições-linux))
+usam o mesmo formato, com `Source` definido como `debian`, `oval` ou
+`alpine`, `MatchedName` definido como o pacote e mais quatro campos:
+`InstalledVersion`, `FixedVersion` (a versão que resolve todas as CVEs de
+`CVEIDs`), `AdvisoryURL` e `Advisories` (todos os avisos que faltam ao
+pacote). O próprio inventário também cresce para esses hosts: cada
+observação traz um mapa `packages` (pacote → versão instalada) e, em hosts
+da família RHEL, `modules` (streams do AppStream) — dezenas de KB por
+host.
+
 ## `--format prometheus`
 
 Um textfile do Prometheus, destinado ao
@@ -110,7 +121,9 @@ linha por CVE, da mais grave para a menos grave, com links para o NVD, o
 cve.org e, para achados do BDU, a página em bdu.fstec.ru, e a classificação
 como badges coloridos (`CRITICAL · CVSS 3.1 9.8`). A descrição é o texto
 em russo do BDU quando o BDU tem a CVE, e o texto em inglês do NVD caso
-contrário. É CSS puro (um modal com `:target`), então funciona da mesma
+contrário. Os achados por pacote são uma linha por pacote
+(`linux 6.12.107-1 → 6.12.111-1`), com link para o aviso que traz a
+correção e a lista de CVEs do pacote recolhida logo abaixo. É CSS puro (um modal com `:target`), então funciona da mesma
 forma no modo `inline`, sem nenhum script.
 
 ### Cores das linhas no modo CDN

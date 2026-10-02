@@ -41,11 +41,15 @@ Zweryfikowano na żywo na `ubuntu:24.04`: `ID=ubuntu`, `VERSION_ID="24.04"`.
 
 - `version` — precyzyjne wydanie punktowe, gdy `VERSION` je zawiera, np.
   `22.04.5`; w przeciwnym razie samo `VERSION_ID`
+- `extra.codename` — `VERSION_CODENAME` z os-release
+- `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion` — `uname -r`,
+  `-m`, `-v`
+- `packages` — zainstalowane pakiety binarne i ich wersje (zobacz niżej)
 - `extra.hostKeyVerified`
 
 ## Korelacja CVE
 
-Brak dopasowania — CVE dystrybucji ogólnego przeznaczenia to podatności pakietów, a numer wydania nie mówi, które pakiety załatano od tego czasu. Zobacz stronę [Korelacja CVE](/pl/cve/#które-produkty-są-dopasowywane).
+Dopasowywany **według zainstalowanych pakietów** do OVAL Canonical dla wydania hosta (`com.ubuntu.<codename>.usn.oval.xml.bz2`, w `cve.oval.path`), a nie według wydania. Sonda wyświetla też listę zainstalowanych pakietów binarnych (`dpkg-query`) i odczytuje `uname -r`/`-m`/`-v` w tym samym przebiegu SSH — zapisywane jako `packages` obserwacji oraz `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. Wersja działającego jądra jest uzupełniana numerem uploadu z `uname -v`, więc jądro zawierające poprawkę nie zostanie błędnie uznane za wciąż jej pozbawione; znaleziska dotyczące jądra mają nazwę `kernel <flavour> (<uname -r>)`. Zgłaszane są tylko CVE z poprawką nowszą niż zainstalowana wersja, jedno znalezisko na pakiet, z linkiem do jego USN. Zobacz stronę [Korelacja CVE](/pl/cve/#cve-na-poziomie-pakietów-dla-dystrybucji-linuksa).
 
 ## Resolver cyklu życia
 

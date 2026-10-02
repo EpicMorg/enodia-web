@@ -12,6 +12,84 @@ affects how you'd actually configure something. Tags follow
 metadata, used only for a rebuild with no functional change, not to
 sidestep a real version bump.
 
+## 2.1.0+0 — 2026-10-01
+
+CVE correlation goes down to installed packages on ten Linux
+distributions, and six new probes land. Nothing breaks: the new `cve:`
+keys are optional, and inventories only gain optional fields, so 2.0
+configs and inventories work unchanged.
+
+### Added
+
+- **[Package-level CVEs for Linux distributions](/en/cve/#package-level-cves-for-linux-distributions).**
+  The OS probes now also read the installed packages and the running
+  kernel in their one SSH round trip, and each distribution's own
+  security data is matched per package. Each source is a file you
+  download, like БДУ and NVD:
+  - `cve.debian.path` — the Debian Security Tracker's JSON, for
+    [`debian`](/en/configuration/products/debian/).
+  - `cve.oval.path` — vendor OVAL files, one per release, for
+    [`ubuntu`](/en/configuration/products/ubuntu/),
+    [`linuxmint`](/en/configuration/products/linuxmint/) (via its Ubuntu
+    base), [`rhel`](/en/configuration/products/rhel/),
+    [`rocky-linux`](/en/configuration/products/rocky-linux/) (against Red
+    Hat's file — Rocky's own is refused as unusable),
+    [`almalinux`](/en/configuration/products/almalinux/),
+    [`oracle-linux`](/en/configuration/products/oracle-linux/),
+    [`astra-linux`](/en/configuration/products/astra-linux/) (SE 1.7/1.8)
+    and [`redos`](/en/configuration/products/redos/) (7.3/8.0). Parsed
+    OVAL is cached like БДУ and NVD.
+  - `cve.alpine.path` — Alpine's secdb, for
+    [`alpine-linux`](/en/configuration/products/alpine-linux/).
+- Only CVEs that already have a fix newer than what's installed are
+  reported — what an upgrade (and, for the kernel, a reboot) would close.
+  One finding per package, linked to the advisory carrying the fix (USN,
+  RHSA, ALSA, ELSA, Astra bulletin, ROS, Debian/Alpine tracker page),
+  with every CVE folded under it in the HTML report.
+- Matching follows each package manager's own rules: dpkg, rpm and apk
+  version ordering, AppStream module streams, Oracle's arch, FIPS and
+  Ksplice variants, and the running kernel rather than whatever kernel
+  packages are installed. Every source was cross-checked against the
+  reference tool (`oscap oval eval`, `dnf updateinfo`, python3-apt,
+  `apk version -t`) on real containers, with identical results.
+- New probes: [`mariadb`](/en/configuration/products/mariadb/),
+  [`pfsense`](/en/configuration/products/pfsense/) (Community Edition,
+  over SSH), [`supermicro-bmc`](/en/configuration/products/supermicro-bmc/),
+  [`dell-idrac`](/en/configuration/products/dell-idrac/) and
+  [`hp-ilo4`](/en/configuration/products/hp-ilo4/) (over Redfish), and
+  [`freeradius`](/en/configuration/products/freeradius/) (over SSH, with
+  `options.container` for a FreeRADIUS in Docker or Podman). 96 probes
+  in total.
+- `github-tag-branches` resolver: one lifecycle cycle per major.minor
+  from GitHub tags, for projects maintaining several branches at once
+  (FreeRADIUS 3.0.x and 3.2.x).
+- FreeRADIUS is matched in both NVD and БДУ.
+
+### Fixed
+
+- VMware's "8.0 U3k" shorthand in the lifecycle calendar now compares
+  equal to "8.0.3": a patched [vCenter](/en/configuration/products/vcenter/)
+  or [ESXi](/en/configuration/products/esxi/) 8.0 host no longer shows as
+  `ahead`.
+- LATEST/CYCLE columns show cleaned versions for GitHub-resolved
+  products, not the raw tag (`2026.9.1`, not `v2026.9.1`).
+- `config validate` reports a missing `cve.*.path` file instead of
+  passing and failing later in `check`.
+
+### Notes
+
+- A [Proxmox VE](/en/configuration/products/proxmox/) host gets package
+  findings as a second, SSH `debian` target next to its API `proxmox`
+  one; Debian's `linux` is only matched against a running Debian
+  kernel, so Proxmox's own kernel isn't mistaken for one.
+- With every source configured at once (БДУ, NVD, Debian, eight OVAL
+  files, Alpine) `check` took ~22 s cold and ~3.4 s warm, peaking at
+  ~0.5–0.6 GB — less if `cve.oval.path` holds only the releases you run.
+- The repository's history was rewritten and re-signed to drop internal
+  hostnames; every tag was re-created on the rewritten history. Release
+  binaries up to 2.0.0+0 report commit hashes from before the rewrite.
+- MariaDB, pfSense and the BMC probes have no CVE mapping yet.
+
 ## 2.0.0+0 — 2026-09-23
 
 A major version for a major feature, not for a break: CVE correlation is

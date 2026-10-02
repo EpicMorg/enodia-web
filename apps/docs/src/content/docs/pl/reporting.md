@@ -54,6 +54,17 @@ w obu źródłach, więc wyniki na jednej liście pozostają w tej samej
 skali. Kolumna `CVES` w widokach tabelarycznych liczy różne CVE w tych
 wpisach, a nie same wpisy.
 
+Znaleziska na poziomie pakietów dla hostów z Linuksem (zobacz
+[Korelacja CVE](/pl/cve/#cve-na-poziomie-pakietów-dla-dystrybucji-linuksa))
+mają ten sam kształt, z `Source` ustawionym na `debian`, `oval` lub
+`alpine`, `MatchedName` ustawionym na pakiet i czterema dodatkowymi
+polami: `InstalledVersion`, `FixedVersion` (wersja zamykająca wszystkie
+CVE w `CVEIDs`), `AdvisoryURL` i `Advisories` (wszystkie biuletyny,
+których brakuje pakietowi). Rośnie też sam inwentarz takich hostów:
+każda obserwacja zawiera mapę `packages` (pakiet → zainstalowana
+wersja), a na hostach z rodziny RHEL także `modules` (strumienie
+AppStream) — dziesiątki KB na host.
+
 ## `--format prometheus`
 
 Plik tekstowy Prometheus przeznaczony dla
@@ -113,7 +124,9 @@ celu: jeden wiersz na CVE, od najpoważniejszego, z linkami do NVD,
 cve.org oraz — dla znalezisk z BDU — strony bdu.fstec.ru, a ocena jest
 pokazana jako kolorowe plakietki (`CRITICAL · CVSS 3.1 9.8`). Opis to
 rosyjski tekst BDU, jeśli BDU zawiera dane CVE, a w przeciwnym razie
-angielski tekst NVD. To czysty CSS (modal oparty na `:target`), więc
+angielski tekst NVD. Znaleziska na poziomie pakietów to jeden wiersz
+na pakiet (`linux 6.12.107-1 → 6.12.111-1`), z linkiem do biuletynu
+zawierającego poprawkę i zwiniętą pod spodem listą CVE pakietu. To czysty CSS (modal oparty na `:target`), więc
 działa tak samo w trybie `inline`, bez żadnego skryptu.
 
 ### Kolory wierszy w trybie CDN

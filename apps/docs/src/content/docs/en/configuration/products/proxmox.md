@@ -42,6 +42,14 @@ recommends the API token for unattended automation anyway.
 
 Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
 
+This target covers Proxmox VE itself. For CVEs in the host's installed
+packages, add a second target for the same host with
+[`product: debian`](/en/configuration/products/debian/) over SSH — its
+os-release is Debian's. Debian's `linux` package is only matched against
+a running Debian kernel, so Proxmox's own kernel isn't mistaken for one,
+and Proxmox-built packages get no findings (there's no public feed for
+them). See [CVE correlation](/en/cve/#package-level-cves-for-linux-distributions).
+
 ## Lifecycle resolver
 
 `endoflife:proxmox-ve`.

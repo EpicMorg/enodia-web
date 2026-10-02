@@ -32,9 +32,8 @@ klientów MySQL starszych niż własny schemat wersjonowania MariaDB — nadal
 dotyczy to aktualnego obrazu MariaDB 10.11. `product: mysql` wskazany na
 serwer MariaDB wykrywa to i **celowo kończy się błędem**, podając
 w komunikacie prawdziwą wersję MariaDB, zamiast po cichu zapisać ją jako
-fakt o MySQL. Nie ma jeszcze dedykowanej sondy `mariadb` — to twarda
-blokada, a nie coś, co dziś można obejść za pomocą
-[sondy generycznej](/pl/configuration/products/generic/).
+fakt o MySQL. Od wersji 2.1 MariaDB ma własną sondę — należy dla niej
+użyć [`product: mariadb`](/pl/configuration/products/mariadb/).
 
 ## Korelacja CVE
 

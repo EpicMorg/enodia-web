@@ -9,7 +9,7 @@ completa de campos, el vocabulario cerrado `json`/`xml`/`header`/`plaintext`/`re
 y la nota sobre la grafía del campo `clean_regex` se encuentran en
 [Configuración → La sonda genérica](/es/configuration/#la-sonda-genérica);
 esta página existe solo para que `generic` aparezca en la barra lateral
-junto a los otros 89 productos.
+junto a los otros 95 productos.
 
 ```yaml
 targets:
@@ -33,7 +33,7 @@ No se contrasta: un analizador escrito a mano no tiene una identidad de producto
 ## Resolvedor del ciclo de vida
 
 Ninguno: por definición, un destino hecho a mano no tiene ningún
-calendario que consultar. ¿No encuentra su producto en la lista de 89
+calendario que consultar. ¿No encuentra su producto en la lista de 95
 sondas dedicadas? Consulte
 [Productos compatibles](/es/products/#no-encuentra-su-producto) para las dos
 alternativas: esta vía de escape o solicitar una sonda real.

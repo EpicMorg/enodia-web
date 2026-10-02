@@ -41,11 +41,15 @@ Verified live against `debian:bookworm-slim`: `ID=debian`,
   the file exists and isn't empty, even when it wasn't a plain dotted
   number (unlike Debian testing's `forky/sid`, useful to see as-is
   rather than silently dropped)
+- `extra.codename` — os-release `VERSION_CODENAME`, which picks the
+  tracker release
+- `extra.kernel` — the running kernel's Debian version, from `uname -v`
+- `packages` — installed source packages and their versions (see below)
 - `extra.hostKeyVerified`
 
 ## CVE correlation
 
-Not matched — a general-purpose distribution's CVEs are package vulnerabilities, and the release number can't say which packages have been patched since. See [CVE correlation](/en/cve/#which-products-are-matched).
+Matched **per installed package** against the Debian Security Tracker (`cve.debian.path`), not by release. The probe reads the installed *source* packages (`dpkg-query`'s `source:Package`/`source:Version` — the tracker's own key) and the running kernel's Debian version (from `uname -v`) in the same SSH round trip as the version itself. Only CVEs Debian has already fixed in a version newer than the installed one are reported, one finding per source package, linked to its tracker page. The tracker only covers releases Debian's security team still supports (bookworm, trixie, testing, sid); older hosts get no package findings. A Proxmox VE host is covered by a `debian` target like this one — see [CVE correlation](/en/cve/#package-level-cves-for-linux-distributions).
 
 ## Lifecycle resolver
 

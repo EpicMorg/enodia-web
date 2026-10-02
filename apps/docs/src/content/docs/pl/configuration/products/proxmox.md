@@ -44,6 +44,15 @@ działającej bez nadzoru.
 
 Dopasowywany do NVD i BDU FSTEC, gdy skonfigurowano [blok `cve:`](/pl/cve/).
 
+Ten cel obejmuje sam Proxmox VE. Aby uzyskać CVE w pakietach
+zainstalowanych na hoście, należy dodać drugi cel dla tego samego hosta
+z [`product: debian`](/pl/configuration/products/debian/) przez SSH —
+jego os-release to os-release Debiana. Pakiet `linux` Debiana jest
+dopasowywany tylko do działającego jądra Debiana, więc własne jądro
+Proxmoksa nie zostanie z nim pomylone, a pakiety budowane przez Proxmox
+nie otrzymują znalezisk (nie ma dla nich publicznego źródła danych).
+Zobacz stronę [Korelacja CVE](/pl/cve/#cve-na-poziomie-pakietów-dla-dystrybucji-linuksa).
+
 ## Resolver cyklu życia
 
 `endoflife:proxmox-ve`.

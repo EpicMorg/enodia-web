@@ -54,6 +54,17 @@ o are aproape fiecare CVE în ambele surse, astfel încât scorurile dintr-o
 listă rămân pe aceeași scară. Coloana `CVES` din vizualizările tabelare
 numără CVE-urile distincte din aceste intrări, nu intrările în sine.
 
+Constatările la nivel de pachet pentru gazdele Linux (vedeți
+[Corelare CVE](/ro/cve/#cve-uri-la-nivel-de-pachet-pentru-distribuțiile-linux))
+folosesc aceeași formă, cu `Source` setat la `debian`, `oval` sau
+`alpine`, `MatchedName` setat la pachet și încă patru câmpuri:
+`InstalledVersion`, `FixedVersion` (versiunea care închide toate
+CVE-urile din `CVEIDs`), `AdvisoryURL` și `Advisories` (toate avizele
+care îi lipsesc pachetului). Pentru aceste gazde crește și inventarul
+însuși: fiecare observație conține o hartă `packages` (pachet → versiune
+instalată) și, pe gazdele din familia RHEL, `modules` (fluxuri
+AppStream) — zeci de KB per gazdă.
+
 ## `--format prometheus`
 
 Un textfile Prometheus, destinat
@@ -112,6 +123,9 @@ Cu un [bloc `cve:`](/ro/cve/) configurat, celula `CVES` din secțiunile
 pagina bdu.fstec.ru, iar ratingul este afișat sub formă de insigne
 colorate (`CRITICAL · CVSS 3.1 9.8`). Descrierea este textul în rusă din
 BDU atunci când BDU conține CVE-ul, iar altfel textul în engleză din NVD.
+Constatările la nivel de pachet sunt câte o linie per pachet
+(`linux 6.12.107-1 → 6.12.111-1`), cu link către avizul care conține
+corecția și cu lista de CVE-uri a pachetului pliată dedesubt.
 Este realizată exclusiv în CSS (un modal `:target`), așa că funcționează
 la fel și în modul `inline`, fără niciun script.
 

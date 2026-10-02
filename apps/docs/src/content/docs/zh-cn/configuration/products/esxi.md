@@ -34,4 +34,4 @@ targets:
 
 ## 生命周期解析器
 
-`endoflife:esxi`。
+`endoflife:esxi`。日历用 VMware 自己的简写（`8.0 U3k` / `8.0 Update 3k`）记录 VMware 8.0 分支的最新补丁级别；自 2.1 起，它会被读作 `8.0.3`，因此一台已完全打好补丁的 8.0 Update 3 主机会显示为 `current`，而不是 `ahead`。末尾的补丁字母会被丢弃——主机自己的版本字符串中没有可与之比较的内容。

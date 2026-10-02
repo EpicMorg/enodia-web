@@ -21,7 +21,7 @@ Zweryfikowano na żywo na `rockylinux:9`: `ID="rocky"` — własna wartość
 
 ## Korelacja CVE
 
-Brak dopasowania — CVE dystrybucji ogólnego przeznaczenia to podatności pakietów, a numer wydania nie mówi, które pakiety załatano od tego czasu. Zobacz stronę [Korelacja CVE](/pl/cve/#które-produkty-są-dopasowywane).
+Dopasowywany **według zainstalowanych pakietów** do OVAL **Red Hat** (`rhel-<N>.oval.xml.bz2`, w `cve.oval.path`) — Rocky przebudowuje pakiety Red Hata z tymi samymi wersjami, a własny plik OVAL Rocky jest odrzucany (zawiera niewielki ułamek biuletynów Rocky i nie przechodzi walidacji schematu OVAL). Sonda wyświetla też listę zainstalowanych pakietów binarnych (`rpm -qa`, ze strumieniem modułu AppStream każdego pakietu) i odczytuje `uname -r`/`-m`/`-v` w tym samym przebiegu SSH — zapisywane jako `packages` i `modules` obserwacji oraz `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. Spośród kilku zainstalowanych jąder porównywane jest to działające. Zgłaszane są tylko CVE z poprawką nowszą niż zainstalowana wersja, jedno znalezisko na pakiet. Część z nich pochodzi z poprawek, które Red Hat wydał jako biuletyny naprawy błędów (RHBA), których `dnf updateinfo --security` nie wyświetla. Zobacz stronę [Korelacja CVE](/pl/cve/#cve-na-poziomie-pakietów-dla-dystrybucji-linuksa).
 
 ## Resolver cyklu życia
 

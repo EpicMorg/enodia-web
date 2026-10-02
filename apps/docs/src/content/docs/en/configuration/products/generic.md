@@ -8,7 +8,7 @@ The escape hatch for anything without a dedicated probe — a hand-written
 the frozen `json`/`xml`/`header`/`plaintext`/`regex` vocabulary, and the
 `clean_regex` field-spelling note live in
 [Configuration → The generic probe](/en/configuration/#the-generic-probe);
-this page exists only so `generic` shows up alongside the other 89
+this page exists only so `generic` shows up alongside the other 95
 products in the sidebar.
 
 ```yaml
@@ -33,6 +33,6 @@ Not matched — a hand-written parser has no product identity to look CVEs up by
 ## Lifecycle resolver
 
 None — a hand-rolled target has no calendar to look up by definition.
-Don't see your product on the list of 89 dedicated probes? See
+Don't see your product on the list of 95 dedicated probes? See
 [Supported products](/en/products/#dont-see-your-product) for the two
 ways forward: this escape hatch, or requesting a real probe.

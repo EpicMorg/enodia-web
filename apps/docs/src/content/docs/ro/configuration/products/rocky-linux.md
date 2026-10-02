@@ -21,7 +21,7 @@ Rocky din os-release, diferită de numele din `product:` — și
 
 ## Corelare CVE
 
-Nu se corelează — CVE-urile unei distribuții de uz general sunt vulnerabilități ale pachetelor, iar numărul versiunii nu poate spune ce pachete au fost corectate între timp. Consultați [Corelare CVE](/ro/cve/#ce-produse-sunt-potrivite).
+Se corelează **per pachet instalat** cu OVAL-ul **Red Hat** (`rhel-<N>.oval.xml.bz2`, în `cve.oval.path`) — Rocky recompilează pachetele Red Hat cu aceleași versiuni, iar fișierul OVAL propriu al Rocky este refuzat (conține doar o mică parte din avizele Rocky și nu trece validarea schemei OVAL). Sonda listează, de asemenea, pachetele binare instalate (`rpm -qa`, cu fluxul de module AppStream al fiecărui pachet) și citește `uname -r`/`-m`/`-v` în aceeași interogare SSH — stocate ca `packages` și `modules` ale observației, respectiv `extra.kernelRelease`, `extra.arch`, `extra.kernelVersion`. Dintre mai multe kerneluri instalate, se compară cel care rulează. Sunt raportate doar CVE-urile care au o corecție mai nouă decât ce este instalat, câte o constatare per pachet. Unele dintre ele provin din corecții pe care Red Hat le-a publicat ca avize de remediere a erorilor (RHBA), pe care `dnf updateinfo --security` nu le listează. Consultați [Corelare CVE](/ro/cve/#cve-uri-la-nivel-de-pachet-pentru-distribuțiile-linux).
 
 ## Rezolvatorul ciclului de viață
 
