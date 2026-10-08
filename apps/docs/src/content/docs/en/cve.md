@@ -15,6 +15,9 @@ axes, not instead of them. It matches against two public databases:
 Either works alone; with both configured, their findings are merged per
 CVE.
 
+MariaDB is also matched against its own table of fixed CVEs (see
+[MariaDB: the vendor's own table](#mariadb-the-vendors-own-table)).
+
 Since 2.1, ten Linux distributions are also matched **per installed
 package** against their vendors' own security data — the Debian
 Security Tracker, vendor OVAL files and Alpine's secdb (see
@@ -143,6 +146,19 @@ for b in v3.20 v3.22; do
 done
 ```
 
+### MariaDB's own CVE table
+
+One file, for `mariadb` targets: MariaDB's own page "Security
+Vulnerabilities (CVE) Fixed in MariaDB Community Server", saved as is
+in its Markdown source (about 320 KB):
+
+```bash
+curl -fsSL -o /var/lib/enodia/cve/mariadb.md \
+  https://mariadb.com/docs/server/security/cve/community-server.md
+```
+
+Checked live on 2026-10-09.
+
 ## Configuration
 
 A `cve:` block in `enodia.yaml` — not `settings.yaml`, since it changes
@@ -161,6 +177,8 @@ cve:
     path: /var/lib/enodia/cve/oval
   alpine:
     path: /var/lib/enodia/cve/alpine
+  mariadb:
+    path: /var/lib/enodia/cve/mariadb.md
 targets:
   - id: gitlab-main
     product: gitlab
@@ -175,6 +193,7 @@ targets:
 | `cve.debian.path` | the tracker's export: `.json`, `.json.gz` or `.json.zip` |
 | `cve.oval.path` | one OVAL file (`.xml` or `.xml.bz2`), or a directory of them |
 | `cve.alpine.path` | one secdb `.json` file, or a directory of them |
+| `cve.mariadb.path` | MariaDB's `community-server.md`, saved as is |
 
 Relative paths resolve against the directory of the config file that
 names them, the same as `credentials_file`. The block is read from
@@ -262,7 +281,8 @@ should escalate severity is an open question upstream.
 
 ## Which products are matched
 
-63 of the 96 products: 53 by product name against БДУ and NVD, each
+64 of the 96 products: 54 by product name against БДУ and NVD (MariaDB
+also against its own table — see [below](#mariadb-the-vendors-own-table)), each
 vendor/product name checked verbatim against the real full exports, and
 10 Linux distributions per installed package (see the next section).
 See each product's own page under [Product setup](/en/products/) for
@@ -288,9 +308,9 @@ Not matched, each for a reason:
   Perforce Proxy, Perforce Helix Swarm.
 - **`generic`** — a hand-written parser has no product identity to look
   up.
-- **Not mapped yet** — MariaDB, pfSense and the three BMC probes
-  (Supermicro, Dell iDRAC, HP iLO 4), all new in 2.1. Upstream left their
-  CVE mapping for a later, dedicated pass.
+- **Not mapped yet** — pfSense and the three BMC probes (Supermicro,
+  Dell iDRAC, HP iLO 4), all new in 2.1. Upstream left their CVE mapping
+  for a later, dedicated pass.
 
 ## Package-level CVEs for Linux distributions
 
@@ -356,6 +376,39 @@ The [`ssh`](/en/configuration/products/ssh/) probe covers any SSH
 implementation, so it's matched by banner: `OpenSSH_…` looks up
 OpenSSH, `dropbear_…` looks up Dropbear, and any other SSH stack gets no
 lookup rather than borrowing OpenSSH's CVEs.
+
+## MariaDB: the vendor's own table
+
+MariaDB maintains five or six release series at once, and БДУ and NVD
+both describe a fix in one series as an open-ended range ("before
+11.4.10") — which then also covers every older series, including ones
+that never had the bug. On real fleet versions this flagged the latest,
+fully patched releases of maintained series (10.11.19, 11.4.13), while
+the same two databases missed 9 of the 21 CVEs MariaDB itself lists for
+10.11.8.
+
+`cve.mariadb.path` adds MariaDB's own table of fixed CVEs, which names
+the fixing release **per series**. It's merged with БДУ and NVD, with
+one rule on top: for a CVE MariaDB's table knows, its verdict wins — a
+БДУ or NVD finding whose CVEs the table covers and doesn't flag for this
+version is dropped. CVEs the table doesn't list (newer than your
+downloaded copy, БДУ-only, or without a CVE id) still come from БДУ and
+NVD.
+
+How the table is read:
+
+- A series with its own fix is vulnerable from its first release up to
+  that fix.
+- A series with no fix of its own that was still maintained when the CVE
+  was fixed elsewhere is unaffected — MariaDB fixes every live series
+  together.
+- A series that had already ended by then is flagged for every release,
+  with the lowest fix in a newer series as the release to move to
+  (`FixStatus` says so). This errs toward reporting on purpose, and only
+  for ended series.
+
+Without `cve.mariadb.path`, `mariadb` targets are still matched against
+БДУ and NVD alone — with the overlap problem above.
 
 ## Known limitations
 

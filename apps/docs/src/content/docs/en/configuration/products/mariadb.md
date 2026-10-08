@@ -46,9 +46,7 @@ refusing a MariaDB server.
 
 ## CVE correlation
 
-Not matched yet — MariaDB is new in 2.1, and upstream left its CVE
-mapping for a later, dedicated pass. See
-[CVE correlation](/en/cve/#which-products-are-matched).
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured — and, with `cve.mariadb.path`, against MariaDB's own table of fixed CVEs, whose per-series verdict wins over БДУ's and NVD's open-ended ranges. See [MariaDB: the vendor's own table](/en/cve/#mariadb-the-vendors-own-table).
 
 ## Lifecycle resolver
 

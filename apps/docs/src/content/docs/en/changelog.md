@@ -12,6 +12,43 @@ affects how you'd actually configure something. Tags follow
 metadata, used only for a rebuild with no functional change, not to
 sidestep a real version bump.
 
+## Unreleased
+
+<!-- NEXT-RELEASE: replace this heading with "## X.Y.Z+0 — YYYY-MM-DD" when the release is published. -->
+
+### Added
+
+- **CVEs for [`mariadb`](/en/configuration/products/mariadb/) targets.**
+  БДУ and NVD now cover MariaDB, and a new `cve.mariadb.path` reads
+  MariaDB's own table of fixed CVEs (`community-server.md`), which knows
+  the fixing release per series. Merged with БДУ and NVD; where
+  MariaDB's table knows a CVE, its verdict replaces their open-ended
+  ranges, so the latest release of a maintained series is no longer
+  flagged for CVEs fixed only in newer series — see
+  [MariaDB: the vendor's own table](/en/cve/#mariadb-the-vendors-own-table).
+- A [Privacy](/en/privacy/) page: what enodia connects to (your
+  targets, endoflife.date, the GitHub API — product and repository names
+  only) and what it stores (only your own files and a local cache). No
+  telemetry.
+
+### Changed
+
+- [`teamcity`](/en/configuration/products/teamcity/) works without
+  credentials: with none configured it reads the anonymous
+  `/app/rest/server/version`, open on every TeamCity checked from 2017.2
+  to 2026.1 even with guest login off. A token still selects
+  `/app/rest/server` as before.
+
+### Fixed
+
+- **A credential of a kind its product never sends is now a config
+  error** instead of being dropped silently. `kind: password` on an HTTP
+  product (RouterOS, Harbor, …) used to send the request with no
+  `Authorization` header at all; `config validate` now names the kinds
+  the product accepts — for a web login that is `kind: basic`. **Check
+  your config before upgrading**: a run with such a credential now
+  refuses to start. See [Configuration → Credentials](/en/configuration/#credentials).
+
 ## 2.1.1+0 — 2026-10-08
 
 ### Fixed

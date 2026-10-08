@@ -96,7 +96,7 @@ SSH, потому что RADIUS не умеет сообщать версию.
 | [`kibana`](/ru/configuration/products/kibana/) | Kibana | `endoflife:kibana` | NVD, BDU |
 | [`kitsu`](/ru/configuration/products/kitsu/) | Kitsu (фронтенд CG-Wire / Zou) | `github:cgwire/kitsu` | — |
 | [`logstash`](/ru/configuration/products/logstash/) | Logstash | `endoflife:logstash` | NVD, BDU |
-| [`mariadb`](/ru/configuration/products/mariadb/) | MariaDB Server | `endoflife:mariadb` | — |
+| [`mariadb`](/ru/configuration/products/mariadb/) | MariaDB Server | `endoflife:mariadb` | NVD, BDU, таблица MariaDB |
 | [`mattermost`](/ru/configuration/products/mattermost/) | Mattermost | `endoflife:mattermost` | NVD, BDU |
 | [`mongodb`](/ru/configuration/products/mongodb/) | MongoDB | `endoflife:mongodb` | NVD, BDU |
 | [`mysql`](/ru/configuration/products/mysql/) | MySQL Server | `endoflife:mysql` | NVD, BDU |
