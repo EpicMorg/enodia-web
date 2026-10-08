@@ -12,6 +12,18 @@ affects how you'd actually configure something. Tags follow
 metadata, used only for a rebuild with no functional change, not to
 sidestep a real version bump.
 
+## 2.1.1+0 — 2026-10-08
+
+### Fixed
+
+- MariaDB 11.0+ no longer masks its version behind `5.5.5-`
+  (`11.4.9-MariaDB-…`), so [`mysql`](/en/configuration/products/mysql/)
+  recorded such servers as MySQL and
+  [`mariadb`](/en/configuration/products/mariadb/) refused them. Both
+  probes now recognise MariaDB by either shape. A `product: mysql`
+  target pointing at MariaDB 11.0+ now fails — switch it to
+  `product: mariadb`.
+
 ## 2.1.0+0 — 2026-10-01
 
 CVE correlation goes down to installed packages on ten Linux

@@ -23,12 +23,19 @@ Niciuna — versiunea este citită direct din handshake.
 
 ## Verificarea identității producătorului
 
-MariaDB și MySQL folosesc un handshake identic și diferă doar printr-un
-detaliu: MariaDB își prefixează versiunea cu masca de compatibilitate
-`5.5.5-` pentru clienții MySQL vechi (confirmat live, încă valabil pe
-MariaDB 10.11). Această sondă cere această mască și o elimină — îndreptată
-spre un server MySQL real, eșuează în loc să înregistreze un fapt greșit,
-imaginea în oglindă a modului în care
+MariaDB și MySQL folosesc un handshake identic și diferă doar prin șirul
+de versiune, care vine în două forme, ambele confirmate live:
+
+- **MariaDB 10.x** își maschează versiunea în spatele unui prefix de
+  compatibilitate `5.5.5-` pentru clienții MySQL vechi:
+  `5.5.5-10.11.19-MariaDB-ubu2204`. Masca este eliminată.
+- **MariaDB 11.0+** a renunțat la mască: `11.4.13-MariaDB-ubu2404`,
+  `12.3.3-MariaDB-ubu2404`. `-MariaDB` din versiune este atunci singurul
+  semnal. Recunoscut începând cu 2.1.1 — 2.1.0 refuza aceste servere.
+
+Oricare dintre cele două forme este acceptată. Îndreptată spre un server
+MySQL real, a cărui versiune nu are niciuna dintre ele, sonda eșuează în
+loc să înregistreze un fapt greșit, imaginea în oglindă a modului în care
 [`mysql`](/ro/configuration/products/mysql/#mariadb-este-un-produs-diferit)
 refuză un server MariaDB.
 

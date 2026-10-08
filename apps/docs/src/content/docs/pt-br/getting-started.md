@@ -93,7 +93,7 @@ com seu próprio cronograma — e não mais pelo pipeline de release deste
 projeto, embora o endereço publicado e as tags continuem os mesmos. Ela
 também é publicada em `docker.io/epicmorg/enodia` e no Quay, com as mesmas
 tags — `latest`, a versão major isolada (`2`) e a versão exata sem sufixo de
-build (por exemplo, `2.0.0` — confirmado na prática nos três registries; as
+build (por exemplo, `2.1.1` — confirmado na prática nos três registries; as
 tags de um pipeline anterior tinham o formato `1.0.0-1`, que ainda podem ser
 baixadas, mas não é assim que as novas versões são marcadas daqui em diante).
 Duas mudanças reais que vale conhecer: a imagem agora é **apenas

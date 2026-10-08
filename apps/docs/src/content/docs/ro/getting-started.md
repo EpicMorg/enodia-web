@@ -95,7 +95,7 @@ după propriul program — nu mai este publicată de pipeline-ul de lansare
 al acestui proiect, deși adresa publicată și tag-urile rămân aceleași.
 Este publicată și în `docker.io/epicmorg/enodia` și pe Quay, cu aceleași
 tag-uri — `latest`, versiunea majoră simplă (`2`) și versiunea exactă
-fără sufix de build (de exemplu `2.0.0` — confirmat în practică pe toate
+fără sufix de build (de exemplu `2.1.1` — confirmat în practică pe toate
 cele trei registre; tag-urile unui pipeline anterior arătau în schimb ca
 `1.0.0-1`, încă disponibile pentru pull, doar că noile versiuni nu mai
 sunt etichetate astfel de acum înainte). Două schimbări reale care merită

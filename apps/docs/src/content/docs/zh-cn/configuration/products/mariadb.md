@@ -18,7 +18,12 @@ targets:
 
 ## 厂商身份校验
 
-MariaDB 和 MySQL 使用完全相同的握手，只在一个细节上不同：MariaDB 会在版本前加上 `5.5.5-` 兼容性掩码，供旧版 MySQL 客户端使用（已实测确认，在 MariaDB 10.11 上依然如此）。本探针要求存在该掩码并将其去除——指向真实的 MySQL 服务器时会明确报错失败，而不是记录错误的事实，这与 [`mysql`](/zh-cn/configuration/products/mysql/#mariadb-是另一个产品) 拒绝 MariaDB 服务器正好互为镜像。
+MariaDB 和 MySQL 使用完全相同的握手，只在版本字符串上不同。版本字符串有两种形式，均已实测确认：
+
+- **MariaDB 10.x** 会用 `5.5.5-` 兼容性前缀掩盖其版本，供旧版 MySQL 客户端使用：`5.5.5-10.11.19-MariaDB-ubu2204`。该掩码会被去除。
+- **MariaDB 11.0+** 不再使用掩码：`11.4.13-MariaDB-ubu2404`、`12.3.3-MariaDB-ubu2404`。此时版本中的 `-MariaDB` 是唯一的标志。自 2.1.1 起可识别——2.1.0 会拒绝这类服务器。
+
+两种形式都会被接受。指向真实的 MySQL 服务器时（其版本两种特征都没有），探针会明确报错失败，而不是记录错误的事实，这与 [`mysql`](/zh-cn/configuration/products/mysql/#mariadb-是另一个产品) 拒绝 MariaDB 服务器正好互为镜像。
 
 ## 记录的字段
 

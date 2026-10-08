@@ -13,6 +13,18 @@ configura efectiv ceva. Tag-urile urmează formatul
 metadate de build semver, folosite doar pentru un rebuild fără
 modificări funcționale, nu pentru a evita o creștere reală a versiunii.
 
+## 2.1.1+0 — 2026-10-08
+
+### Corectat
+
+- MariaDB 11.0+ nu își mai maschează versiunea în spatele `5.5.5-`
+  (`11.4.9-MariaDB-…`), așa că [`mysql`](/ro/configuration/products/mysql/)
+  înregistra astfel de servere ca MySQL, iar
+  [`mariadb`](/ro/configuration/products/mariadb/) le refuza. Acum ambele
+  sonde recunosc MariaDB în oricare dintre cele două forme. O țintă
+  `product: mysql` îndreptată spre MariaDB 11.0+ eșuează acum — schimbați-o
+  în `product: mariadb`.
+
 ## 2.1.0+0 — 2026-10-01
 
 Corelarea CVE ajunge până la pachetele instalate pe zece distribuții

@@ -22,11 +22,19 @@ None — the version is read straight out of the handshake.
 
 ## Vendor identity check
 
-MariaDB and MySQL speak the identical handshake and differ only in one
-detail: MariaDB prefixes its version with a `5.5.5-` compatibility mask
-for old MySQL clients (confirmed live, still true on MariaDB 10.11). This
-probe requires that mask and strips it — pointed at a real MySQL server
-it fails rather than recording a wrong fact, the mirror image of
+MariaDB and MySQL speak the identical handshake and differ only in the
+version string, which comes in two shapes, both confirmed live:
+
+- **MariaDB 10.x** masks its version behind a `5.5.5-` compatibility
+  prefix for old MySQL clients: `5.5.5-10.11.19-MariaDB-ubu2204`. The
+  mask is stripped.
+- **MariaDB 11.0+** dropped the mask: `11.4.13-MariaDB-ubu2404`,
+  `12.3.3-MariaDB-ubu2404`. The `-MariaDB` in the version is then the
+  only signal. Recognised since 2.1.1 — 2.1.0 refused these servers.
+
+Either shape is accepted. Pointed at a real MySQL server, whose version
+has neither, the probe fails rather than recording a wrong fact, the
+mirror image of
 [`mysql`](/en/configuration/products/mysql/#mariadb-is-a-different-product)
 refusing a MariaDB server.
 

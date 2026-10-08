@@ -27,14 +27,22 @@ uma credencial teria qualquer importância.
 
 ## MariaDB é um produto diferente
 
-O MariaDB mascara a sua versão real atrás de um prefixo `5.5.5-` para
-clientes MySQL anteriores ao esquema de versões próprio do MariaDB — o
-que ainda acontece em uma imagem atual do MariaDB 10.11. `product: mysql`
-apontado para um servidor MariaDB detecta isso e **falha de propósito**,
-informando a versão real do MariaDB no erro, em vez de registrá-la
-silenciosamente como um fato do MySQL. Desde a 2.1, o MariaDB tem uma
-sonda própria — use
+A versão do handshake do MariaDB o denuncia: o MariaDB 10.x a mascara
+atrás de um prefixo `5.5.5-` para clientes MySQL antigos
+(`5.5.5-10.11.19-MariaDB-ubu2204`), e o MariaDB 11.0+ a envia sem
+máscara, mas marcada (`11.4.13-MariaDB-ubu2404`). `product: mysql`
+apontado para um servidor MariaDB detecta qualquer um dos dois formatos e
+**falha de propósito**, informando a versão real do MariaDB no erro, em
+vez de registrá-la silenciosamente como um fato do MySQL. Desde a 2.1, o
+MariaDB tem uma sonda própria — use
 [`product: mariadb`](/pt-br/configuration/products/mariadb/) para ele.
+
+:::caution[MariaDB 11.0+ antes da 2.1.1]
+Até a 2.1.0, apenas a máscara `5.5.5-` era reconhecida, então um servidor
+MariaDB 11.0+ por trás de um alvo `product: mysql` era registrado **como
+MySQL** e comparado com o ciclo de vida do MySQL. Desde a 2.1.1, esse
+alvo falha — troque-o para `product: mariadb`.
+:::
 
 ## Correlação de CVEs
 

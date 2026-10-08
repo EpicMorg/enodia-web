@@ -13,6 +13,18 @@ prefijo `v`; `+BUILD` son metadatos de compilación de semver, que se usan
 solo para una recompilación sin cambios funcionales, no para eludir un
 incremento de versión real.
 
+## 2.1.1+0 — 2026-10-08
+
+### Corregido
+
+- MariaDB 11.0+ ya no oculta su versión tras `5.5.5-`
+  (`11.4.9-MariaDB-…`), por lo que [`mysql`](/es/configuration/products/mysql/)
+  registraba esos servidores como MySQL y
+  [`mariadb`](/es/configuration/products/mariadb/) los rechazaba. Ahora
+  ambas sondas reconocen MariaDB en cualquiera de las dos formas. Un
+  destino `product: mysql` que apunte a MariaDB 11.0+ ahora falla:
+  cámbielo a `product: mariadb`.
+
 ## 2.1.0+0 — 2026-10-01
 
 La correlación de CVE llega hasta los paquetes instalados en diez

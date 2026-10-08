@@ -94,7 +94,7 @@ według własnego harmonogramu — nie przez potok wydań tego projektu,
 choć adres publikacji i tagi pozostają takie same. Obraz jest też
 publikowany w `docker.io/epicmorg/enodia` i Quay, z tymi samymi tagami —
 `latest`, sama wersja główna (`2`) oraz dokładna wersja bez sufiksu
-kompilacji (np. `2.0.0` — potwierdzone na żywo we wszystkich trzech
+kompilacji (np. `2.1.1` — potwierdzone na żywo we wszystkich trzech
 rejestrach; tagi wcześniejszego potoku wyglądały zamiast tego jak
 `1.0.0-1`, nadal można je pobrać, ale nowe wydania nie są już tak
 tagowane). Dwie realne zmiany, o których warto wiedzieć: obraz jest

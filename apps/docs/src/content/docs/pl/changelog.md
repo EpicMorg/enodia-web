@@ -13,6 +13,18 @@ konfiguracji. Tagi mają postać `MAJOR.MINOR.PATCH+BUILD`, bez prefiksu
 ponownej kompilacji bez zmian funkcjonalnych, a nie do omijania
 rzeczywistego podbicia wersji.
 
+## 2.1.1+0 — 2026-10-08
+
+### Naprawiono
+
+- MariaDB 11.0+ nie maskuje już swojej wersji prefiksem `5.5.5-`
+  (`11.4.9-MariaDB-…`), więc [`mysql`](/pl/configuration/products/mysql/)
+  zapisywała takie serwery jako MySQL, a
+  [`mariadb`](/pl/configuration/products/mariadb/) je odrzucała. Teraz
+  obie sondy rozpoznają MariaDB w każdej z dwóch postaci. Cel
+  `product: mysql` wskazujący na MariaDB 11.0+ kończy się teraz błędem —
+  należy przełączyć go na `product: mariadb`.
+
 ## 2.1.0+0 — 2026-10-01
 
 Korelacja CVE schodzi do poziomu zainstalowanych pakietów w dziesięciu

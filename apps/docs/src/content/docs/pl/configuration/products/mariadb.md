@@ -23,12 +23,20 @@ Brak — wersja jest odczytywana bezpośrednio z handshake.
 
 ## Weryfikacja tożsamości producenta
 
-MariaDB i MySQL używają identycznego handshake i różnią się tylko jednym
-szczegółem: MariaDB poprzedza swoją wersję maską zgodności `5.5.5-` na
-potrzeby starych klientów MySQL (potwierdzone na żywo, nadal dotyczy to
-MariaDB 10.11). Ta sonda wymaga tej maski i ją usuwa — wskazana na
-prawdziwy serwer MySQL kończy się błędem, zamiast zapisać nieprawdziwy
-fakt; to lustrzane odbicie tego, jak
+MariaDB i MySQL używają identycznego handshake i różnią się tylko
+ciągiem wersji, który występuje w dwóch postaciach, obu potwierdzonych na
+żywo:
+
+- **MariaDB 10.x** maskuje swoją wersję prefiksem zgodności `5.5.5-` na
+  potrzeby starych klientów MySQL: `5.5.5-10.11.19-MariaDB-ubu2204`.
+  Maska jest usuwana.
+- **MariaDB 11.0+** zrezygnowała z maski: `11.4.13-MariaDB-ubu2404`,
+  `12.3.3-MariaDB-ubu2404`. Jedynym sygnałem jest wtedy `-MariaDB`
+  w wersji. Rozpoznawane od wersji 2.1.1 — 2.1.0 odrzucała takie serwery.
+
+Akceptowana jest każda z dwóch postaci. Wskazana na prawdziwy serwer
+MySQL, którego wersja nie ma żadnej z nich, sonda kończy się błędem,
+zamiast zapisać nieprawdziwy fakt; to lustrzane odbicie tego, jak
 [`mysql`](/pl/configuration/products/mysql/#mariadb-to-inny-produkt)
 odrzuca serwer MariaDB.
 

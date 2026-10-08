@@ -26,13 +26,21 @@ point where a credential would even matter.
 
 ## MariaDB is a different product
 
-MariaDB masks its real version behind a `5.5.5-` prefix for MySQL clients
-that predate MariaDB's own version scheme — still true on a current
-MariaDB 10.11 image. `product: mysql` pointed at a MariaDB server detects
-this and **fails on purpose**, naming the real MariaDB version in the
+MariaDB's handshake version gives it away: MariaDB 10.x masks it behind a
+`5.5.5-` prefix for old MySQL clients (`5.5.5-10.11.19-MariaDB-ubu2204`),
+and MariaDB 11.0+ sends it unmasked but tagged
+(`11.4.13-MariaDB-ubu2404`). `product: mysql` pointed at a MariaDB server
+detects either shape and **fails on purpose**, naming the real MariaDB version in the
 error, rather than silently recording it as a MySQL fact. Since 2.1,
 MariaDB has its own probe — use
 [`product: mariadb`](/en/configuration/products/mariadb/) for it.
+
+:::caution[MariaDB 11.0+ before 2.1.1]
+Up to 2.1.0 only the `5.5.5-` mask was recognised, so a MariaDB 11.0+
+server behind a `product: mysql` target was recorded **as MySQL** and
+checked against MySQL's lifecycle. Since 2.1.1 such a target fails
+instead — switch it to `product: mariadb`.
+:::
 
 ## CVE correlation
 

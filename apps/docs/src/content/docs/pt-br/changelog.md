@@ -12,6 +12,18 @@ seguem o formato `MAJOR.MINOR.PATCH+BUILD`, sem prefixo `v`; `+BUILD` são
 metadados de build do semver, usados apenas para uma recompilação sem
 mudança funcional, e não para evitar um incremento de versão real.
 
+## 2.1.1+0 — 2026-10-08
+
+### Corrigido
+
+- O MariaDB 11.0+ não mascara mais a sua versão atrás de `5.5.5-`
+  (`11.4.9-MariaDB-…`), então o [`mysql`](/pt-br/configuration/products/mysql/)
+  registrava esses servidores como MySQL e o
+  [`mariadb`](/pt-br/configuration/products/mariadb/) os recusava. Agora
+  as duas sondas reconhecem o MariaDB em qualquer um dos dois formatos.
+  Um alvo `product: mysql` apontado para um MariaDB 11.0+ agora falha —
+  troque-o para `product: mariadb`.
+
 ## 2.1.0+0 — 2026-10-01
 
 A correlação de CVEs desce até os pacotes instalados em dez distribuições

@@ -7,6 +7,12 @@ description: enodia 各版本的重要变更。
 ——本页是它的镜像，每次发布时与本站其余内容一同保持同步，并在某项变更会影响您实际配置方式的地方，附上指向本文档其他部分的链接。标签遵循 `MAJOR.MINOR.PATCH+BUILD` 格式，不带 `v` 前缀；
 `+BUILD` 是 semver 的构建元数据，仅用于没有功能变化的重新构建，而不是用来规避真正的版本号提升。
 
+## 2.1.1+0 — 2026-10-08
+
+### 修复
+
+- MariaDB 11.0+ 不再用 `5.5.5-` 掩盖其版本（`11.4.9-MariaDB-…`），因此 [`mysql`](/zh-cn/configuration/products/mysql/) 会把这类服务器记录为 MySQL，而 [`mariadb`](/zh-cn/configuration/products/mariadb/) 会拒绝它们。现在两个探针都能识别 MariaDB 的这两种形式。指向 MariaDB 11.0+ 的 `product: mysql` 目标现在会失败——请将其改为 `product: mariadb`。
+
 ## 2.1.0+0 — 2026-10-01
 
 CVE 关联深入到十个 Linux 发行版上已安装的软件包，并新增六个探针。没有任何破坏性变更：新的 `cve:` 键是可选的，清单只会新增可选字段，因此 2.0 的配置和清单无需修改即可继续使用。

@@ -97,7 +97,7 @@ con su propio calendario, y ya no el pipeline de publicación de este
 proyecto, aunque la dirección publicada y las etiquetas siguen siendo
 las mismas. También se publica en `docker.io/epicmorg/enodia` y en Quay,
 con las mismas etiquetas: `latest`, la versión mayor sola (`2`) y la
-versión exacta sin sufijo de compilación (p. ej. `2.0.0`, confirmado en
+versión exacta sin sufijo de compilación (p. ej. `2.1.1`, confirmado en
 vivo en los tres registros; las etiquetas de un pipeline anterior tenían
 la forma `1.0.0-1`, que se pueden seguir descargando, pero así ya no se
 etiquetarán las nuevas versiones). Dos cambios reales que conviene
