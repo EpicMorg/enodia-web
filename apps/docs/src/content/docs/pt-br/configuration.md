@@ -31,6 +31,8 @@ cve:                                 # opcional, veja "Correlação de CVEs"
     path: oval/
   alpine:
     path: alpine/
+  mariadb:
+    path: mariadb.md
 credentials: {}                      # opcional, veja "Credenciais"
 targets: []                          # os seus serviços
 ```
@@ -59,7 +61,8 @@ Opcional. Aponta o enodia para uma exportação do BDU FSTEC
 (`cve.bdu.path`), para feeds JSON do NVD (`cve.nvd.path`) e, para a
 correlação por pacote em hosts Linux, para o Debian Security Tracker
 (`cve.debian.path`), arquivos OVAL dos fornecedores (`cve.oval.path`) e o
-secdb do Alpine (`cve.alpine.path`) — qualquer um deles, cada um funciona
+secdb do Alpine (`cve.alpine.path`), além da própria tabela de CVEs
+corrigidas do MariaDB (`cve.mariadb.path`) — qualquer um deles, cada um funciona
 sozinho, todos baixados por você mesmo; o enodia nunca os busca. Caminhos relativos são resolvidos
 em relação ao diretório desta própria configuração, e um caminho
 configurado que não existe é um erro. O que ele faz, como obter os
@@ -176,6 +179,19 @@ para alvos SSH — as sondas SSH aceitam uma senha ou uma chave privada, como
 qualquer cliente SSH aceitaria (`username` mais `password` em
 `kind: password`, ou `username` mais `private_key_file` em
 `kind: ssh-key`).
+
+**O `kind` de uma credencial precisa corresponder ao que o seu produto
+lê** — produtos HTTP leem `basic`, `bearer` ou `token-header`; sondas SSH
+leem `ssh-key` ou `password`; Redis, PostgreSQL e as demais sondas de
+protocolo nativo leem `password`. Um usuário e senha para uma interface
+web ou API REST (RouterOS, Harbor, Jenkins, um BMC) é, portanto,
+`kind: basic`, e não `kind: password`. A página de cada produto informa
+quais tipos ele aceita. Uma incompatibilidade é um erro fatal no
+`enodia config validate` e em toda execução, citando os tipos que o
+produto de fato aceita — versões anteriores descartavam essa credencial
+silenciosamente e enviavam a requisição sem autenticação nenhuma, que
+então falhava com um erro de autenticação que não apontava nem de longe
+para a causa.
 
 ### Verificação da chave de host SSH
 

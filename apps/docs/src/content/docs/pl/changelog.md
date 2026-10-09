@@ -13,6 +13,44 @@ konfiguracji. Tagi mają postać `MAJOR.MINOR.PATCH+BUILD`, bez prefiksu
 ponownej kompilacji bez zmian funkcjonalnych, a nie do omijania
 rzeczywistego podbicia wersji.
 
+## Niewydane
+
+<!-- NEXT-RELEASE: replace this heading with "## X.Y.Z+0 — YYYY-MM-DD" when the release is published. -->
+
+### Dodano
+
+- **CVE dla celów [`mariadb`](/pl/configuration/products/mariadb/).**
+  BDU i NVD obejmują teraz MariaDB, a nowe `cve.mariadb.path` odczytuje
+  własną tabelę naprawionych CVE MariaDB (`community-server.md`), która
+  zna wydanie z poprawką dla każdej serii. Wyniki są scalane z BDU i NVD;
+  tam, gdzie tabela MariaDB zna dane CVE, jej werdykt zastępuje ich
+  otwarte zakresy, więc najnowsze wydanie utrzymywanej serii nie jest już
+  oznaczane CVE naprawionymi wyłącznie w nowszych seriach — zobacz
+  [MariaDB: własna tabela dostawcy](/pl/cve/#mariadb-the-vendors-own-table).
+- Strona [Prywatność](/pl/privacy/): z czym łączy się enodia (własne
+  cele, endoflife.date, API GitHub — wyłącznie nazwy produktów
+  i repozytoriów) i co przechowuje (wyłącznie własne pliki użytkownika
+  i lokalną pamięć podręczną). Bez telemetrii.
+
+### Zmieniono
+
+- [`teamcity`](/pl/configuration/products/teamcity/) działa bez
+  poświadczeń: gdy żadnych nie skonfigurowano, odczytuje anonimowy
+  `/app/rest/server/version`, dostępny w każdym sprawdzonym TeamCity od
+  2017.2 do 2026.1, nawet przy wyłączonym logowaniu gościa. Token nadal
+  wybiera `/app/rest/server`, tak jak wcześniej.
+
+### Naprawiono
+
+- **Poświadczenie rodzaju, którego dany produkt nigdy nie wysyła, jest
+  teraz błędem konfiguracji**, zamiast być po cichu pomijane.
+  `kind: password` przy produkcie HTTP (RouterOS, Harbor, …) powodowało
+  wysłanie żądania w ogóle bez nagłówka `Authorization`; `config validate`
+  podaje teraz rodzaje, które produkt przyjmuje — dla logowania webowego
+  jest to `kind: basic`. **Przed aktualizacją należy sprawdzić
+  konfigurację**: uruchomienie z takim poświadczeniem teraz odmawia
+  startu. Zobacz [Konfiguracja → Poświadczenia](/pl/configuration/#credentials).
+
 ## 2.1.1+0 — 2026-10-08
 
 ### Naprawiono

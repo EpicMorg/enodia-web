@@ -16,6 +16,9 @@ datos públicas:
 Cualquiera de las dos funciona por separado; con ambas configuradas, sus
 hallazgos se combinan por CVE.
 
+MariaDB también se coteja con su propia tabla de CVE corregidas (consulte
+[MariaDB: la tabla del propio fabricante](#mariadb-the-vendors-own-table)).
+
 Desde la 2.1, diez distribuciones Linux también se cotejan **por paquete
 instalado** con los datos de seguridad propios de sus fabricantes: el
 Debian Security Tracker, archivos OVAL del fabricante y el secdb de
@@ -149,6 +152,19 @@ for b in v3.20 v3.22; do
 done
 ```
 
+### Tabla de CVE propia de MariaDB
+
+Un único archivo, para los destinos `mariadb`: la propia página de MariaDB
+"Security Vulnerabilities (CVE) Fixed in MariaDB Community Server",
+guardada tal cual en su fuente Markdown (unos 320 KB):
+
+```bash
+curl -fsSL -o /var/lib/enodia/cve/mariadb.md \
+  https://mariadb.com/docs/server/security/cve/community-server.md
+```
+
+Comprobado en vivo el 2026-10-09.
+
 ## Configuración
 
 Un bloque `cve:` en `enodia.yaml` —no en `settings.yaml`, ya que cambia
@@ -167,6 +183,8 @@ cve:
     path: /var/lib/enodia/cve/oval
   alpine:
     path: /var/lib/enodia/cve/alpine
+  mariadb:
+    path: /var/lib/enodia/cve/mariadb.md
 targets:
   - id: gitlab-main
     product: gitlab
@@ -181,6 +199,7 @@ targets:
 | `cve.debian.path` | la exportación del tracker: `.json`, `.json.gz` o `.json.zip` |
 | `cve.oval.path` | un archivo OVAL (`.xml` o `.xml.bz2`), o un directorio que los contenga |
 | `cve.alpine.path` | un archivo `.json` de secdb, o un directorio que los contenga |
+| `cve.mariadb.path` | el `community-server.md` de MariaDB, guardado tal cual |
 
 Las rutas relativas se resuelven respecto al directorio del archivo de
 configuración que las menciona, igual que `credentials_file`. El bloque
@@ -280,7 +299,8 @@ cuestión abierta upstream.
 
 ## Qué productos tienen correspondencia
 
-63 de los 96 productos: 53 por nombre de producto con BDU y NVD, con cada
+64 de los 96 productos: 54 por nombre de producto con BDU y NVD (MariaDB
+también con su propia tabla; véase [más abajo](#mariadb-the-vendors-own-table)), con cada
 nombre de fabricante/producto comprobado literalmente contra las
 exportaciones completas reales, y 10 distribuciones Linux por paquete
 instalado (véase la sección siguiente). Consulte la página de cada
@@ -309,7 +329,7 @@ Sin correspondencia, cada uno por un motivo:
   postgres_exporter, Perforce Proxy, Perforce Helix Swarm.
 - **`generic`**: un analizador escrito a mano no tiene una identidad de
   producto que buscar.
-- **Aún sin correspondencia**: MariaDB, pfSense y las tres sondas de BMC
+- **Aún sin correspondencia**: pfSense y las tres sondas de BMC
   (Supermicro, Dell iDRAC, HP iLO 4), todas nuevas en la 2.1. Upstream ha
   dejado su correspondencia de CVE para una pasada posterior y
   específica.
@@ -382,6 +402,40 @@ La sonda [`ssh`](/es/configuration/products/ssh/) cubre cualquier
 implementación de SSH, así que se coteja por el banner: `OpenSSH_…` busca
 OpenSSH, `dropbear_…` busca Dropbear, y cualquier otra pila SSH no
 recibe ninguna búsqueda en lugar de tomar prestadas las CVE de OpenSSH.
+
+## MariaDB: la tabla del propio fabricante
+
+MariaDB mantiene cinco o seis series de versiones a la vez, y tanto BDU
+como NVD describen una corrección en una serie como un rango abierto
+("before 11.4.10"), que entonces cubre también todas las series más
+antiguas, incluidas las que nunca tuvieron el fallo. Con versiones reales
+de un parque, esto marcaba las últimas versiones, totalmente parcheadas,
+de series mantenidas (10.11.19, 11.4.13), mientras que esas mismas dos
+bases de datos pasaban por alto 9 de las 21 CVE que la propia MariaDB
+indica para la 10.11.8.
+
+`cve.mariadb.path` añade la propia tabla de CVE corregidas de MariaDB,
+que nombra la versión que corrige cada CVE **por serie**. Se combina con
+BDU y NVD, con una regla adicional: para una CVE que la tabla de MariaDB
+conoce, su veredicto prevalece; se descarta un hallazgo de BDU o NVD cuyas
+CVE cubre la tabla y que esta no marca para esta versión. Las CVE que la
+tabla no incluye (más recientes que su copia descargada, exclusivas de
+BDU o sin identificador CVE) siguen procediendo de BDU y NVD.
+
+Cómo se lee la tabla:
+
+- Una serie con su propia corrección es vulnerable desde su primera
+  versión hasta esa corrección.
+- Una serie sin corrección propia que todavía se mantenía cuando la CVE
+  se corrigió en otra serie no está afectada: MariaDB corrige todas las
+  series vigentes a la vez.
+- Una serie que ya había finalizado para entonces se marca en todas sus
+  versiones, con la corrección más baja de una serie más reciente como la
+  versión a la que migrar (`FixStatus` lo indica). Esto tiende a informar
+  de más a propósito, y solo para series finalizadas.
+
+Sin `cve.mariadb.path`, los destinos `mariadb` se siguen cotejando
+únicamente con BDU y NVD, con el problema de solapamiento descrito arriba.
 
 ## Limitaciones conocidas
 

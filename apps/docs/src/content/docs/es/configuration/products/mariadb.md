@@ -49,9 +49,7 @@ rechazando un servidor MariaDB.
 
 ## Correlación de CVE
 
-Todavía no se contrasta: MariaDB es nueva en la 2.1, y upstream ha dejado su correspondencia de CVE para una pasada posterior y
-específica. Consulte
-[Correlación de CVE](/es/cve/#qué-productos-tienen-correspondencia).
+Se contrasta con NVD y BDU FSTEC cuando hay configurado un [bloque `cve:`](/es/cve/) y, con `cve.mariadb.path`, con la propia tabla de CVE corregidas de MariaDB, cuyo veredicto por serie prevalece sobre los rangos abiertos de BDU y NVD. Consulte [MariaDB: la tabla del propio fabricante](/es/cve/#mariadb-the-vendors-own-table).
 
 ## Resolvedor del ciclo de vida
 

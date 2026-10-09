@@ -95,7 +95,7 @@ porque o RADIUS não tem como informar uma versão.
 | [`kibana`](/pt-br/configuration/products/kibana/) | Kibana | `endoflife:kibana` | NVD, BDU |
 | [`kitsu`](/pt-br/configuration/products/kitsu/) | Kitsu (frontend do CG-Wire / Zou) | `github:cgwire/kitsu` | — |
 | [`logstash`](/pt-br/configuration/products/logstash/) | Logstash | `endoflife:logstash` | NVD, BDU |
-| [`mariadb`](/pt-br/configuration/products/mariadb/) | MariaDB Server | `endoflife:mariadb` | — |
+| [`mariadb`](/pt-br/configuration/products/mariadb/) | MariaDB Server | `endoflife:mariadb` | NVD, BDU, tabela do MariaDB |
 | [`mattermost`](/pt-br/configuration/products/mattermost/) | Mattermost | `endoflife:mattermost` | NVD, BDU |
 | [`mongodb`](/pt-br/configuration/products/mongodb/) | MongoDB | `endoflife:mongodb` | NVD, BDU |
 | [`mysql`](/pt-br/configuration/products/mysql/) | MySQL Server | `endoflife:mysql` | NVD, BDU |

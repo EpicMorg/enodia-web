@@ -50,7 +50,7 @@ GitHub Releases（仅最新版本，没有 eol/support/lts——GitHub 对生命
 | [`kibana`](/zh-cn/configuration/products/kibana/) | Kibana | `endoflife:kibana` | NVD, BDU |
 | [`kitsu`](/zh-cn/configuration/products/kitsu/) | Kitsu（CG-Wire / Zou 前端） | `github:cgwire/kitsu` | — |
 | [`logstash`](/zh-cn/configuration/products/logstash/) | Logstash | `endoflife:logstash` | NVD, BDU |
-| [`mariadb`](/zh-cn/configuration/products/mariadb/) | MariaDB Server | `endoflife:mariadb` | — |
+| [`mariadb`](/zh-cn/configuration/products/mariadb/) | MariaDB Server | `endoflife:mariadb` | NVD, BDU, MariaDB 表 |
 | [`mattermost`](/zh-cn/configuration/products/mattermost/) | Mattermost | `endoflife:mattermost` | NVD, BDU |
 | [`mongodb`](/zh-cn/configuration/products/mongodb/) | MongoDB | `endoflife:mongodb` | NVD, BDU |
 | [`mysql`](/zh-cn/configuration/products/mysql/) | MySQL Server | `endoflife:mysql` | NVD, BDU |

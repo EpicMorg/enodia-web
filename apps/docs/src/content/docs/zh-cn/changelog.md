@@ -7,6 +7,23 @@ description: enodia 各版本的重要变更。
 ——本页是它的镜像，每次发布时与本站其余内容一同保持同步，并在某项变更会影响您实际配置方式的地方，附上指向本文档其他部分的链接。标签遵循 `MAJOR.MINOR.PATCH+BUILD` 格式，不带 `v` 前缀；
 `+BUILD` 是 semver 的构建元数据，仅用于没有功能变化的重新构建，而不是用来规避真正的版本号提升。
 
+## 未发布
+
+<!-- NEXT-RELEASE: replace this heading with "## X.Y.Z+0 — YYYY-MM-DD" when the release is published. -->
+
+### 新增
+
+- **[`mariadb`](/zh-cn/configuration/products/mariadb/) 目标的 CVE。** BDU 和 NVD 现在覆盖 MariaDB，新的 `cve.mariadb.path` 会读取 MariaDB 自己的已修复 CVE 表（`community-server.md`），该表按系列给出包含修复的版本。它与 BDU 和 NVD 合并；凡是 MariaDB 的表中列出的 CVE，都以它的结论取代后两者的开放式范围，因此仍在维护的系列的最新版本不再因只在更新系列中修复的 CVE 而被标记——参见 [MariaDB：厂商自己的表](/zh-cn/cve/#mariadb-the-vendors-own-table)。
+- 新增[隐私](/zh-cn/privacy/)页面：enodia 会连接什么（您的目标、endoflife.date、GitHub API——只发送产品和仓库名称），以及它会存储什么（只有您自己的文件和本地缓存）。没有遥测。
+
+### 变更
+
+- [`teamcity`](/zh-cn/configuration/products/teamcity/) 无需凭据即可工作：未配置凭据时，它会读取匿名的 `/app/rest/server/version`，该端点在已检查的每个 TeamCity（从 2017.2 到 2026.1）上都是开放的，即使访客登录已关闭也是如此。配置令牌时仍像以前一样使用 `/app/rest/server`。
+
+### 修复
+
+- **其产品从不发送的类型的凭据现在会被视为配置错误**，而不是被静默丢弃。以前，HTTP 产品（RouterOS、Harbor 等）上的 `kind: password` 会导致请求完全不带 `Authorization` 请求头发送；现在 `config validate` 会列出该产品接受的类型——对于 Web 登录，就是 `kind: basic`。**升级前请检查您的配置**：带有此类凭据的运行现在会拒绝启动。参见[配置 → 凭据](/zh-cn/configuration/#credentials)。
+
 ## 2.1.1+0 — 2026-10-08
 
 ### 修复

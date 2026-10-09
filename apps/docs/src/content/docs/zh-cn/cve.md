@@ -10,6 +10,8 @@ description: 将每个探测到的版本与 BDU FSTEC 和 NIST NVD 进行匹配�
 
 两者都可以单独使用；同时配置两者时，它们的发现会按 CVE 合并。
 
+MariaDB 还会与它自己的已修复 CVE 表进行匹配（参见 [MariaDB：厂商自己的表](#mariadb-the-vendors-own-table)）。
+
 从 2.1 开始，还有十个 Linux 发行版会**按已安装的软件包**与其厂商自己的安全数据进行匹配——Debian Security Tracker、厂商 OVAL 文件和 Alpine 的 secdb（请参阅 [Linux 发行版的软件包级 CVE](#linux-发行版的软件包级-cve)）。
 
 这一切都是可选的：没有 `cve:` 块的配置，其行为与 1.x 完全相同，并且每个来源都可以单独使用。
@@ -107,6 +109,17 @@ for b in v3.20 v3.22; do
 done
 ```
 
+### MariaDB 自己的 CVE 表
+
+一个文件，用于 `mariadb` 目标：MariaDB 自己的页面“Security Vulnerabilities (CVE) Fixed in MariaDB Community Server”，按原样以其 Markdown 源文件保存（约 320 KB）：
+
+```bash
+curl -fsSL -o /var/lib/enodia/cve/mariadb.md \
+  https://mariadb.com/docs/server/security/cve/community-server.md
+```
+
+已于 2026-10-09 实际验证。
+
 ## 配置
 
 在 `enodia.yaml` 中添加一个 `cve:` 块——而不是在 `settings.yaml` 中，因为它改变的是评估，而不仅仅是显示：
@@ -124,6 +137,8 @@ cve:
     path: /var/lib/enodia/cve/oval
   alpine:
     path: /var/lib/enodia/cve/alpine
+  mariadb:
+    path: /var/lib/enodia/cve/mariadb.md
 targets:
   - id: gitlab-main
     product: gitlab
@@ -138,6 +153,7 @@ targets:
 | `cve.debian.path` | 跟踪器的导出文件：`.json`、`.json.gz` 或 `.json.zip` |
 | `cve.oval.path` | 一个 OVAL 文件（`.xml` 或 `.xml.bz2`），或包含此类文件的目录 |
 | `cve.alpine.path` | 一个 secdb `.json` 文件，或包含此类文件的目录 |
+| `cve.mariadb.path` | MariaDB 的 `community-server.md`，按原样保存 |
 
 相对路径相对于引用它们的配置文件所在目录进行解析，与 `credentials_file` 相同。该块从本次运行实际使用的配置中读取——
 `--config`、`$ENODIA_CONFIG`，或[默认搜索路径](/zh-cn/configuration/#文件位置)。这也包括 `check --from inventory.jsonl`：在封闭网络内部收集的清单，无论 `check` 在何处运行都会进行关联，只要在那里能找到带有 `cve:` 块的配置即可。如果完全找不到配置，`check --from` 仍然可以工作，只是没有 CVE。
@@ -175,7 +191,7 @@ Windows 上为 `%LocalAppData%\enodia\cve`）。文件变化后的首次运行�
 
 ## 哪些产品会被匹配
 
-96 个产品中的 63 个：53 个按产品名称与 BDU 和 NVD 匹配，每个厂商/产品名称都已对照真实的完整导出文件逐字核对；另有 10 个 Linux 发行版按已安装的软件包匹配（见下一节）。各产品的来源请参阅[产品配置](/zh-cn/products/)下各自的页面。
+96 个产品中的 64 个：54 个按产品名称与 BDU 和 NVD 匹配（MariaDB 还会与它自己的表匹配——见[下文](#mariadb-the-vendors-own-table)），每个厂商/产品名称都已对照真实的完整导出文件逐字核对；另有 10 个 Linux 发行版按已安装的软件包匹配（见下一节）。各产品的来源请参阅[产品配置](/zh-cn/products/)下各自的页面。
 
 未匹配的产品，各有原因：
 
@@ -186,7 +202,7 @@ Windows 上为 `%LocalAppData%\enodia\cve`）。文件变化后的首次运行�
 - **TrueNAS**——条目太少，且版本编号方式与探针报告的不同。
 - **两个来源中都没有可用数据**——Kitsu、Zou、postgres_exporter、Perforce Proxy、Perforce Helix Swarm。
 - **`generic`**——手写的解析器没有可供查询的产品标识。
-- **尚未映射**——MariaDB、pfSense 和三个 BMC 探针（Supermicro、Dell iDRAC、HP iLO 4），均为 2.1 新增。上游将它们的 CVE 映射留给之后专门的一轮工作。
+- **尚未映射**——pfSense 和三个 BMC 探针（Supermicro、Dell iDRAC、HP iLO 4），均为 2.1 新增。上游将它们的 CVE 映射留给之后专门的一轮工作。
 
 ## Linux 发行版的软件包级 CVE
 
@@ -221,6 +237,20 @@ GitLab、HashiCorp Vault、Nextcloud 和 MongoDB 为其社区版和企业版分�
 
 [`ssh`](/zh-cn/configuration/products/ssh/) 探针覆盖任何 SSH 实现，因此按横幅（banner）进行匹配：
 `OpenSSH_…` 查询 OpenSSH，`dropbear_…` 查询 Dropbear，其他任何 SSH 实现都不进行查询，而不是借用 OpenSSH 的 CVE。
+
+## MariaDB：厂商自己的表
+
+MariaDB 同时维护五到六个发布系列，而 BDU 和 NVD 都把某个系列中的修复描述为一个开放式范围（“before 11.4.10”）——这个范围随后也覆盖了所有更旧的系列，包括那些从未存在该缺陷的系列。在真实机群的版本上，这会把仍在维护的系列中最新、已完全修补的版本（10.11.19、11.4.13）标记出来，而同样这两个数据库却漏掉了 MariaDB 自己为 10.11.8 列出的 21 个 CVE 中的 9 个。
+
+`cve.mariadb.path` 加入了 MariaDB 自己的已修复 CVE 表，该表**按系列**给出包含修复的版本。它与 BDU 和 NVD 合并，并在此之上附加一条规则：对于 MariaDB 的表中列出的 CVE，以它的结论为准——如果某个 BDU 或 NVD 发现所涉及的 CVE 都在表中，而表并未针对此版本标记它们，该发现就会被丢弃。表中未列出的 CVE（比您下载的副本更新的、仅见于 BDU 的，或没有 CVE 编号的）仍来自 BDU 和 NVD。
+
+该表的解读方式：
+
+- 有自己修复的系列，从其首个版本直到该修复之前都受影响。
+- 没有自己的修复、但在该 CVE 于其他系列中被修复时仍在维护的系列，不受影响——MariaDB 会同时修复所有仍在维护的系列。
+- 当时已经结束维护的系列，其每个版本都会被标记，并以更新系列中最低的修复版本作为应升级到的版本（`FixStatus` 会注明这一点）。这是有意偏向于报告，而且只针对已结束的系列。
+
+没有 `cve.mariadb.path` 时，`mariadb` 目标仍只与 BDU 和 NVD 进行匹配——并存在上述重叠问题。
 
 ## 已知限制
 

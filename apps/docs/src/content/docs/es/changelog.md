@@ -13,6 +13,46 @@ prefijo `v`; `+BUILD` son metadatos de compilación de semver, que se usan
 solo para una recompilación sin cambios funcionales, no para eludir un
 incremento de versión real.
 
+## Sin publicar
+
+<!-- NEXT-RELEASE: replace this heading with "## X.Y.Z+0 — YYYY-MM-DD" when the release is published. -->
+
+### Añadido
+
+- **CVE para los destinos [`mariadb`](/es/configuration/products/mariadb/).**
+  BDU y NVD ahora cubren MariaDB, y un nuevo `cve.mariadb.path` lee la
+  propia tabla de CVE corregidas de MariaDB (`community-server.md`), que
+  conoce la versión que corrige cada CVE por serie. Se combina con BDU y
+  NVD; cuando la tabla de MariaDB conoce una CVE, su veredicto sustituye a
+  los rangos abiertos de aquellas, de modo que la última versión de una
+  serie mantenida ya no se marca por CVE corregidas solo en series más
+  recientes; consulte
+  [MariaDB: la tabla del propio fabricante](/es/cve/#mariadb-the-vendors-own-table).
+- Una página de [Privacidad](/es/privacy/): a qué se conecta enodia (sus
+  destinos, endoflife.date, la API de GitHub, solo con nombres de
+  productos y repositorios) y qué almacena (solo sus propios archivos y
+  una caché local). Sin telemetría.
+
+### Cambiado
+
+- [`teamcity`](/es/configuration/products/teamcity/) funciona sin
+  credenciales: si no hay ninguna configurada, lee el
+  `/app/rest/server/version` anónimo, abierto en todas las versiones de
+  TeamCity comprobadas de la 2017.2 a la 2026.1, incluso con el inicio de
+  sesión como invitado desactivado. Un token sigue seleccionando
+  `/app/rest/server` como antes.
+
+### Corregido
+
+- **Una credencial de un tipo que su producto nunca envía es ahora un
+  error de configuración** en lugar de descartarse en silencio.
+  `kind: password` en un producto HTTP (RouterOS, Harbor, …) enviaba la
+  solicitud sin ninguna cabecera `Authorization`; `config validate` ahora
+  nombra los tipos que acepta el producto: para un inicio de sesión web es
+  `kind: basic`. **Revise su configuración antes de actualizar**: una
+  ejecución con una credencial así ahora se niega a arrancar. Consulte
+  [Configuración → Credenciales](/es/configuration/#credentials).
+
 ## 2.1.1+0 — 2026-10-08
 
 ### Corregido

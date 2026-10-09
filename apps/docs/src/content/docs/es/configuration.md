@@ -31,6 +31,8 @@ cve:                                 # opcional, véase "Correlación de CVE"
     path: oval/
   alpine:
     path: alpine/
+  mariadb:
+    path: mariadb.md
 credentials: {}                      # opcional, véase "Credenciales"
 targets: []                          # sus servicios
 ```
@@ -58,7 +60,8 @@ Opcional. Indica a enodia una exportación de BDU FSTEC (`cve.bdu.path`),
 fuentes JSON de NVD (`cve.nvd.path`) y, para el cotejo a nivel de
 paquete en hosts Linux, el Debian Security Tracker (`cve.debian.path`),
 archivos OVAL del fabricante (`cve.oval.path`) y el secdb de Alpine
-(`cve.alpine.path`): cualquiera de ellos, cada uno funciona por
+(`cve.alpine.path`), además de la propia tabla de CVE corregidas de
+MariaDB (`cve.mariadb.path`): cualquiera de ellos, cada uno funciona por
 separado, todos descargados por usted mismo; enodia nunca los descarga. Las rutas relativas se resuelven
 respecto al directorio de esta configuración, y una ruta configurada que
 no existe es un error. Qué hace, cómo obtener los archivos y qué
@@ -177,6 +180,19 @@ funciona para destinos SSH: las sondas SSH aceptan una contraseña o una
 clave privada, igual que cualquier cliente SSH (`username` más
 `password` con `kind: password`, o `username` más `private_key_file` con
 `kind: ssh-key`).
+
+**El `kind` de una credencial debe coincidir con lo que lee su
+producto**: los productos HTTP leen `basic`, `bearer` o `token-header`;
+las sondas SSH leen `ssh-key` o `password`; Redis, PostgreSQL y las demás
+sondas de protocolo nativo leen `password`. Por tanto, un usuario y una
+contraseña para una interfaz web o una API REST (RouterOS, Harbor,
+Jenkins, un BMC) es `kind: basic`, no `kind: password`. La página de cada
+producto indica qué tipos acepta. Una discrepancia es un error grave en
+`enodia config validate` y en cada ejecución, que nombra los tipos que el
+producto sí acepta: las versiones anteriores descartaban dicha credencial
+en silencio y enviaban la solicitud sin autenticación alguna, que luego
+fallaba con un error de autenticación que no apuntaba en absoluto a la
+causa.
 
 ### Verificación de la clave de host SSH
 

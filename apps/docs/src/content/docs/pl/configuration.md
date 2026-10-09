@@ -31,6 +31,8 @@ cve:                                 # opcjonalne, zobacz „Korelacja CVE”
     path: oval/
   alpine:
     path: alpine/
+  mariadb:
+    path: mariadb.md
 credentials: {}                      # opcjonalne, zobacz „Poświadczenia”
 targets: []                          # usługi do monitorowania
 ```
@@ -60,7 +62,8 @@ Opcjonalne. Wskazuje enodia eksport BDU FSTEC (`cve.bdu.path`), kanały
 JSON NVD (`cve.nvd.path`) oraz, na potrzeby dopasowywania na poziomie
 pakietów na hostach z Linuksem, Debian Security Tracker
 (`cve.debian.path`), pliki OVAL dostawców (`cve.oval.path`) i secdb
-Alpine (`cve.alpine.path`) — dowolne z nich, każde działa samodzielnie,
+Alpine (`cve.alpine.path`), a także własną tabelę naprawionych CVE
+MariaDB (`cve.mariadb.path`) — dowolne z nich, każde działa samodzielnie,
 wszystkie pobrane samodzielnie; enodia nigdy ich nie pobiera. Ścieżki względne są rozwiązywane względem katalogu tego
 pliku konfiguracyjnego, a skonfigurowana ścieżka, która nie istnieje,
 jest błędem. Co to robi, jak zdobyć pliki i które produkty są
@@ -177,6 +180,20 @@ Sam `username` z `kind: password` i bez `private_key_file` również
 działa dla celów SSH — sondy SSH przyjmują hasło albo klucz prywatny,
 tak jak każdy klient SSH (`username` plus `password` w `kind: password`
 albo `username` plus `private_key_file` w `kind: ssh-key`).
+
+**`kind` poświadczenia musi odpowiadać temu, co odczytuje dany
+produkt** — produkty HTTP odczytują `basic`, `bearer` lub
+`token-header`; sondy SSH odczytują `ssh-key` lub `password`; Redis,
+PostgreSQL i pozostałe sondy protokołów natywnych odczytują `password`.
+Nazwa użytkownika i hasło do interfejsu webowego lub REST API (RouterOS,
+Harbor, Jenkins, BMC) to zatem `kind: basic`, a nie `kind: password`.
+Własna strona każdego produktu podaje, jakie rodzaje przyjmuje.
+Niezgodność jest twardym błędem w `enodia config validate` i w każdym
+uruchomieniu, z podaniem rodzajów, które produkt faktycznie przyjmuje —
+wcześniejsze wersje po cichu pomijały takie poświadczenie i wysyłały
+żądanie w ogóle bez uwierzytelnienia, które następnie kończyło się
+błędem uwierzytelniania wskazującym zupełnie gdzie indziej niż na
+przyczynę.
 
 ### Weryfikacja klucza hosta SSH
 

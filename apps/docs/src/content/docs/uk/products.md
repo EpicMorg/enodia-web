@@ -94,7 +94,7 @@ products`.
 | [`kibana`](/uk/configuration/products/kibana/) | Kibana | `endoflife:kibana` | NVD, BDU |
 | [`kitsu`](/uk/configuration/products/kitsu/) | Kitsu (фронтенд CG-Wire / Zou) | `github:cgwire/kitsu` | — |
 | [`logstash`](/uk/configuration/products/logstash/) | Logstash | `endoflife:logstash` | NVD, BDU |
-| [`mariadb`](/uk/configuration/products/mariadb/) | MariaDB Server | `endoflife:mariadb` | — |
+| [`mariadb`](/uk/configuration/products/mariadb/) | MariaDB Server | `endoflife:mariadb` | NVD, BDU, таблиця MariaDB |
 | [`mattermost`](/uk/configuration/products/mattermost/) | Mattermost | `endoflife:mattermost` | NVD, BDU |
 | [`mongodb`](/uk/configuration/products/mongodb/) | MongoDB | `endoflife:mongodb` | NVD, BDU |
 | [`mysql`](/uk/configuration/products/mysql/) | MySQL Server | `endoflife:mysql` | NVD, BDU |

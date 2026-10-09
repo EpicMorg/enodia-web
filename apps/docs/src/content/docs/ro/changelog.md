@@ -13,6 +13,45 @@ configura efectiv ceva. Tag-urile urmează formatul
 metadate de build semver, folosite doar pentru un rebuild fără
 modificări funcționale, nu pentru a evita o creștere reală a versiunii.
 
+## Nelansat
+
+<!-- NEXT-RELEASE: replace this heading with "## X.Y.Z+0 — YYYY-MM-DD" when the release is published. -->
+
+### Adăugat
+
+- **CVE-uri pentru țintele [`mariadb`](/ro/configuration/products/mariadb/).**
+  BDU și NVD acoperă acum MariaDB, iar un nou `cve.mariadb.path` citește
+  tabelul propriu al MariaDB cu CVE-urile corectate (`community-server.md`),
+  care cunoaște versiunea de corectare pentru fiecare serie. Combinat cu
+  BDU și NVD; acolo unde tabelul MariaDB cunoaște un CVE, verdictul său
+  înlocuiește intervalele deschise ale acestora, astfel încât cea mai
+  recentă versiune a unei serii întreținute nu mai este semnalată pentru
+  CVE-uri corectate doar în serii mai noi — consultați
+  [MariaDB: tabelul propriu al producătorului](/ro/cve/#mariadb-the-vendors-own-table).
+- O pagină [Confidențialitate](/ro/privacy/): la ce se conectează enodia
+  (țintele dumneavoastră, endoflife.date, API-ul GitHub — doar nume de
+  produse și de depozite) și ce stochează (doar propriile dumneavoastră
+  fișiere și un cache local). Fără telemetrie.
+
+### Modificat
+
+- [`teamcity`](/ro/configuration/products/teamcity/) funcționează fără
+  credențiale: fără niciuna configurată, citește anonim
+  `/app/rest/server/version`, accesibil pe fiecare TeamCity verificat de la
+  2017.2 până la 2026.1, chiar și cu autentificarea ca guest dezactivată.
+  Un token selectează în continuare `/app/rest/server`, ca înainte.
+
+### Corectat
+
+- **O credențială de un tip pe care produsul său nu îl trimite niciodată
+  este acum o eroare de configurare**, în loc să fie ignorată tacit.
+  `kind: password` pe un produs HTTP (RouterOS, Harbor, …) trimitea
+  cererea fără niciun antet `Authorization`; `config validate` numește
+  acum tipurile pe care produsul le acceptă — pentru o autentificare web,
+  acesta este `kind: basic`. **Verificați-vă configurația înainte de
+  upgrade**: o rulare cu o astfel de credențială refuză acum să pornească.
+  Consultați [Configurare → Credențiale](/ro/configuration/#credentials).
+
 ## 2.1.1+0 — 2026-10-08
 
 ### Corectat

@@ -96,7 +96,7 @@ SSH, deoarece RADIUS nu are nicio modalitate de a raporta o versiune.
 | [`kibana`](/ro/configuration/products/kibana/) | Kibana | `endoflife:kibana` | NVD, BDU |
 | [`kitsu`](/ro/configuration/products/kitsu/) | Kitsu (frontend CG-Wire / Zou) | `github:cgwire/kitsu` | — |
 | [`logstash`](/ro/configuration/products/logstash/) | Logstash | `endoflife:logstash` | NVD, BDU |
-| [`mariadb`](/ro/configuration/products/mariadb/) | MariaDB Server | `endoflife:mariadb` | — |
+| [`mariadb`](/ro/configuration/products/mariadb/) | MariaDB Server | `endoflife:mariadb` | NVD, BDU, tabelul MariaDB |
 | [`mattermost`](/ro/configuration/products/mattermost/) | Mattermost | `endoflife:mattermost` | NVD, BDU |
 | [`mongodb`](/ro/configuration/products/mongodb/) | MongoDB | `endoflife:mongodb` | NVD, BDU |
 | [`mysql`](/ro/configuration/products/mysql/) | MySQL Server | `endoflife:mysql` | NVD, BDU |

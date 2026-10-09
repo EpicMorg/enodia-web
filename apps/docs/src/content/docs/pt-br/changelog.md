@@ -12,6 +12,46 @@ seguem o formato `MAJOR.MINOR.PATCH+BUILD`, sem prefixo `v`; `+BUILD` são
 metadados de build do semver, usados apenas para uma recompilação sem
 mudança funcional, e não para evitar um incremento de versão real.
 
+## Não lançado
+
+<!-- NEXT-RELEASE: replace this heading with "## X.Y.Z+0 — YYYY-MM-DD" when the release is published. -->
+
+### Adicionado
+
+- **CVEs para alvos [`mariadb`](/pt-br/configuration/products/mariadb/).**
+  O BDU e o NVD agora cobrem o MariaDB, e um novo `cve.mariadb.path` lê a
+  própria tabela de CVEs corrigidas do MariaDB (`community-server.md`),
+  que conhece a versão com a correção por série. Mesclada com o BDU e o
+  NVD; quando a tabela do MariaDB conhece uma CVE, o veredito dela
+  substitui os intervalos em aberto deles, então a última versão de uma
+  série mantida não é mais marcada por CVEs corrigidas apenas em séries
+  mais novas — consulte
+  [MariaDB: a tabela do próprio fornecedor](/pt-br/cve/#mariadb-the-vendors-own-table).
+- Uma página de [Privacidade](/pt-br/privacy/): a que o enodia se conecta
+  (os seus alvos, endoflife.date, a API do GitHub — só nomes de produtos e
+  de repositórios) e o que ele armazena (só os seus próprios arquivos e um
+  cache local). Sem telemetria.
+
+### Alterado
+
+- O [`teamcity`](/pt-br/configuration/products/teamcity/) funciona sem
+  credenciais: sem nenhuma configurada, ele lê o
+  `/app/rest/server/version` anônimo, aberto em todos os TeamCity
+  verificados da 2017.2 à 2026.1, mesmo com o login de convidado
+  desativado. Um token continua selecionando `/app/rest/server` como
+  antes.
+
+### Corrigido
+
+- **Uma credencial de um tipo que o seu produto nunca envia agora é um
+  erro de configuração**, em vez de ser descartada silenciosamente.
+  `kind: password` em um produto HTTP (RouterOS, Harbor, …) enviava a
+  requisição sem cabeçalho `Authorization` algum; o `config validate`
+  agora cita os tipos que o produto aceita — para um login web, é
+  `kind: basic`. **Verifique a sua configuração antes de atualizar**: uma
+  execução com uma credencial assim agora se recusa a iniciar. Consulte
+  [Configuração → Credenciais](/pt-br/configuration/#credentials).
+
 ## 2.1.1+0 — 2026-10-08
 
 ### Corrigido
