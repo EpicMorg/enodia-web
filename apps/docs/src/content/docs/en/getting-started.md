@@ -93,7 +93,10 @@ a bare major (`2`), and the exact version with no build suffix (e.g.
 here on). Two real changes worth knowing about: the image is
 **`linux/amd64` only** now (arm64 was dropped when publishing moved),
 and it runs as **root** rather than a dedicated user, on the project's
-own `debian:trixie-light` house base instead of `scratch`.
+own `debian:trixie-light` house base instead of `scratch`. It declares
+`/var/lib/enodia/cve` as a volume for the
+[CVE databases](/en/cve/#downloading-the-databases) — mount your copies
+there, or let `enodia cve update` fill it.
 
 ### Build from source
 

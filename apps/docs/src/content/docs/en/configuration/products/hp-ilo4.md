@@ -46,9 +46,9 @@ live, so it has no probe yet rather than a guessed one.
 
 ## CVE correlation
 
-Not matched yet — the BMC probes are new in 2.1, and upstream left their
-CVE mapping for a later, dedicated pass. See
-[CVE correlation](/en/cve/#which-products-are-matched).
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured. Since 2.2; the probe's
+firmware version (`2.82`) compares as is against NVD's
+`integrated_lights-out_4` ranges and БДУ's "HP iLO 4".
 
 ## Lifecycle resolver
 

@@ -47,12 +47,24 @@ inicio de sesión rechazado.
 
 ## Campos registrados
 
-Solo `version`, extraída de la forma `"DSM <version> Update
-<n>"` de `version_string`, p. ej. `"DSM 7.3.2-86009 Update 4"` → `7.3.2-86009`.
+- `version`: extraída de la forma `"DSM <version> Update
+  <n>"` de `version_string`, p. ej. `"DSM 7.3.2-86009 Update 4"` → `7.3.2-86009`
+- `extra.update`: el número de Update (`4`), desde la 2.2, cuando la
+  cadena lo incluye; se mantiene separado de `version` para que drift y
+  el ciclo de vida sigan comparando la propia versión
 
 ## Correlación de CVE
 
-No se contrasta: sus rangos usan límites como `6.2.4-25556-3`, que el analizador estricto de rangos rechaza. Consulte [Correlación de CVE](/es/cve/#qué-productos-tienen-correspondencia).
+Se contrasta con NVD y BDU FSTEC cuando hay configurado un [bloque `cve:`](/es/cve/). Desde la 2.2. Una versión de DSM consta
+de versión, compilación y Update (`7.2.1-69057 Update 6`), y las bases de
+datos la acotan como `7.2.1-69057-6`; el `version` y el `extra.update` de
+la sonda se combinan en una única versión comparable para la búsqueda.
+Un inventario recopilado antes de la 2.2 no tiene `extra.update` y se lee
+como Update 0: pueden marcarse Updates ya corregidos, pero no se pasa por
+alto ninguno. Los rangos por rama de BDU siguen sobreinformando en las
+ramas más antiguas (los de NVD no); consulte
+[Dell iDRAC y Synology DSM](/es/cve/#dell-idrac-y-synology-dsm) y
+[Limitaciones conocidas](/es/cve/#limitaciones-conocidas).
 
 ## Resolvedor del ciclo de vida
 

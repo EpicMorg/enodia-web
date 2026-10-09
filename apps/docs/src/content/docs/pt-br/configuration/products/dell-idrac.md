@@ -54,9 +54,13 @@ coberto.
 
 ## Correlação de CVEs
 
-Ainda sem correlação — as sondas de BMC são novas na 2.1, e o upstream
-deixou o mapeamento de CVEs delas para uma etapa posterior, dedicada.
-Consulte [Correlação de CVEs](/pt-br/cve/#quais-produtos-têm-correspondência).
+Correlacionado com o NVD e o BDU FSTEC quando um [bloco `cve:`](/pt-br/cve/) está configurado. Desde a 2.2. Os dois bancos de
+dados tratam cada geração do iDRAC como um produto próprio, com números de
+firmware que se sobrepõem, então a geração é lida de `extra.model` (o
+modelo do Redfish, por exemplo `12G Modular` → iDRAC7; 11G iDRAC6, 13G
+iDRAC8, 14G–16G iDRAC9, 17G iDRAC10). Sem um modelo, só o firmware 3.x e
+posterior é consultado (só pode ser um iDRAC9) — consulte
+[Dell iDRAC e Synology DSM](/pt-br/cve/#dell-idrac-e-synology-dsm).
 
 ## Resolvedor de ciclo de vida
 

@@ -12,8 +12,9 @@ enodia 是一个在您自己的机器上运行的命令行工具。它没有遥�
 - **您自己的服务**——`enodia.yaml` 中列出的目标，通过 HTTPS、SSH 或它们的原生协议，使用您配置的凭据，读取它们的版本（对于 Linux 主机，还会读取已安装的软件包列表）。
 - **endoflife.date**（`https://endoflife.date/api/...`）——获取公开的发布日期和生命周期结束日期。请求中只包含一个产品名称（例如 `postgresql`）；不会发送主机名、地址、版本或任何其他关于您机群的数据。
 - **GitHub API**（`https://api.github.com/repos/.../releases`、`.../tags`）——用于在 GitHub 上发布版本的产品。与上面相同：请求中只有公开的仓库名称。如果您设置了 `GITHUB_TOKEN`，它只会发送给 GitHub，用于提高速率限制。
+- **CVE 数据库发布方**——仅在您运行 `enodia cve update` 时，并且只连接您的 `cve.*.path` 条目所指明的那些：nvd.nist.gov、bdu.fstec.ru、security-tracker.debian.org、各 OVAL 发布方（Canonical、Red Hat、AlmaLinux、Oracle、Astra Linux、RED OS）、secdb.alpinelinux.org、mariadb.com、api.atlassian.com、www.postgresql.org 和 nginx.org。这些请求只是对公开文件的普通下载；它们透露的关于您机群的唯一信息，是您为哪些操作系统版本和 PostgreSQL 大版本获取数据。
 
-仅此而已。CVE 数据库（NVD、BDU FSTEC、Debian、OVAL、Alpine、MariaDB）是您自行下载的文件；enodia 只从磁盘读取它们——参见 [CVE 关联](/zh-cn/cve/)。
+仅此而已。其他所有命令都只从磁盘读取 CVE 文件——参见 [CVE 关联](/zh-cn/cve/)。
 
 设置 `html.assets: cdn` 时，HTML 报告会**在打开它的浏览器中**从 CDN（jsDelivr / cdnjs）加载 Bootstrap；默认值（`inline`）完全不发出任何外部请求——参见[报告](/zh-cn/reporting/)。
 

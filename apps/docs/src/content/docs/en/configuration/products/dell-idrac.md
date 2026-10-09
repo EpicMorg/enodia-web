@@ -52,9 +52,13 @@ different product with no Redfish endpoint at all, and isn't covered.
 
 ## CVE correlation
 
-Not matched yet — the BMC probes are new in 2.1, and upstream left their
-CVE mapping for a later, dedicated pass. See
-[CVE correlation](/en/cve/#which-products-are-matched).
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured. Since 2.2. Both databases
+name each iDRAC generation as its own product, with overlapping firmware
+numbers, so the generation is read from `extra.model` (Redfish's model,
+e.g. `12G Modular` → iDRAC7; 11G iDRAC6, 13G iDRAC8, 14G–16G iDRAC9,
+17G iDRAC10). Without a model, only firmware 3.x and later is looked up
+(it can only be iDRAC9) — see
+[Dell iDRAC and Synology DSM](/en/cve/#dell-idrac-and-synology-dsm).
 
 ## Lifecycle resolver
 

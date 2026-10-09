@@ -37,7 +37,12 @@ que compartilham essa mesma convenção de manifesto.
 
 ## Correlação de CVEs
 
-Correlacionado com o NVD e o BDU FSTEC quando um [bloco `cve:`](/pt-br/cve/) está configurado.
+Correlacionado com o NVD e o BDU FSTEC quando um [bloco `cve:`](/pt-br/cve/) está configurado. Desde a 2.2, o `cve.atlassian.path` adiciona
+os próprios dados por versão da Atlassian — incluindo CVEs de dependências
+de terceiros, que as entradas da Atlassian no NVD não listam — e, para uma
+versão que ele lista, o veredito dele prevalece dentro do próprio ramo da
+versão. Consulte
+[Dados dos próprios fornecedores → Atlassian](/pt-br/cve/#atlassian).
 
 ## Resolvedor de ciclo de vida
 

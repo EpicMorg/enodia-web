@@ -27,10 +27,17 @@ de enodia.
   Igual que arriba: en la solicitud solo figura el nombre público del
   repositorio. Si define `GITHUB_TOKEN`, se envía únicamente a GitHub,
   para aumentar el límite de solicitudes.
+- **Editores de las bases de datos de CVE**, solo cuando ejecuta
+  `enodia cve update`, y solo los que nombran sus entradas `cve.*.path`:
+  nvd.nist.gov, bdu.fstec.ru, security-tracker.debian.org, los editores
+  de OVAL (Canonical, Red Hat, AlmaLinux, Oracle, Astra Linux, RED OS),
+  secdb.alpinelinux.org, mariadb.com, api.atlassian.com,
+  www.postgresql.org y nginx.org. Las solicitudes son simples descargas
+  de archivos públicos; lo único que revelan sobre su parque es para qué
+  versiones de SO y versiones mayores de PostgreSQL obtiene datos.
 
-Eso es todo. Las bases de datos de CVE (NVD, BDU FSTEC, Debian, OVAL,
-Alpine, MariaDB) son archivos que usted descarga por su cuenta; enodia
-solo los lee del disco; consulte [Correlación de CVE](/es/cve/).
+Eso es todo. Todos los demás comandos solo leen del disco los archivos de
+CVE; consulte [Correlación de CVE](/es/cve/).
 
 El informe HTML carga Bootstrap desde una CDN (jsDelivr / cdnjs) **en el
 navegador que lo abre** cuando se establece `html.assets: cdn`; el valor

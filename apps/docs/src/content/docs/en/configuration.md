@@ -33,6 +33,14 @@ cve:                                 # optional, see "CVE correlation"
     path: alpine/
   mariadb:
     path: mariadb.md
+  atlassian:
+    path: atlassian.json
+  postgresql:
+    path: postgresql/
+  nginx:
+    path: nginx.html
+  update:                            # TLS options for "enodia cve update"
+    ca_file: russian-trusted.pem
 credentials: {}                      # optional, see "Credentials"
 targets: []                          # your services
 ```
@@ -58,9 +66,14 @@ Durations use Go's duration syntax: `500ms`, `10s`, `2m`, `1h30m`.
 Optional. Points enodia at a БДУ ФСТЭК export (`cve.bdu.path`), NVD
 JSON feeds (`cve.nvd.path`) and, for package-level matching on Linux
 hosts, the Debian Security Tracker (`cve.debian.path`), vendor OVAL files
-(`cve.oval.path`) and Alpine's secdb (`cve.alpine.path`), plus MariaDB's
-own fixed-CVE table (`cve.mariadb.path`) — any of them,
-each works alone, all downloaded yourself; enodia never fetches them. Relative paths resolve against this config's own
+(`cve.oval.path`) and Alpine's secdb (`cve.alpine.path`), plus vendors'
+own data: MariaDB's fixed-CVE table (`cve.mariadb.path`), Atlassian's
+(`cve.atlassian.path`), PostgreSQL's (`cve.postgresql.path`) and
+nginx's (`cve.nginx.path`) — any of them, each works alone.
+`enodia cve update` downloads them into those paths (its TLS options go
+in `cve.update`: `ca_file`, `ca_dir`, `tls_skip_verify`), or you
+download them yourself; `check`, `collect` and `serve` never fetch
+anything. Relative paths resolve against this config's own
 directory, and a configured path that doesn't exist is an error. What
 it does, how to get the files, and which products are matched:
 [CVE correlation](/en/cve/).
@@ -105,7 +118,7 @@ FreeRADIUS running in Docker or Podman.
 
 See **Product setup** in the sidebar (or the
 [Supported products](/en/products/) table) for the exact endpoint, auth
-requirements, and recorded fields for each of the 96 built-in probes —
+requirements, and recorded fields for each of the 123 built-in probes —
 `path`, `credentials`, and `options` above are the general shape; each
 product's own page says what it actually needs.
 

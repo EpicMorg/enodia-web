@@ -94,6 +94,43 @@ config file - it only reports what scheme each target would use.
 
 校验配置文件及其凭据引用——包括目标所声明的 `credentials:` 名称是否确实解析到探针能够理解的条目，完全离线进行。
 
+## `enodia cve`
+
+一个子命令，除全局标志外没有自己的标志。
+
+### `enodia cve update`
+
+```
+update downloads into each configured cve.*.path what that entry reads:
+BDU's vulxml.zip, NVD's yearly files (this year, last year and any year
+not on disk yet; every year with --all-years), the Debian Security Tracker
+JSON, vendor OVAL files, Alpine secdb, and MariaDB's, Atlassian's,
+PostgreSQL's and nginx's own data. It is the only command that fetches
+them; check, collect and serve never do.
+
+OVAL releases, Alpine branches and PostgreSQL majors come from the files
+already in those directories, from the inventories given with --from, and
+from --oval/--alpine/--postgresql.
+
+Each file is sent If-Modified-Since its copy on disk, downloaded beside it,
+loaded by the same code the CVE lookup uses, and only then moved over the
+old one, so a failed or broken download never replaces a working file.
+TLS is verified against the system's roots plus cve.update.ca_file and
+cve.update.ca_dir; cve.update.tls_skip_verify turns verification off.
+Exit status 1 if any file failed; the rest are still updated.
+```
+
+```
+--all-years                refresh every NVD year, not only this one, last one and missing ones
+--alpine stringArray       an Alpine branch to fetch secdb for, e.g. v3.22 (repeatable)
+--dry-run                  list what would be fetched, download nothing
+--from stringArray         an inventory to read OVAL releases, Alpine branches and PostgreSQL majors from (repeatable)
+--oval stringArray         an OVAL release to fetch: ubuntu:<codename>, rhel:<N>, almalinux:<N>, oracle-linux:<N>, astra-linux:<X.Y>, redos:<X.Y> (repeatable)
+--postgresql stringArray   a PostgreSQL major whose own security page to fetch, e.g. 13 (repeatable)
+```
+
+每个来源需要什么以及如何选择版本：[CVE 关联 → `enodia cve update`](/zh-cn/cve/#enodia-cve-update)。
+
 ## `enodia products`
 
 列出所有支持的产品——完整表格请参阅[支持的产品](/zh-cn/products/)。

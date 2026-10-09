@@ -33,6 +33,14 @@ cve:                                 # opcional, véase "Correlación de CVE"
     path: alpine/
   mariadb:
     path: mariadb.md
+  atlassian:
+    path: atlassian.json
+  postgresql:
+    path: postgresql/
+  nginx:
+    path: nginx.html
+  update:                            # opciones de TLS para "enodia cve update"
+    ca_file: russian-trusted.pem
 credentials: {}                      # opcional, véase "Credenciales"
 targets: []                          # sus servicios
 ```
@@ -60,9 +68,14 @@ Opcional. Indica a enodia una exportación de BDU FSTEC (`cve.bdu.path`),
 fuentes JSON de NVD (`cve.nvd.path`) y, para el cotejo a nivel de
 paquete en hosts Linux, el Debian Security Tracker (`cve.debian.path`),
 archivos OVAL del fabricante (`cve.oval.path`) y el secdb de Alpine
-(`cve.alpine.path`), además de la propia tabla de CVE corregidas de
-MariaDB (`cve.mariadb.path`): cualquiera de ellos, cada uno funciona por
-separado, todos descargados por usted mismo; enodia nunca los descarga. Las rutas relativas se resuelven
+(`cve.alpine.path`), además de los datos propios de los fabricantes: la
+tabla de CVE corregidas de MariaDB (`cve.mariadb.path`), la de Atlassian
+(`cve.atlassian.path`), la de PostgreSQL (`cve.postgresql.path`) y la de
+nginx (`cve.nginx.path`): cualquiera de ellos, cada uno funciona por
+separado. `enodia cve update` los descarga en esas rutas (sus opciones de
+TLS van en `cve.update`: `ca_file`, `ca_dir`, `tls_skip_verify`), o bien
+los descarga usted mismo; `check`, `collect` y `serve` nunca descargan
+nada. Las rutas relativas se resuelven
 respecto al directorio de esta configuración, y una ruta configurada que
 no existe es un error. Qué hace, cómo obtener los archivos y qué
 productos tienen correspondencia:
@@ -110,7 +123,7 @@ FreeRADIUS que se ejecute en Docker o Podman.
 Consulte **Configuración de productos** en la barra lateral (o la tabla
 de [Productos compatibles](/es/products/)) para ver el endpoint exacto,
 los requisitos de autenticación y los campos registrados de cada una de
-las 96 sondas integradas: `path`, `credentials` y `options` de arriba son
+las 123 sondas integradas: `path`, `credentials` y `options` de arriba son
 la forma general; la página de cada producto indica lo que realmente
 necesita.
 

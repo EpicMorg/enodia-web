@@ -46,7 +46,7 @@ recusando um servidor MariaDB.
 
 ## Correlação de CVEs
 
-Correlacionado com o NVD e o BDU FSTEC quando um [bloco `cve:`](/pt-br/cve/) está configurado — e, com `cve.mariadb.path`, com a própria tabela de CVEs corrigidas do MariaDB, cujo veredito por série prevalece sobre os intervalos em aberto do BDU e do NVD. Consulte [MariaDB: a tabela do próprio fornecedor](/pt-br/cve/#mariadb-the-vendors-own-table).
+Correlacionado com o NVD e o BDU FSTEC quando um [bloco `cve:`](/pt-br/cve/) está configurado — e, com `cve.mariadb.path`, com a própria tabela de CVEs corrigidas do MariaDB, cujo veredito por série prevalece sobre os intervalos em aberto do BDU e do NVD. Consulte [Dados dos próprios fornecedores → MariaDB](/pt-br/cve/#mariadb).
 
 ## Resolvedor de ciclo de vida
 

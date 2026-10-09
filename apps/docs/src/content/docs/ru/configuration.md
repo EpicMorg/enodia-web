@@ -33,6 +33,14 @@ cve:                                 # опционально, см. «Сопо�
     path: alpine/
   mariadb:
     path: mariadb.md
+  atlassian:
+    path: atlassian.json
+  postgresql:
+    path: postgresql/
+  nginx:
+    path: nginx.html
+  update:                            # параметры TLS для «enodia cve update»
+    ca_file: russian-trusted.pem
 credentials: {}                      # опционально, см. «Credentials»
 targets: []                          # ваши сервисы
 ```
@@ -59,9 +67,13 @@ targets: []                          # ваши сервисы
 JSON-фиды NVD (`cve.nvd.path`) и, для сопоставления по пакетам на
 Linux-хостах, на выгрузку Debian Security Tracker (`cve.debian.path`),
 OVAL-файлы вендоров (`cve.oval.path`) и secdb Alpine (`cve.alpine.path`),
-а также собственную таблицу исправленных CVE MariaDB (`cve.mariadb.path`)
-— любые из них, каждый работает и по отдельности; всё это вы скачиваете
-сами, enodia их никогда не загружает. Относительные пути резолвятся относительно
+а также собственные данные вендоров: таблицу исправленных CVE MariaDB
+(`cve.mariadb.path`), данные Atlassian (`cve.atlassian.path`), PostgreSQL
+(`cve.postgresql.path`) и nginx (`cve.nginx.path`) — любые из них,
+каждый работает и по отдельности. `enodia cve update` скачивает их по
+этим путям (её параметры TLS задаются в `cve.update`: `ca_file`,
+`ca_dir`, `tls_skip_verify`), либо вы скачиваете их сами; `check`,
+`collect` и `serve` никогда ничего не загружают. Относительные пути резолвятся относительно
 директории этого конфига, а указанный, но несуществующий путь — это
 ошибка. Что это даёт, как получить файлы и какие продукты
 сопоставляются — см. [Сопоставление с CVE](/ru/cve/).
@@ -108,7 +120,7 @@ FreeRADIUS, запущенный в Docker или Podman.
 
 Раздел **«Настройка продуктов»** в боковом меню (или таблица
 [Поддерживаемые продукты](/ru/products/)) содержит точный эндпоинт,
-требования к аутентификации и записываемые поля для каждой из 96
+требования к аутентификации и записываемые поля для каждой из 123
 встроенных проб — `path`, `credentials` и `options` выше описывают общую
 форму; страница конкретного продукта говорит, что ему нужно на самом
 деле.

@@ -104,7 +104,9 @@ etiquetarán las nuevas versiones). Dos cambios reales que conviene
 conocer: la imagen ahora es **solo `linux/amd64`** (arm64 se eliminó al
 trasladarse la publicación) y se ejecuta como **root** en lugar de un
 usuario dedicado, sobre la base propia del proyecto `debian:trixie-light`
-en lugar de `scratch`.
+en lugar de `scratch`. Declara `/var/lib/enodia/cve` como volumen para
+las [bases de datos de CVE](/es/cve/#descarga-de-las-bases-de-datos): monte
+allí sus copias o deje que `enodia cve update` lo llene.
 
 ### Compilar desde el código fuente
 

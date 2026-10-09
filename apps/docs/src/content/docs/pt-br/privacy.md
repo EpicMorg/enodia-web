@@ -27,10 +27,17 @@ do enodia.
   mesmo que acima: só o nome público do repositório vai na requisição. Se
   você definir `GITHUB_TOKEN`, ele é enviado apenas ao GitHub, para
   aumentar o limite de requisições.
+- **Publicadores dos bancos de dados de CVEs**, apenas quando você executa
+  o `enodia cve update`, e apenas os que as suas entradas `cve.*.path`
+  indicam: nvd.nist.gov, bdu.fstec.ru, security-tracker.debian.org, os
+  publicadores de OVAL (Canonical, Red Hat, AlmaLinux, Oracle, Astra
+  Linux, RED OS), secdb.alpinelinux.org, mariadb.com, api.atlassian.com,
+  www.postgresql.org e nginx.org. As requisições são downloads simples de
+  arquivos públicos; a única coisa que elas dizem sobre a sua frota é para
+  quais versões de SO e majors do PostgreSQL você busca dados.
 
-Isso é tudo. Os bancos de dados de CVEs (NVD, BDU FSTEC, Debian, OVAL,
-Alpine, MariaDB) são arquivos que você mesmo baixa; o enodia apenas os lê
-do disco — consulte [Correlação de CVEs](/pt-br/cve/).
+Isso é tudo. Todos os outros comandos apenas leem os arquivos de CVEs do
+disco — consulte [Correlação de CVEs](/pt-br/cve/).
 
 O relatório HTML carrega o Bootstrap de uma CDN (jsDelivr / cdnjs) **no
 navegador que o abre** quando `html.assets: cdn` está definido; o padrão

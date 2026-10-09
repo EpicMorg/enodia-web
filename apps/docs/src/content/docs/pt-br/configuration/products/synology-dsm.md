@@ -44,12 +44,24 @@ corpo, e não o código de status, para detectar um login rejeitado.
 
 ## Campos registrados
 
-Apenas `version` — extraída do formato `"DSM <version> Update
-<n>"` de `version_string`, por exemplo `"DSM 7.3.2-86009 Update 4"` → `7.3.2-86009`.
+- `version` — extraída do formato `"DSM <version> Update
+  <n>"` de `version_string`, por exemplo `"DSM 7.3.2-86009 Update 4"` → `7.3.2-86009`
+- `extra.update` — o número do Update (`4`), desde a 2.2, quando a string
+  tem um; mantido separado de `version` para que o drift e o ciclo de vida
+  continuem comparando a própria versão
 
 ## Correlação de CVEs
 
-Sem correlação — seus intervalos usam limites como `6.2.4-25556-3`, que o analisador estrito de intervalos rejeita. Consulte [Correlação de CVEs](/pt-br/cve/#quais-produtos-têm-correspondência).
+Correlacionado com o NVD e o BDU FSTEC quando um [bloco `cve:`](/pt-br/cve/) está configurado. Desde a 2.2. Uma versão do DSM é
+versão, build e Update (`7.2.1-69057 Update 6`), e os bancos de dados a
+delimitam como `7.2.1-69057-6`; o `version` e o `extra.update` da sonda
+são combinados em uma única versão comparável para a consulta. Um
+inventário coletado antes da 2.2 não tem `extra.update` e é lido como
+Update 0 — Updates corrigidos podem ser marcados, nenhum é deixado de
+fora. Os intervalos por ramo do BDU ainda reportam em excesso nos ramos
+mais antigos (os do NVD não) — consulte
+[Dell iDRAC e Synology DSM](/pt-br/cve/#dell-idrac-e-synology-dsm) e
+[Limitações conhecidas](/pt-br/cve/#limitações-conhecidas).
 
 ## Resolvedor de ciclo de vida
 

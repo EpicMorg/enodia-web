@@ -13,28 +13,106 @@ configura efectiv ceva. Tag-urile urmează formatul
 metadate de build semver, folosite doar pentru un rebuild fără
 modificări funcționale, nu pentru a evita o creștere reală a versiunii.
 
-## Nelansat
+## 2.2.0+0 — 2026-10-09
 
-<!-- NEXT-RELEASE: replace this heading with "## X.Y.Z+0 — YYYY-MM-DD" when the release is published. -->
+`enodia cve update` descarcă singur bazele de date CVE, datele de
+securitate proprii producătorilor (MariaDB, Atlassian, PostgreSQL, nginx)
+se alătură BDU și NVD, potrivirea CVE ajunge la iLO 4, iDRAC și Synology
+DSM și apar 27 de sonde noi — 123 în total. Fiecare cheie `cve:` nouă
+este opțională, iar configurațiile și inventarele 2.1 funcționează
+nemodificate — cu excepția unei credențiale de un tip pe care produsul ei
+nu îl citește niciodată, care este acum o eroare (vedeți Corectat).
 
 ### Adăugat
 
+- **[`enodia cve update`](/ro/cve/#enodia-cve-update)** descarcă bazele
+  de date CVE pe care le numește fiecare `cve.*.path` configurat — BDU,
+  NVD (anul curent, anul trecut și anii lipsă; `--all-years` pentru toți),
+  Debian, OVAL și Alpine (versiunile deja existente pe disc, cele de care
+  au nevoie inventarele `--from`, `--oval`/`--alpine`), MariaDB,
+  Atlassian, PostgreSQL (`--postgresql` pentru paginile per versiune
+  majoră) și nginx. If-Modified-Since; o descărcare înlocuiește un fișier
+  doar după ce acesta se încarcă. TLS este verificat față de rădăcinile
+  sistemului plus `cve.update.ca_file` și `cve.update.ca_dir` sau deloc,
+  cu `cve.update.tls_skip_verify`. Toate celelalte comenzi continuă să nu
+  descarce niciodată nimic.
+- **27 de sonde noi:**
+  - [`splunk`](/ro/configuration/products/splunk/) — API-ul de management al splunkd pe 8089, Basic sau un token Splunk.
+  - [`code-server`](/ro/configuration/products/code-server/) — `codeServerVersion` din pagina de autentificare.
+  - [`phpipam`](/ro/configuration/products/phpipam/) — subsolul paginii de autentificare și versiunea resurselor.
+  - [`domainmod`](/ro/configuration/products/domainmod/) — CHANGELOG-ul din rădăcina sa web.
+  - [`netdata`](/ro/configuration/products/netdata/) — `/api/v1/info` anonim al agentului.
+  - [`libretranslate`](/ro/configuration/products/libretranslate/) — documentul OpenAPI public `/spec`.
+  - [`torrserver`](/ro/configuration/products/torrserver/) — `/echo`.
+  - [`kafka`](/ro/configuration/products/kafka/) — versiunea brokerului prin SSH, din propriul său jar, opțional într-un container; build-urile Confluent Platform sunt raportate ca `confluent`, cu linia Apache Kafka pe care o conțin.
+  - [`home-assistant`](/ro/configuration/products/home-assistant/) — `/api/config` cu un token de acces de lungă durată, `kind: bearer`.
+  - [`openhab`](/ro/configuration/products/openhab/) — rădăcina REST anonimă `/rest/`.
+  - [`doxygen`](/ro/configuration/products/doxygen/) — ce versiune Doxygen a generat un site de documentație, din marcajul său de generator.
+  - [`qbittorrent`](/ro/configuration/products/qbittorrent/) — API-ul Web UI după o autentificare prin formular, `kind: password`.
+  - [`netbox`](/ro/configuration/products/netbox/) — `data-netbox-version` din pagina de autentificare anonimă.
+  - [`greenbone`](/ro/configuration/products/greenbone/) — (aliasuri `openvas`, `gsad`) versiunea gsad din răspunsul său `/gmp`, fără autentificare.
+  - [`posthog`](/ro/configuration/products/posthog/) — commitul git al PostHog găzduit local, din pagina sa de autentificare anonimă.
+  - [`uptime-kuma`](/ro/configuration/products/uptime-kuma/) — se autentifică prin API-ul socket.io al Uptime Kuma (`kind: password`) și citește versiunea trimisă după autentificare.
+  - [`wapt`](/ro/configuration/products/wapt/) — `/ping` anonim al serverului WAPT.
+  - [`minio`](/ro/configuration/products/minio/) — `minio --version` prin SSH, opțional într-un container; numele `RELEASE.<timestamp>` ale MinIO se compară acum ca versiuni.
+  - [`sentry`](/ro/configuration/products/sentry/) — versiunea Sentry găzduit local din pagina sa de autentificare anonimă.
+  - [`zookeeper`](/ro/configuration/products/zookeeper/) — cuvântul de patru litere `srvr`.
+  - [`ghost`](/ro/configuration/products/ghost/) — `/ghost/api/admin/site/` anonim, care oferă major.minor.
+  - [`onlyoffice`](/ro/configuration/products/onlyoffice/) — și [`euro-office`](/ro/configuration/products/euro-office/): ONLYOFFICE Docs și fork-ul său Euro-Office, citite anonim din `/index.html` al serverului de documente; un server al celeilalte mărci este refuzat, cu indicarea produsului de folosit.
+  - [`weblate`](/ro/configuration/products/weblate/) — subsolul anonim „Powered by Weblate”.
+  - [`memcached`](/ro/configuration/products/memcached/) — comanda `version` a protocolului text, fără credențiale.
+  - [`rabbitmq`](/ro/configuration/products/rabbitmq/) — `/api/overview` al pluginului de management, `kind: basic`.
+  - [`cassandra`](/ro/configuration/products/cassandra/) — `release_version` prin protocolul nativ CQL v4, `kind: password` când clusterul are PasswordAuthenticator.
 - **CVE-uri pentru țintele [`mariadb`](/ro/configuration/products/mariadb/).**
   BDU și NVD acoperă acum MariaDB, iar un nou `cve.mariadb.path` citește
   tabelul propriu al MariaDB cu CVE-urile corectate (`community-server.md`),
-  care cunoaște versiunea de corectare pentru fiecare serie. Combinat cu
-  BDU și NVD; acolo unde tabelul MariaDB cunoaște un CVE, verdictul său
-  înlocuiește intervalele deschise ale acestora, astfel încât cea mai
-  recentă versiune a unei serii întreținute nu mai este semnalată pentru
-  CVE-uri corectate doar în serii mai noi — consultați
-  [MariaDB: tabelul propriu al producătorului](/ro/cve/#mariadb-the-vendors-own-table).
+  care cunoaște versiunea de corectare pentru fiecare serie. Acolo unde
+  tabelul MariaDB cunoaște un CVE, verdictul său înlocuiește intervalele
+  deschise ale BDU și NVD, astfel încât cea mai recentă versiune a unei
+  serii întreținute nu mai este semnalată pentru CVE-uri corectate doar în
+  serii mai noi — consultați
+  [Datele proprii ale producătorilor](/ro/cve/#datele-proprii-ale-producătorilor).
+- **`cve.atlassian.path`**: datele CVE proprii ale Atlassian, per
+  versiune, pentru `jira`, `confluence`, `bitbucket` și `bamboo`, inclusiv
+  CVE-urile dependențelor terțe. Evaluare în cadrul fiecărei ramuri;
+  pentru o versiune pe care Atlassian o enumeră, verdictul său are
+  prioritate — consultați [Atlassian](/ro/cve/#atlassian).
+- **`cve.postgresql.path` și `cve.nginx.path`**: paginile de securitate
+  proprii ale proiectelor, cu versiunea de corectare per ramură.
+  Versiunile curente PostgreSQL 17/16/15/14 și nginx 1.30.5 nu mai
+  afișează intervalele fără ramură ale BDU — consultați
+  [PostgreSQL](/ro/cve/#postgresql) și [nginx](/ro/cve/#nginx).
+- **CVE-uri pentru încă 24 de produse**: cassandra, code-server,
+  domainmod, doxygen, ghost, greenbone, home-assistant, kafka, memcached,
+  minio, netbox, netdata, onlyoffice, openhab, pfsense, phpipam,
+  qbittorrent, rabbitmq, sentry, splunk, uptime-kuma, wapt, weblate,
+  zookeeper. Versiunile cu marcaj temporal ale MinIO se compară; pfSense
+  CE și Splunk Enterprise omit intervalele altor ediții; build-urile
+  Kafka Confluent nu primesc nicio căutare.
+- **CVE-uri pentru [`hp-ilo4`](/ro/configuration/products/hp-ilo4/),
+  [`dell-idrac`](/ro/configuration/products/dell-idrac/) și
+  [`synology-dsm`](/ro/configuration/products/synology-dsm/).** iDRAC este
+  potrivit per generație, citită din modelul Redfish; DSM compară
+  versiunea, build-ul și Update-ul (`7.2.1-69057-6`), iar sonda
+  înregistrează acum Update-ul în `extra.update` — consultați
+  [Dell iDRAC și Synology DSM](/ro/cve/#dell-idrac-și-synology-dsm).
+  În total, 91 dintre cele 123 de produse sunt acum potrivite — consultați
+  [ce produse sunt potrivite](/ro/cve/#ce-produse-sunt-potrivite).
 - O pagină [Confidențialitate](/ro/privacy/): la ce se conectează enodia
   (țintele dumneavoastră, endoflife.date, API-ul GitHub — doar nume de
-  produse și de depozite) și ce stochează (doar propriile dumneavoastră
-  fișiere și un cache local). Fără telemetrie.
+  produse și de depozite — și, doar pentru `enodia cve update`,
+  publicatorii bazelor de date CVE) și ce stochează (doar propriile
+  dumneavoastră fișiere și un cache local). Fără telemetrie.
 
 ### Modificat
 
+- Resolverul `github` omite versiunile al căror tag denumește o
+  pre-versiune (`5.3.0.M2`, `2026.10.0b7`, `-rc1`, `-beta.1`), chiar și
+  atunci când GitHub nu le marchează ca atare; citește ca versiuni
+  tag-urile scrise cu underscore (`Release_1_18_0`) și cele cu prefixul
+  `release-` (`release-5.2.4`); și elimină un `<repo>-`/`<repo>_` inițial
+  din tag-uri, astfel încât `weblate-2026.10` este citit ca `2026.10` —
+  consultați [Produse acceptate](/ro/products/).
 - [`teamcity`](/ro/configuration/products/teamcity/) funcționează fără
   credențiale: fără niciuna configurată, citește anonim
   `/app/rest/server/version`, accesibil pe fiecare TeamCity verificat de la
@@ -43,6 +121,13 @@ modificări funcționale, nu pentru a evita o creștere reală a versiunii.
 
 ### Corectat
 
+- CVE-urile [`jenkins`](/ro/configuration/products/jenkins/): o versiune
+  LTS corectată nu mai este semnalată de intervalul weekly al aceleiași
+  corecții (LTS 2.568.3 de „before 2.580”). Intervalele weekly și LTS se
+  aplică acum doar propriei linii de versiuni.
+- Resolverul `github` nu mai eșuează pe depozitele a căror listă de
+  versiuni depășește 1 MiB (cea a minio/minio are 3,4 MB): acum citește
+  până la 8 MiB.
 - **O credențială de un tip pe care produsul său nu îl trimite niciodată
   este acum o eroare de configurare**, în loc să fie ignorată tacit.
   `kind: password` pe un produs HTTP (RouterOS, Harbor, …) trimitea
@@ -50,7 +135,7 @@ modificări funcționale, nu pentru a evita o creștere reală a versiunii.
   acum tipurile pe care produsul le acceptă — pentru o autentificare web,
   acesta este `kind: basic`. **Verificați-vă configurația înainte de
   upgrade**: o rulare cu o astfel de credențială refuză acum să pornească.
-  Consultați [Configurare → Credențiale](/ro/configuration/#credentials).
+  Consultați [Configurare → Credențiale](/ro/configuration/#credențiale).
 
 ## 2.1.1+0 — 2026-10-08
 
@@ -168,7 +253,7 @@ incompatibilitate: corelarea CVE este prima axă de evaluare care nu
   sunt parsate în flux și memorate în cache: prima rulare după
   modificarea unei baze de date durează aproximativ un minut pentru
   întregul NVD plus BDU, fiecare rulare ulterioară sub o secundă.
-  Consultați [cum le descărcați](/ro/cve/#enodia-nu-descarcă-niciodată-singur-bazele-de-date),
+  Consultați [cum le descărcați](/ro/cve/#descărcarea-bazelor-de-date),
   inclusiv certificatul CA suplimentar de care are nevoie bdu.fstec.ru.
 - **52 de sonde potrivite** (53 de nume de produse în amonte — `ssh`
   contează atât ca OpenSSH, cât și ca Dropbear), fiecare sondă cu date

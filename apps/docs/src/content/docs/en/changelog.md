@@ -12,27 +12,98 @@ affects how you'd actually configure something. Tags follow
 metadata, used only for a rebuild with no functional change, not to
 sidestep a real version bump.
 
-## Unreleased
+## 2.2.0+0 — 2026-10-09
 
-<!-- NEXT-RELEASE: replace this heading with "## X.Y.Z+0 — YYYY-MM-DD" when the release is published. -->
+`enodia cve update` downloads the CVE databases itself, vendors' own
+security data (MariaDB, Atlassian, PostgreSQL, nginx) joins БДУ and NVD,
+CVE matching reaches iLO 4, iDRAC and Synology DSM, and 27 new probes
+land — 123 in total. Every new `cve:` key is optional, and 2.1 configs
+and inventories work unchanged — except a credential of a kind its
+product never reads, which is now an error (see Fixed).
 
 ### Added
 
+- **[`enodia cve update`](/en/cve/#enodia-cve-update)** downloads the
+  CVE databases every configured `cve.*.path` names — БДУ, NVD (this
+  year, last year and missing years; `--all-years` for all), Debian,
+  OVAL and Alpine (the releases already on disk, those `--from`
+  inventories need, `--oval`/`--alpine`), MariaDB, Atlassian, PostgreSQL
+  (`--postgresql` for per-major pages) and nginx. If-Modified-Since; a
+  download replaces a file only after it loads. TLS is verified against
+  the system roots plus `cve.update.ca_file` and `cve.update.ca_dir`, or
+  not at all with `cve.update.tls_skip_verify`. Every other command
+  still never downloads anything.
+- **27 new probes:**
+  - [`splunk`](/en/configuration/products/splunk/) — splunkd's management API on 8089, Basic or a Splunk token.
+  - [`code-server`](/en/configuration/products/code-server/) — `codeServerVersion` from the login page.
+  - [`phpipam`](/en/configuration/products/phpipam/) — the login page's footer and asset version.
+  - [`domainmod`](/en/configuration/products/domainmod/) — the CHANGELOG in its web root.
+  - [`netdata`](/en/configuration/products/netdata/) — the agent's anonymous `/api/v1/info`.
+  - [`libretranslate`](/en/configuration/products/libretranslate/) — the public OpenAPI document `/spec`.
+  - [`torrserver`](/en/configuration/products/torrserver/) — `/echo`.
+  - [`kafka`](/en/configuration/products/kafka/) — the broker's version over SSH from its own jar, optionally in a container; Confluent Platform builds are reported as `confluent` with the Apache Kafka line they carry.
+  - [`home-assistant`](/en/configuration/products/home-assistant/) — `/api/config` with a long-lived access token, `kind: bearer`.
+  - [`openhab`](/en/configuration/products/openhab/) — the anonymous REST root `/rest/`.
+  - [`doxygen`](/en/configuration/products/doxygen/) — which Doxygen generated a docs site, from its generator mark.
+  - [`qbittorrent`](/en/configuration/products/qbittorrent/) — the Web UI API after a form login, `kind: password`.
+  - [`netbox`](/en/configuration/products/netbox/) — the anonymous login page's `data-netbox-version`.
+  - [`greenbone`](/en/configuration/products/greenbone/) — (aliases `openvas`, `gsad`) gsad's version from its `/gmp` reply, unauthenticated.
+  - [`posthog`](/en/configuration/products/posthog/) — self-hosted PostHog's git commit from its anonymous login page.
+  - [`uptime-kuma`](/en/configuration/products/uptime-kuma/) — logs in over Uptime Kuma's socket.io API (`kind: password`) and reads the version it sends after login.
+  - [`wapt`](/en/configuration/products/wapt/) — the WAPT server's anonymous `/ping`.
+  - [`minio`](/en/configuration/products/minio/) — `minio --version` over SSH, optionally in a container; MinIO's `RELEASE.<timestamp>` names now compare as versions.
+  - [`sentry`](/en/configuration/products/sentry/) — self-hosted Sentry's version from its anonymous login page.
+  - [`zookeeper`](/en/configuration/products/zookeeper/) — the `srvr` four-letter word.
+  - [`ghost`](/en/configuration/products/ghost/) — the anonymous `/ghost/api/admin/site/`, which gives major.minor.
+  - [`onlyoffice`](/en/configuration/products/onlyoffice/) — and [`euro-office`](/en/configuration/products/euro-office/): ONLYOFFICE Docs and its Euro-Office fork, read anonymously from the document server's `/index.html`; a server of the other brand is refused with the product to use.
+  - [`weblate`](/en/configuration/products/weblate/) — the anonymous "Powered by Weblate" footer.
+  - [`memcached`](/en/configuration/products/memcached/) — the text protocol's `version` command, no credentials.
+  - [`rabbitmq`](/en/configuration/products/rabbitmq/) — the management plugin's `/api/overview`, `kind: basic`.
+  - [`cassandra`](/en/configuration/products/cassandra/) — `release_version` over the CQL native protocol v4, `kind: password` when the cluster has PasswordAuthenticator.
 - **CVEs for [`mariadb`](/en/configuration/products/mariadb/) targets.**
   БДУ and NVD now cover MariaDB, and a new `cve.mariadb.path` reads
   MariaDB's own table of fixed CVEs (`community-server.md`), which knows
-  the fixing release per series. Merged with БДУ and NVD; where
-  MariaDB's table knows a CVE, its verdict replaces their open-ended
-  ranges, so the latest release of a maintained series is no longer
-  flagged for CVEs fixed only in newer series — see
-  [MariaDB: the vendor's own table](/en/cve/#mariadb-the-vendors-own-table).
+  the fixing release per series. Where MariaDB's table knows a CVE, its
+  verdict replaces БДУ's and NVD's open-ended ranges, so the latest
+  release of a maintained series is no longer flagged for CVEs fixed
+  only in newer series — see [Vendors' own data](/en/cve/#vendors-own-data).
+- **`cve.atlassian.path`**: Atlassian's own per-release CVE data for
+  `jira`, `confluence`, `bitbucket` and `bamboo`, third-party dependency
+  CVEs included. Judged within each branch; for a release Atlassian
+  lists, its verdict wins — see [Atlassian](/en/cve/#atlassian).
+- **`cve.postgresql.path` and `cve.nginx.path`**: the projects' own
+  security pages, with the fix release per branch. Current PostgreSQL
+  17/16/15/14 releases and nginx 1.30.5 no longer show БДУ's branchless
+  ranges — see [PostgreSQL](/en/cve/#postgresql) and [nginx](/en/cve/#nginx).
+- **CVEs for 24 more products**: cassandra, code-server, domainmod,
+  doxygen, ghost, greenbone, home-assistant, kafka, memcached, minio,
+  netbox, netdata, onlyoffice, openhab, pfsense, phpipam, qbittorrent,
+  rabbitmq, sentry, splunk, uptime-kuma, wapt, weblate, zookeeper. MinIO's
+  timestamp versions compare; pfSense CE and Splunk Enterprise skip
+  ranges for other editions; Confluent Kafka builds get no lookup.
+- **CVEs for [`hp-ilo4`](/en/configuration/products/hp-ilo4/),
+  [`dell-idrac`](/en/configuration/products/dell-idrac/) and
+  [`synology-dsm`](/en/configuration/products/synology-dsm/).** iDRAC is
+  matched per generation, read from the Redfish model; DSM compares
+  version, build and Update (`7.2.1-69057-6`), and the probe now records
+  the Update in `extra.update` — see
+  [Dell iDRAC and Synology DSM](/en/cve/#dell-idrac-and-synology-dsm).
+  In total, 91 of the 123 products are now matched — see
+  [which products are matched](/en/cve/#which-products-are-matched).
 - A [Privacy](/en/privacy/) page: what enodia connects to (your
   targets, endoflife.date, the GitHub API — product and repository names
-  only) and what it stores (only your own files and a local cache). No
-  telemetry.
+  only — and, only for `enodia cve update`, the CVE database
+  publishers) and what it stores (only your own files and a local
+  cache). No telemetry.
 
 ### Changed
 
+- The `github` resolver skips releases whose tag names a pre-release
+  (`5.3.0.M2`, `2026.10.0b7`, `-rc1`, `-beta.1`) even when GitHub doesn't
+  flag them; reads underscore-spelled (`Release_1_18_0`) and
+  `release-`-prefixed (`release-5.2.4`) tags as versions; and drops a
+  leading `<repo>-`/`<repo>_` from tags, so `weblate-2026.10` reads as
+  `2026.10` — see [Supported products](/en/products/).
 - [`teamcity`](/en/configuration/products/teamcity/) works without
   credentials: with none configured it reads the anonymous
   `/app/rest/server/version`, open on every TeamCity checked from 2017.2
@@ -41,6 +112,12 @@ sidestep a real version bump.
 
 ### Fixed
 
+- [`jenkins`](/en/configuration/products/jenkins/) CVEs: a fixed LTS
+  release is no longer flagged by the weekly range of the same fix (LTS
+  2.568.3 by "before 2.580"). Weekly and LTS ranges now apply only to
+  their own release line.
+- The `github` resolver no longer fails on repositories whose releases
+  list is over 1 MiB (minio/minio's is 3.4 MB): it now reads up to 8 MiB.
 - **A credential of a kind its product never sends is now a config
   error** instead of being dropped silently. `kind: password` on an HTTP
   product (RouterOS, Harbor, …) used to send the request with no
@@ -156,7 +233,7 @@ new `cve:` block is optional, and a config without it behaves exactly as
   file, or for NVD a directory of files). Either source works alone.
   Both are stream-parsed and cached: the first run after a database
   changes takes about a minute for all of NVD plus БДУ, every later run
-  under a second. See [how to download them](/en/cve/#enodia-never-downloads-the-databases-itself),
+  under a second. See [how to download them](/en/cve/#downloading-the-databases),
   including the extra CA certificate bdu.fstec.ru needs.
 - **52 probes matched** (53 product names upstream — `ssh` counts as
   both OpenSSH and Dropbear), every probe with usable data in either

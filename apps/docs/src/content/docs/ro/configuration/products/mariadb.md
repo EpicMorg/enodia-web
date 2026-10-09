@@ -47,7 +47,7 @@ refuză un server MariaDB.
 
 ## Corelare CVE
 
-Se corelează cu NVD și BDU FSTEC atunci când este configurat un [bloc `cve:`](/ro/cve/) — și, cu `cve.mariadb.path`, cu tabelul propriu al MariaDB cu CVE-urile corectate, al cărui verdict per serie are prioritate față de intervalele deschise ale BDU și NVD. Consultați [MariaDB: tabelul propriu al producătorului](/ro/cve/#mariadb-the-vendors-own-table).
+Se corelează cu NVD și BDU FSTEC atunci când este configurat un [bloc `cve:`](/ro/cve/) — și, cu `cve.mariadb.path`, cu tabelul propriu al MariaDB cu CVE-urile corectate, al cărui verdict per serie are prioritate față de intervalele deschise ale BDU și NVD. Consultați [Datele proprii ale producătorilor → MariaDB](/ro/cve/#mariadb).
 
 ## Rezolvatorul ciclului de viață
 

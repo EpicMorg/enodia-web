@@ -8,7 +8,7 @@ A válvula de escape para tudo que não tem uma sonda dedicada — um bloco
 completa dos campos, o vocabulário congelado `json`/`xml`/`header`/`plaintext`/`regex`
 e a observação sobre a grafia do campo `clean_regex` estão em
 [Configuração → A sonda genérica](/pt-br/configuration/#a-sonda-genérica);
-esta página existe apenas para que `generic` apareça ao lado dos outros 95
+esta página existe apenas para que `generic` apareça ao lado dos outros 122
 produtos na barra lateral.
 
 ```yaml
@@ -33,7 +33,7 @@ Sem correlação — um parser escrito à mão não tem identidade de produto pe
 ## Resolvedor de ciclo de vida
 
 Nenhum — um alvo feito à mão, por definição, não tem calendário a
-consultar. Não encontrou o seu produto na lista das 95 sondas dedicadas?
+consultar. Não encontrou o seu produto na lista das 122 sondas dedicadas?
 Consulte [Produtos suportados](/pt-br/products/#não-encontrou-o-seu-produto) para
 os dois caminhos possíveis: esta válvula de escape ou a solicitação de uma
 sonda de verdade.

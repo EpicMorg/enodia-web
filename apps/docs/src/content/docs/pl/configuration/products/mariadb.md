@@ -48,7 +48,7 @@ odrzuca serwer MariaDB.
 
 ## Korelacja CVE
 
-Dopasowywany do NVD i BDU FSTEC, gdy skonfigurowano [blok `cve:`](/pl/cve/) — a przy `cve.mariadb.path` także do własnej tabeli naprawionych CVE MariaDB, której werdykt dla danej serii ma pierwszeństwo przed otwartymi zakresami BDU i NVD. Zobacz [MariaDB: własna tabela dostawcy](/pl/cve/#mariadb-the-vendors-own-table).
+Dopasowywany do NVD i BDU FSTEC, gdy skonfigurowano [blok `cve:`](/pl/cve/) — a przy `cve.mariadb.path` także do własnej tabeli naprawionych CVE MariaDB, której werdykt dla danej serii ma pierwszeństwo przed otwartymi zakresami BDU i NVD. Zobacz [Własne dane dostawców → MariaDB](/pl/cve/#mariadb).
 
 ## Resolver cyklu życia
 

@@ -50,7 +50,11 @@ correspondente):
 depois 4.0 e depois 2.0 — 3.x é a versão que quase toda CVE traz nas duas
 fontes, então as pontuações de uma mesma lista ficam na mesma escala. A
 coluna `CVES` das visões em tabela conta as CVEs distintas entre essas
-entradas, e não as entradas em si.
+entradas, e não as entradas em si. Os achados vindos dos dados de um
+fornecedor (consulte
+[Dados dos próprios fornecedores](/pt-br/cve/#dados-dos-próprios-fornecedores)) têm o
+mesmo formato, com `Source` definido como `mariadb`, `atlassian`,
+`postgresql` ou `nginx`.
 
 Os achados por pacote para hosts Linux (consulte
 [Correlação de CVEs](/pt-br/cve/#cves-por-pacote-para-distribuições-linux))

@@ -46,12 +46,24 @@ respinsă.
 
 ## Câmpuri înregistrate
 
-Doar `version` — extras din forma `"DSM <version> Update
-<n>"` a `version_string`, de exemplu `"DSM 7.3.2-86009 Update 4"` → `7.3.2-86009`.
+- `version` — extras din forma `"DSM <version> Update
+  <n>"` a `version_string`, de exemplu `"DSM 7.3.2-86009 Update 4"` → `7.3.2-86009`
+- `extra.update` — numărul Update-ului (`4`), începând cu 2.2, atunci când
+  șirul îl conține; păstrat separat de `version`, astfel încât drift-ul și
+  ciclul de viață compară în continuare versiunea însăși
 
 ## Corelare CVE
 
-Nu se corelează — intervalele sale folosesc limite de forma `6.2.4-25556-3`, pe care parserul strict de intervale le respinge. Consultați [Corelare CVE](/ro/cve/#ce-produse-sunt-potrivite).
+Se corelează cu NVD și BDU FSTEC atunci când este configurat un [bloc `cve:`](/ro/cve/). Începând cu 2.2. O versiune DSM
+înseamnă versiune, build și Update (`7.2.1-69057 Update 6`), iar bazele
+de date o delimitează ca `7.2.1-69057-6`; `version` și `extra.update` ale
+sondei sunt combinate într-o singură versiune comparabilă pentru căutare.
+Un inventar colectat înainte de 2.2 nu are `extra.update` și este citit
+ca Update 0 — Update-urile corectate pot fi semnalate, niciunul nu este
+omis. Intervalele per ramură ale BDU raportează în continuare în exces pe
+ramurile mai vechi (cele ale NVD nu) — consultați
+[Dell iDRAC și Synology DSM](/ro/cve/#dell-idrac-și-synology-dsm) și
+[Limitări cunoscute](/ro/cve/#limitări-cunoscute).
 
 ## Rezolvatorul ciclului de viață
 

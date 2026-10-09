@@ -27,10 +27,18 @@ al enodia.
   GitHub. La fel ca mai sus: în cerere se află doar numele public al
   depozitului. Dacă setați `GITHUB_TOKEN`, acesta este trimis doar către
   GitHub, pentru a ridica limita de rată.
+- **Publicatorii bazelor de date CVE**, doar atunci când rulați
+  `enodia cve update` și doar cei pe care îi numesc intrările
+  dumneavoastră `cve.*.path`: nvd.nist.gov, bdu.fstec.ru,
+  security-tracker.debian.org, publicatorii OVAL (Canonical, Red Hat,
+  AlmaLinux, Oracle, Astra Linux, RED OS), secdb.alpinelinux.org,
+  mariadb.com, api.atlassian.com, www.postgresql.org și nginx.org.
+  Cererile sunt simple descărcări de fișiere publice; singurul lucru pe
+  care îl spun despre parcul dumneavoastră este pentru ce versiuni de
+  sistem de operare și ce versiuni majore PostgreSQL descărcați date.
 
-Atât. Bazele de date CVE (NVD, BDU FSTEC, Debian, OVAL, Alpine, MariaDB)
-sunt fișiere pe care le descărcați singuri; enodia doar le citește de pe
-disc — consultați [Corelare CVE](/ro/cve/).
+Atât. Toate celelalte comenzi doar citesc fișierele CVE de pe disc —
+consultați [Corelare CVE](/ro/cve/).
 
 Raportul HTML încarcă Bootstrap de pe un CDN (jsDelivr / cdnjs) **în
 browserul care îl deschide** atunci când este setat `html.assets: cdn`;

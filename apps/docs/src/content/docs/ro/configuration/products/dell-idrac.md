@@ -54,9 +54,13 @@ acoperit.
 
 ## Corelare CVE
 
-Încă nu se corelează — sondele BMC sunt noi în 2.1, iar în amonte
-maparea lor CVE a fost lăsată pentru o etapă ulterioară, dedicată.
-Consultați [Corelare CVE](/ro/cve/#ce-produse-sunt-potrivite).
+Se corelează cu NVD și BDU FSTEC atunci când este configurat un [bloc `cve:`](/ro/cve/). Începând cu 2.2. Ambele baze de date
+numesc fiecare generație iDRAC ca produs separat, cu numere de firmware
+care se suprapun, așa că generația este citită din `extra.model`
+(modelul Redfish, de exemplu `12G Modular` → iDRAC7; 11G iDRAC6, 13G
+iDRAC8, 14G–16G iDRAC9, 17G iDRAC10). Fără un model, este căutat doar
+firmware-ul 3.x și ulterior (acesta nu poate fi decât iDRAC9) — consultați
+[Dell iDRAC și Synology DSM](/ro/cve/#dell-idrac-și-synology-dsm).
 
 ## Rezolvatorul ciclului de viață
 

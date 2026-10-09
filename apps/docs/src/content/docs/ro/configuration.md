@@ -34,6 +34,14 @@ cve:                                 # opțional, vedeți „Corelare CVE”
     path: alpine/
   mariadb:
     path: mariadb.md
+  atlassian:
+    path: atlassian.json
+  postgresql:
+    path: postgresql/
+  nginx:
+    path: nginx.html
+  update:                            # opțiuni TLS pentru „enodia cve update”
+    ca_file: russian-trusted.pem
 credentials: {}                      # opțional, vedeți „Credențiale”
 targets: []                          # serviciile dumneavoastră
 ```
@@ -63,9 +71,14 @@ Opțional. Indică enodia un export BDU FSTEC (`cve.bdu.path`), feed-uri
 JSON NVD (`cve.nvd.path`) și, pentru potrivirea la nivel de pachet pe
 gazdele Linux, Debian Security Tracker (`cve.debian.path`), fișiere OVAL
 ale producătorilor (`cve.oval.path`) și secdb-ul Alpine
-(`cve.alpine.path`), plus tabelul propriu al MariaDB cu CVE-urile
-corectate (`cve.mariadb.path`) — oricare dintre ele, fiecare funcționează singură,
-toate descărcate de dumneavoastră; enodia nu le descarcă niciodată. Căile relative se rezolvă față de
+(`cve.alpine.path`), plus datele proprii ale producătorilor: tabelul
+MariaDB cu CVE-urile corectate (`cve.mariadb.path`), datele Atlassian
+(`cve.atlassian.path`), ale PostgreSQL (`cve.postgresql.path`) și ale
+nginx (`cve.nginx.path`) — oricare dintre ele, fiecare funcționează
+singură. `enodia cve update` le descarcă în aceste căi (opțiunile sale
+TLS se află în `cve.update`: `ca_file`, `ca_dir`, `tls_skip_verify`) sau
+le descărcați dumneavoastră; `check`, `collect` și `serve` nu descarcă
+niciodată nimic. Căile relative se rezolvă față de
 directorul acestei configurații, iar o cale configurată care nu există
 reprezintă o eroare. Ce face, cum obțineți fișierele și ce produse sunt
 potrivite: [Corelare CVE](/ro/cve/).
@@ -112,7 +125,7 @@ FreeRADIUS care rulează în Docker sau Podman.
 Consultați **Configurarea produselor** în bara laterală (sau tabelul
 [Produse acceptate](/ro/products/)) pentru endpoint-ul exact, cerințele
 de autentificare și câmpurile înregistrate pentru fiecare dintre cele
-96 de sonde integrate — `path`, `credentials` și `options` de mai sus
+123 de sonde integrate — `path`, `credentials` și `options` de mai sus
 reprezintă forma generală; pagina fiecărui produs spune de ce are
 nevoie efectiv.
 

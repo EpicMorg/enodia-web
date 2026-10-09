@@ -52,7 +52,10 @@ ocena z niego wyodrębniona, wybierana w kolejności: najpierw CVSS
 3.1/3.0, potem 4.0, a na końcu 2.0 — wersję 3.x ma niemal każde CVE
 w obu źródłach, więc wyniki na jednej liście pozostają w tej samej
 skali. Kolumna `CVES` w widokach tabelarycznych liczy różne CVE w tych
-wpisach, a nie same wpisy.
+wpisach, a nie same wpisy. Znaleziska z własnych danych dostawcy
+(zobacz [Własne dane dostawców](/pl/cve/#własne-dane-dostawców)) mają taką
+samą postać, z `Source` ustawionym na `mariadb`, `atlassian`,
+`postgresql` lub `nginx`.
 
 Znaleziska na poziomie pakietów dla hostów z Linuksem (zobacz
 [Korelacja CVE](/pl/cve/#cve-na-poziomie-pakietów-dla-dystrybucji-linuksa))

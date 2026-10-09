@@ -30,6 +30,14 @@ cve:                                 # 可选，见“CVE 关联”
     path: alpine/
   mariadb:
     path: mariadb.md
+  atlassian:
+    path: atlassian.json
+  postgresql:
+    path: postgresql/
+  nginx:
+    path: nginx.html
+  update:                            # "enodia cve update" 的 TLS 选项
+    ca_file: russian-trusted.pem
 credentials: {}                      # 可选，见“凭据”
 targets: []                          # 您的服务
 ```
@@ -51,7 +59,7 @@ targets: []                          # 您的服务
 
 ### `cve`
 
-可选。让 enodia 指向 BDU FSTEC 导出文件（`cve.bdu.path`）、NVD JSON 数据源（`cve.nvd.path`），以及用于 Linux 主机软件包级匹配的 Debian Security Tracker（`cve.debian.path`）、厂商 OVAL 文件（`cve.oval.path`）和 Alpine 的 secdb（`cve.alpine.path`），以及 MariaDB 自己的已修复 CVE 表（`cve.mariadb.path`）——可以任选其中几个，每个都能单独使用，全部由您自行下载；enodia 从不自行获取它们。相对路径相对于该配置文件自身所在目录进行解析，配置的路径不存在会被视为错误。它的作用、如何获取这些文件，以及哪些产品会被匹配：[CVE 关联](/zh-cn/cve/)。
+可选。让 enodia 指向 BDU FSTEC 导出文件（`cve.bdu.path`）、NVD JSON 数据源（`cve.nvd.path`），以及用于 Linux 主机软件包级匹配的 Debian Security Tracker（`cve.debian.path`）、厂商 OVAL 文件（`cve.oval.path`）和 Alpine 的 secdb（`cve.alpine.path`），以及厂商自己的数据：MariaDB 的已修复 CVE 表（`cve.mariadb.path`）、Atlassian 的（`cve.atlassian.path`）、PostgreSQL 的（`cve.postgresql.path`）和 nginx 的（`cve.nginx.path`）——可以任选其中几个，每个都能单独使用。`enodia cve update` 会把它们下载到这些路径中（它的 TLS 选项放在 `cve.update` 中：`ca_file`、`ca_dir`、`tls_skip_verify`），您也可以自行下载；`check`、`collect` 和 `serve` 从不获取任何内容。相对路径相对于该配置文件自身所在目录进行解析，配置的路径不存在会被视为错误。它的作用、如何获取这些文件，以及哪些产品会被匹配：[CVE 关联](/zh-cn/cve/)。
 
 ### `targets`
 
@@ -84,7 +92,7 @@ targets:
 `options` 是一个因产品而异的自由格式映射——大多数探针完全忽略它。[`p4d`/`p4p`](/zh-cn/configuration/products/p4d/)
 是最先真正读取它的探针：`options.binary` 会覆盖它们所调用的 `p4` CLI 的路径。[`freeradius`](/zh-cn/configuration/products/freeradius/) 读取 `options.container`（以及 `options.container_runtime`），用于找到运行在 Docker 或 Podman 中的 FreeRADIUS。
 
-每个内置的 96 个探针的确切端点、身份验证要求和记录的字段，请参阅侧边栏中的**产品配置**（或[支持的产品](/zh-cn/products/)表格）——上面的 `path`、`credentials` 和 `options` 只是通用结构；每个产品自己的页面会说明它实际需要什么。
+每个内置的 123 个探针的确切端点、身份验证要求和记录的字段，请参阅侧边栏中的**产品配置**（或[支持的产品](/zh-cn/products/)表格）——上面的 `path`、`credentials` 和 `options` 只是通用结构；每个产品自己的页面会说明它实际需要什么。
 
 ### TLS（`tls:`）
 

@@ -27,10 +27,17 @@ enodia.
   же самое: в запросе только публичное имя репозитория. Если задан
   `GITHUB_TOKEN`, он отправляется только в GitHub, чтобы поднять лимит
   запросов.
+- **Издатели баз CVE** — только когда вы запускаете `enodia cve update`,
+  и только те, которые называют ваши записи `cve.*.path`: nvd.nist.gov,
+  bdu.fstec.ru, security-tracker.debian.org, издатели OVAL (Canonical,
+  Red Hat, AlmaLinux, Oracle, Astra Linux, РЕД ОС),
+  secdb.alpinelinux.org, mariadb.com, api.atlassian.com,
+  www.postgresql.org и nginx.org. Это обычные скачивания публичных
+  файлов; единственное, что они сообщают о вашем парке, — для каких
+  релизов ОС и мажорных версий PostgreSQL вы скачиваете данные.
 
-Больше никуда. Базы CVE (NVD, БДУ ФСТЭК, Debian, OVAL, Alpine, MariaDB)
-— это файлы, которые вы скачиваете сами; enodia только читает их с
-диска — см. [Сопоставление с CVE](/ru/cve/).
+Больше никуда. Все остальные команды только читают файлы CVE с диска —
+см. [Сопоставление с CVE](/ru/cve/).
 
 HTML-отчёт загружает Bootstrap с CDN (jsDelivr / cdnjs) **в браузере,
 который его открывает**, если задано `html.assets: cdn`; по умолчанию

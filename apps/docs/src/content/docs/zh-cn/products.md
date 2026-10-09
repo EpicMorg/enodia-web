@@ -1,9 +1,9 @@
 ---
 title: 支持的产品
-description: 全部 96 个内置探针，直接取自 `enodia products`。
+description: 全部 123 个内置探针，直接取自 `enodia products`。
 ---
 
-共 96 个产品，每个都是编译进来的探针（请参阅[核心概念](/zh-cn/concepts/#探针是编译进来的而不是-yaml-dsl)）。请将**产品**列中的值用作目标的
+共 123 个产品，每个都是编译进来的探针（请参阅[核心概念](/zh-cn/concepts/#探针是编译进来的而不是-yaml-dsl)）。请将**产品**列中的值用作目标的
 `product:`。**解析器**是生命周期数据的标识符——`endoflife:<slug>` 表示[endoflife.date](https://endoflife.date/)（真实的 EOL/支持日期），`github:<owner/repo>` 表示
 GitHub Releases（仅最新版本，没有 eol/support/lts——GitHub 对生命周期策略没有任何主张），
 `github-tags:<owner/repo>` 表示完全没有 Releases、只有 git 标签的仓库（与 `github:` 一样只有“仅最新版本”，用于产品自身的标签甚至不是普通点分版本号的情况——请参阅[pgAdmin](/zh-cn/configuration/products/pgadmin/)），`github-tag-branches:<owner/repo>` 表示同时维护多个发布分支的项目（每个 major.minor 一个生命周期周期，各自有其最新标签——请参阅[FreeRADIUS](/zh-cn/configuration/products/freeradius/)）——而 `—` 表示 enodia 能检测该产品的版本，但尚无生命周期匹配（其补丁/分支维度仍然有效；其生命周期维度保持为 `unknown`）。点击某个产品，可查看其确切的端点、身份验证要求和记录的字段。
@@ -11,81 +11,110 @@ GitHub Releases（仅最新版本，没有 eol/support/lts——GitHub 对生命
 两种基于 GitHub 的解析器类型默认都不进行身份验证（上限为每小时 60 个请求，与同一源 IP 上的其他任何请求共享）——
 设置 **`GITHUB_TOKEN`** 环境变量（与 `gh`、goreleaser 以及 GitHub Actions 本身所用的约定相同）可将上限提高到每小时 5000 个；为空或未设置时只是回退到未验证的上限，无论哪种情况都不会出错。
 
-**CVE** 列出配置了 [`cve:` 块](/zh-cn/cve/)时该产品所匹配的数据库——`NVD`、`BDU`（BDU FSTEC），或 `—` 表示不进行 CVE 查询。有十个 Linux 发行版改为按已安装的软件包而不是按发行版版本进行匹配——`（软件包）`之前写明来源：Debian Security Tracker、厂商的 OVAL 或 Alpine 的 secdb（请参阅[软件包级 CVE](/zh-cn/cve/#linux-发行版的软件包级-cve)）（每种未匹配情况的原因请参阅[CVE 关联](/zh-cn/cve/#哪些产品会被匹配)页面）。该列来自 enodia 自己的产品表，而不是来自
+从 2.2 开始，GitHub 解析器还会按项目实际的拼写方式读取发布标签：去掉开头的 `<repo>-`/`<repo>_`（`weblate-2026.10` 读作 `2026.10`），使用下划线拼写的（`Release_1_18_0`）和带 `release-` 前缀的（`release-5.2.4`）标签会被解析为版本，而标签名表明是预发布版本的（`5.3.0.M2`、`2026.10.0b7`、`-rc1`、`-beta.1`）会被跳过，即使 GitHub 没有将其标记为预发布版本。
+
+**CVE** 列出配置了 [`cve:` 块](/zh-cn/cve/)时该产品所匹配的数据库——`NVD`、`BDU`（BDU FSTEC），或 `—` 表示不进行 CVE 查询；`MariaDB 数据`、`Atlassian 数据`、`PostgreSQL 数据`和 `nginx 数据`表示还会加入该厂商自己的安全数据（请参阅[厂商自己的数据](/zh-cn/cve/#厂商自己的数据)）。有十个 Linux 发行版改为按已安装的软件包而不是按发行版版本进行匹配——`（软件包）`之前写明来源：Debian Security Tracker、厂商的 OVAL 或 Alpine 的 secdb（请参阅[软件包级 CVE](/zh-cn/cve/#linux-发行版的软件包级-cve)）（每种未匹配情况的原因请参阅[CVE 关联](/zh-cn/cve/#哪些产品会被匹配)页面）。该列来自 enodia 自己的产品表，而不是来自
 `enodia products`。
 
 本表由针对当前构建的二进制文件运行 `enodia products` 生成——如果已经过了一段时间，在将本页视为金科玉律之前，请重新运行该命令检查是否有出入。**`sonarqube`** 这一行显示的是其静态回退值（`endoflife:sonarqube-server`，即在尚未探测任何内容时 `enodia products` 打印的值）——真实的观测结果会根据版本字符串本身，为每个实例在该值与 `endoflife:sonarqube-community` 之间进行选择；请参阅[它自己的页面](/zh-cn/configuration/products/sonarqube/)。
 
 ## 应用程序与基础设施服务
 
-65 个产品，通过 HTTP(S) 或原始线路协议（MySQL、Redis、MongoDB 等）进行探测。其中三个是例外：[`p4d`](/zh-cn/configuration/products/p4d/) 和 [`p4p`](/zh-cn/configuration/products/p4p/) 使用的都不是 enodia 实现的任何线路协议——它们都会调用运维人员自己的 `p4` CLI，该 CLI 需要与 enodia 本身安装在一起，而不仅仅是可通过网络访问——而 [`freeradius`](/zh-cn/configuration/products/freeradius/) 通过 SSH 读取，因为 RADIUS 没有任何报告版本的方式。
+92 个产品，通过 HTTP(S) 或原始线路协议（MySQL、Redis、MongoDB、Cassandra 等）进行探测。其中五个是例外：[`p4d`](/zh-cn/configuration/products/p4d/) 和 [`p4p`](/zh-cn/configuration/products/p4p/) 使用的都不是 enodia 实现的任何线路协议——它们都会调用运维人员自己的 `p4` CLI，该 CLI 需要与 enodia 本身安装在一起，而不仅仅是可通过网络访问——而 [`freeradius`](/zh-cn/configuration/products/freeradius/)、[`kafka`](/zh-cn/configuration/products/kafka/) 和 [`minio`](/zh-cn/configuration/products/minio/) 通过 SSH 从服务器自己的二进制文件或 jar 中读取——RADIUS 没有任何报告版本的方式，Kafka 的版本只在 JMX 中，而 MinIO 的版本只能通过管理员密钥获取。
 
 | 产品 | 简介 | 解析器 | CVE |
 |---|---|---|---|
 | [`apache`](/zh-cn/configuration/products/apache/) | Apache HTTP Server | `endoflife:apache-http-server` | NVD, BDU |
 | [`artifactory`](/zh-cn/configuration/products/artifactory/) | JFrog Artifactory | `endoflife:artifactory` | NVD, BDU |
-| [`bamboo`](/zh-cn/configuration/products/bamboo/) | Atlassian Bamboo（Data Center） | `endoflife:bamboo` | NVD, BDU |
-| [`bitbucket`](/zh-cn/configuration/products/bitbucket/) | Atlassian Bitbucket（Data Center） | `endoflife:bitbucket` | NVD, BDU |
+| [`bamboo`](/zh-cn/configuration/products/bamboo/) | Atlassian Bamboo（Data Center） | `endoflife:bamboo` | NVD, BDU, Atlassian 数据 |
+| [`bitbucket`](/zh-cn/configuration/products/bitbucket/) | Atlassian Bitbucket（Data Center） | `endoflife:bitbucket` | NVD, BDU, Atlassian 数据 |
 | [`bitwarden`](/zh-cn/configuration/products/bitwarden/) | Bitwarden（自托管） | `github:bitwarden/server` | NVD |
+| [`cassandra`](/zh-cn/configuration/products/cassandra/) | Apache Cassandra（CQL 原生协议） | `endoflife:apache-cassandra` | NVD, BDU |
 | [`clickhouse`](/zh-cn/configuration/products/clickhouse/) | ClickHouse | `endoflife:clickhouse` | NVD, BDU |
-| [`confluence`](/zh-cn/configuration/products/confluence/) | Atlassian Confluence（Data Center） | `endoflife:confluence` | NVD, BDU |
-| [`dell-idrac`](/zh-cn/configuration/products/dell-idrac/) | Dell iDRAC | — | — |
+| [`code-server`](/zh-cn/configuration/products/code-server/) | code-server（浏览器中的 VS Code） | `github:coder/code-server` | NVD |
+| [`confluence`](/zh-cn/configuration/products/confluence/) | Atlassian Confluence（Data Center） | `endoflife:confluence` | NVD, BDU, Atlassian 数据 |
+| [`dell-idrac`](/zh-cn/configuration/products/dell-idrac/) | Dell iDRAC | — | NVD, BDU |
+| [`domainmod`](/zh-cn/configuration/products/domainmod/) | DomainMOD | `github:domainmod/domainmod` | NVD |
+| [`doxygen`](/zh-cn/configuration/products/doxygen/) | 由 Doxygen 生成的文档站点 | `github:doxygen/doxygen` | NVD |
 | [`elasticsearch`](/zh-cn/configuration/products/elasticsearch/) | Elasticsearch | `endoflife:elasticsearch` | NVD, BDU |
 | [`esxi`](/zh-cn/configuration/products/esxi/) | VMware ESXi | `endoflife:esxi` | — |
+| [`euro-office`](/zh-cn/configuration/products/euro-office/) | Euro-Office Docs（ONLYOFFICE 分支） | `github:Euro-Office/DocumentServer` | — |
 | [`forgejo`](/zh-cn/configuration/products/forgejo/) | Forgejo | `endoflife:forgejo` | NVD, BDU |
 | [`fortios`](/zh-cn/configuration/products/fortios/) | Fortinet FortiOS（FortiGate） | `endoflife:fortios` | NVD, BDU |
 | [`freeradius`](/zh-cn/configuration/products/freeradius/) | FreeRADIUS | `github-tag-branches:FreeRADIUS/freeradius-server` | NVD, BDU |
 | [`generic`](/zh-cn/configuration/products/generic/) | 用于 enodia 不认识的系统的手写解析器——请参阅[配置](/zh-cn/configuration/#通用探针) | — | — |
+| [`ghost`](/zh-cn/configuration/products/ghost/) | Ghost | `github:TryGhost/Ghost` | NVD, BDU |
 | [`gitlab`](/zh-cn/configuration/products/gitlab/) | GitLab | `endoflife:gitlab` | NVD, BDU |
 | [`grafana`](/zh-cn/configuration/products/grafana/) | Grafana | `endoflife:grafana` | NVD, BDU |
 | [`graylog`](/zh-cn/configuration/products/graylog/) | Graylog | `endoflife:graylog` | NVD, BDU |
+| [`greenbone`](/zh-cn/configuration/products/greenbone/) | Greenbone / OpenVAS（gsad Web 守护进程） | `github:greenbone/gsad` | NVD |
 | [`haproxy`](/zh-cn/configuration/products/haproxy/) | HAProxy | `endoflife:haproxy` | NVD, BDU |
 | [`harbor`](/zh-cn/configuration/products/harbor/) | Harbor（容器镜像仓库） | `endoflife:harbor` | NVD, BDU |
-| [`hp-ilo4`](/zh-cn/configuration/products/hp-ilo4/) | HP iLO 4 | — | — |
+| [`home-assistant`](/zh-cn/configuration/products/home-assistant/) | Home Assistant（REST API，长期令牌） | `github:home-assistant/core` | NVD |
+| [`hp-ilo4`](/zh-cn/configuration/products/hp-ilo4/) | HP iLO 4 | — | NVD, BDU |
 | [`jaeger`](/zh-cn/configuration/products/jaeger/) | Jaeger | `endoflife:jaeger` | NVD |
 | [`jellyfin`](/zh-cn/configuration/products/jellyfin/) | Jellyfin | `github:jellyfin/jellyfin` | NVD |
 | [`jenkins`](/zh-cn/configuration/products/jenkins/) | Jenkins | `endoflife:jenkins` | NVD, BDU |
-| [`jira`](/zh-cn/configuration/products/jira/) | Atlassian Jira（Data Center） | `endoflife:jira-software` | NVD, BDU |
+| [`jira`](/zh-cn/configuration/products/jira/) | Atlassian Jira（Data Center） | `endoflife:jira-software` | NVD, BDU, Atlassian 数据 |
+| [`kafka`](/zh-cn/configuration/products/kafka/) | Apache Kafka 代理（通过 SSH） | `endoflife:apache-kafka` | NVD, BDU |
 | [`keycloak`](/zh-cn/configuration/products/keycloak/) | Keycloak | `endoflife:keycloak` | NVD, BDU |
 | [`kibana`](/zh-cn/configuration/products/kibana/) | Kibana | `endoflife:kibana` | NVD, BDU |
 | [`kitsu`](/zh-cn/configuration/products/kitsu/) | Kitsu（CG-Wire / Zou 前端） | `github:cgwire/kitsu` | — |
+| [`libretranslate`](/zh-cn/configuration/products/libretranslate/) | LibreTranslate | `github:LibreTranslate/LibreTranslate` | — |
 | [`logstash`](/zh-cn/configuration/products/logstash/) | Logstash | `endoflife:logstash` | NVD, BDU |
-| [`mariadb`](/zh-cn/configuration/products/mariadb/) | MariaDB Server | `endoflife:mariadb` | NVD, BDU, MariaDB 表 |
+| [`mariadb`](/zh-cn/configuration/products/mariadb/) | MariaDB Server | `endoflife:mariadb` | NVD, BDU, MariaDB 数据 |
 | [`mattermost`](/zh-cn/configuration/products/mattermost/) | Mattermost | `endoflife:mattermost` | NVD, BDU |
+| [`memcached`](/zh-cn/configuration/products/memcached/) | memcached | `endoflife:memcached` | NVD, BDU |
+| [`minio`](/zh-cn/configuration/products/minio/) | MinIO（服务器二进制文件，通过 SSH） | `github:minio/minio` | NVD, BDU |
 | [`mongodb`](/zh-cn/configuration/products/mongodb/) | MongoDB | `endoflife:mongodb` | NVD, BDU |
 | [`mysql`](/zh-cn/configuration/products/mysql/) | MySQL Server | `endoflife:mysql` | NVD, BDU |
+| [`netbox`](/zh-cn/configuration/products/netbox/) | NetBox | `github:netbox-community/netbox` | NVD |
+| [`netdata`](/zh-cn/configuration/products/netdata/) | Netdata 代理 | `github:netdata/netdata` | NVD, BDU |
 | [`nextcloud`](/zh-cn/configuration/products/nextcloud/) | Nextcloud | `endoflife:nextcloud` | NVD, BDU |
 | [`nexus`](/zh-cn/configuration/products/nexus/) | Sonatype Nexus Repository | `endoflife:nexus` | NVD, BDU |
-| [`nginx`](/zh-cn/configuration/products/nginx/) | nginx | `endoflife:nginx` | NVD, BDU |
+| [`nginx`](/zh-cn/configuration/products/nginx/) | nginx | `endoflife:nginx` | NVD, BDU, nginx 数据 |
 | [`oauth2-proxy`](/zh-cn/configuration/products/oauth2-proxy/) | oauth2-proxy | `github:oauth2-proxy/oauth2-proxy` | NVD, BDU |
+| [`onlyoffice`](/zh-cn/configuration/products/onlyoffice/) | ONLYOFFICE Docs（Document Server） | `github:ONLYOFFICE/DocumentServer` | NVD, BDU |
+| [`openhab`](/zh-cn/configuration/products/openhab/) | openHAB | `github:openhab/openhab-distro` | NVD |
 | [`opensearch`](/zh-cn/configuration/products/opensearch/) | OpenSearch | `endoflife:opensearch` | NVD, BDU |
 | [`owncast`](/zh-cn/configuration/products/owncast/) | Owncast | `github:owncast/owncast` | NVD |
 | [`p4d`](/zh-cn/configuration/products/p4d/) | Perforce Helix Core Server（p4d） | — | NVD, BDU |
 | [`p4p`](/zh-cn/configuration/products/p4p/) | Perforce Proxy（p4p） | — | — |
 | [`perforce-swarm`](/zh-cn/configuration/products/perforce-swarm/) | Perforce Helix Swarm | — | — |
 | [`pgadmin`](/zh-cn/configuration/products/pgadmin/) | pgAdmin | `github-tags:pgadmin-org/pgadmin4` | NVD, BDU |
+| [`phpipam`](/zh-cn/configuration/products/phpipam/) | phpIPAM | `github:phpipam/phpipam` | NVD, BDU |
 | [`phpmyadmin`](/zh-cn/configuration/products/phpmyadmin/) | phpMyAdmin | `endoflife:phpmyadmin` | NVD, BDU |
 | [`portainer`](/zh-cn/configuration/products/portainer/) | Portainer | `github:portainer/portainer` | NVD, BDU |
 | [`postgres_exporter`](/zh-cn/configuration/products/postgres_exporter/) | prometheus-community/postgres_exporter | `github:prometheus-community/postgres_exporter` | — |
-| [`postgresql`](/zh-cn/configuration/products/postgresql/) | PostgreSQL | `endoflife:postgresql` | NVD, BDU |
+| [`postgresql`](/zh-cn/configuration/products/postgresql/) | PostgreSQL | `endoflife:postgresql` | NVD, BDU, PostgreSQL 数据 |
+| [`posthog`](/zh-cn/configuration/products/posthog/) | PostHog（自托管；版本为 git 提交） | — | — |
 | [`proftpd`](/zh-cn/configuration/products/proftpd/) | ProFTPD | `endoflife:proftpd` | NVD, BDU |
 | [`proxmox`](/zh-cn/configuration/products/proxmox/) | Proxmox VE | `endoflife:proxmox-ve` | NVD, BDU |
+| [`qbittorrent`](/zh-cn/configuration/products/qbittorrent/) | qBittorrent（Web UI API） | `github:qbittorrent/qBittorrent` | NVD, BDU |
+| [`rabbitmq`](/zh-cn/configuration/products/rabbitmq/) | RabbitMQ（管理插件 API） | `endoflife:rabbitmq` | NVD, BDU |
 | [`redis`](/zh-cn/configuration/products/redis/) | Redis | `endoflife:redis` | NVD, BDU |
 | [`routeros`](/zh-cn/configuration/products/routeros/) | MikroTik RouterOS | `endoflife:routeros` | NVD, BDU |
+| [`sentry`](/zh-cn/configuration/products/sentry/) | Sentry（自托管） | `github:getsentry/self-hosted` | NVD |
 | [`sonarqube`](/zh-cn/configuration/products/sonarqube/) | SonarQube（Server 或 Community Build） | `endoflife:sonarqube-server`\* | NVD, BDU |
+| [`splunk`](/zh-cn/configuration/products/splunk/) | Splunk Enterprise（splunkd 管理 API） | `endoflife:splunk` | NVD, BDU |
 | [`ssh`](/zh-cn/configuration/products/ssh/) | SSH 横幅（任意实现） | — | NVD, BDU |
 | [`supermicro-bmc`](/zh-cn/configuration/products/supermicro-bmc/) | Supermicro BMC | — | — |
-| [`synology-dsm`](/zh-cn/configuration/products/synology-dsm/) | Synology DSM | — | — |
+| [`synology-dsm`](/zh-cn/configuration/products/synology-dsm/) | Synology DSM | — | NVD, BDU |
 | [`teamcity`](/zh-cn/configuration/products/teamcity/) | JetBrains TeamCity | — | NVD, BDU |
 | [`testrail`](/zh-cn/configuration/products/testrail/) | TestRail | — | NVD |
+| [`torrserver`](/zh-cn/configuration/products/torrserver/) | TorrServer | `github:YouROK/TorrServer` | — |
 | [`traefik`](/zh-cn/configuration/products/traefik/) | Traefik | `endoflife:traefik` | NVD, BDU |
 | [`truenas`](/zh-cn/configuration/products/truenas/) | TrueNAS | `endoflife:truenas` | — |
+| [`uptime-kuma`](/zh-cn/configuration/products/uptime-kuma/) | Uptime Kuma（socket.io 登录） | `github:louislam/uptime-kuma` | NVD |
 | [`vault`](/zh-cn/configuration/products/vault/) | HashiCorp Vault | `endoflife:hashicorp-vault` | NVD, BDU |
 | [`vaultwarden`](/zh-cn/configuration/products/vaultwarden/) | Vaultwarden | `github:dani-garcia/vaultwarden` | NVD, BDU |
 | [`vcenter`](/zh-cn/configuration/products/vcenter/) | VMware vCenter Server | `endoflife:vcenter` | — |
+| [`wapt`](/zh-cn/configuration/products/wapt/) | WAPT 服务器（Tranquil IT） | — | NVD |
+| [`weblate`](/zh-cn/configuration/products/weblate/) | Weblate | `github:WeblateOrg/weblate` | NVD |
 | [`wordpress`](/zh-cn/configuration/products/wordpress/) | WordPress | `endoflife:wordpress` | NVD, BDU |
 | [`youtrack`](/zh-cn/configuration/products/youtrack/) | YouTrack | `endoflife:youtrack` | NVD, BDU |
 | [`zabbix`](/zh-cn/configuration/products/zabbix/) | Zabbix | `endoflife:zabbix` | NVD, BDU |
+| [`zookeeper`](/zh-cn/configuration/products/zookeeper/) | Apache ZooKeeper | `endoflife:zookeeper` | NVD, BDU |
 | [`zou`](/zh-cn/configuration/products/zou/) | Zou（CG-Wire API 后端） | — | — |
 
 ## 操作系统
@@ -100,7 +129,7 @@ GitHub Releases（仅最新版本，没有 eol/support/lts——GitHub 对生命
 | [`astra-linux`](/zh-cn/configuration/products/astra-linux/) | Astra Linux | — | OVAL（软件包） |
 | [`centos`](/zh-cn/configuration/products/centos/) | CentOS Linux（旧版，已 EOL） | `endoflife:centos` | — |
 | [`centos-stream`](/zh-cn/configuration/products/centos-stream/) | CentOS Stream | `endoflife:centos-stream` | — |
-| [`debian`](/zh-cn/configuration/products/debian/) | Debian | `endoflife:debian` | Debian 跟踪器（软件包） |
+| [`debian`](/zh-cn/configuration/products/debian/) | Debian | `endoflife:debian` | Debian tracker（软件包） |
 | [`eurolinux`](/zh-cn/configuration/products/eurolinux/) | EuroLinux | `endoflife:eurolinux` | — |
 | [`fedora`](/zh-cn/configuration/products/fedora/) | Fedora Linux | `endoflife:fedora` | — |
 | [`freebsd`](/zh-cn/configuration/products/freebsd/) | FreeBSD | `endoflife:freebsd` | — |
@@ -116,7 +145,7 @@ GitHub Releases（仅最新版本，没有 eol/support/lts——GitHub 对生命
 | [`opnsense`](/zh-cn/configuration/products/opnsense/) | OPNsense | `endoflife:opnsense` | NVD, BDU |
 | [`oracle-linux`](/zh-cn/configuration/products/oracle-linux/) | Oracle Linux | `endoflife:oracle-linux` | OVAL（软件包） |
 | [`oracle-solaris`](/zh-cn/configuration/products/oracle-solaris/) | Oracle Solaris | `endoflife:oracle-solaris` | — |
-| [`pfsense`](/zh-cn/configuration/products/pfsense/) | pfSense Community Edition | — | — |
+| [`pfsense`](/zh-cn/configuration/products/pfsense/) | pfSense Community Edition | — | NVD, BDU |
 | [`photon`](/zh-cn/configuration/products/photon/) | VMware Photon OS | `endoflife:photon` | — |
 | [`postmarketos`](/zh-cn/configuration/products/postmarketos/) | postmarketOS | `endoflife:postmarketos` | — |
 | [`redos`](/zh-cn/configuration/products/redos/) | RED OS | — | OVAL（软件包） |

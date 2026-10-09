@@ -34,7 +34,7 @@ credentials:
 
 ## CVE 关联
 
-配置了 [`cve:` 块](/zh-cn/cve/)时，会与 NVD 和 BDU FSTEC 进行匹配。
+配置了 [`cve:` 块](/zh-cn/cve/)时，会与 NVD 和 BDU FSTEC 进行匹配。从 2.2 开始，`cve.postgresql.path` 会加入该项目自己的安全页面，其中按大版本列出修复：对于已保存页面中列出的大版本，其结论会取代 BDU 不区分分支的范围——否则这些范围会把每个较旧大版本的最新版本都标记出来。参见[厂商自己的数据 → PostgreSQL](/zh-cn/cve/#postgresql)。
 
 ## 生命周期解析器
 

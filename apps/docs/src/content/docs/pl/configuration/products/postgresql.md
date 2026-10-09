@@ -43,7 +43,12 @@ konfiguracji pozwalającego jawnie wskazać inną nazwę bazy danych.
 
 ## Korelacja CVE
 
-Dopasowywany do NVD i BDU FSTEC, gdy skonfigurowano [blok `cve:`](/pl/cve/).
+Dopasowywany do NVD i BDU FSTEC, gdy skonfigurowano [blok `cve:`](/pl/cve/). Od wersji 2.2 `cve.postgresql.path`
+dodaje własne strony bezpieczeństwa projektu, które podają poprawkę dla
+każdej wersji głównej: dla wersji głównej wymienionej na zapisanych
+stronach ich werdykt zastępuje zakresy BDU bez podziału na gałęzie,
+które w przeciwnym razie oznaczają najnowsze wydanie każdej starszej
+wersji głównej. Zobacz [Własne dane dostawców → PostgreSQL](/pl/cve/#postgresql).
 
 ## Resolver cyklu życia
 

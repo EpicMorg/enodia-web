@@ -30,7 +30,7 @@ Netgate 的商业版 **pfSense Plus** 是另一个产品，有自己基于日历
 
 ## CVE 关联
 
-尚未进行匹配——pfSense 是 2.1 新增的，上游将它的 CVE 映射留给之后专门的一轮工作。参见 [CVE 关联](/zh-cn/cve/#哪些产品会被匹配)。
+配置了 [`cve:` 块](/zh-cn/cve/)时，会与 NVD 和 BDU FSTEC 进行匹配。自 2.2 起。探针只报告 Community Edition，因此 NVD 中 pfSense Plus 的范围（`sw_edition: plus`）永远不适用——参见[区分版本类型的匹配](/zh-cn/cve/#区分版本类型的匹配)。
 
 ## 生命周期解析器
 

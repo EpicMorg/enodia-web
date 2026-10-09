@@ -27,9 +27,16 @@ enodia.
   само, як і вище: у запиті є лише публічна назва репозиторію. Якщо Ви
   встановили `GITHUB_TOKEN`, він надсилається тільки до GitHub, щоб
   підвищити ліміт запитів.
+- **Видавці баз CVE** — лише коли Ви запускаєте `enodia cve update`, і
+  лише ті, яких називають Ваші записи `cve.*.path`: nvd.nist.gov,
+  bdu.fstec.ru, security-tracker.debian.org, видавці OVAL (Canonical,
+  Red Hat, AlmaLinux, Oracle, Astra Linux, RED OS),
+  secdb.alpinelinux.org, mariadb.com, api.atlassian.com,
+  www.postgresql.org і nginx.org. Запити — це звичайні завантаження
+  публічних файлів; єдине, що вони кажуть про Ваш парк, — для яких
+  релізів ОС і мажорних версій PostgreSQL Ви завантажуєте дані.
 
-Це все. Бази CVE (NVD, БДУ ФСТЕК, Debian, OVAL, Alpine, MariaDB) — це
-файли, які Ви завантажуєте самі; enodia лише читає їх із диска — див.
+Це все. Усі інші команди лише читають файли CVE з диска — див.
 [Зіставлення з CVE](/uk/cve/).
 
 HTML-звіт завантажує Bootstrap із CDN (jsDelivr / cdnjs) **у браузері,

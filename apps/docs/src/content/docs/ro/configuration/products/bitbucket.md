@@ -43,7 +43,12 @@ care folosesc aceeași convenție a manifestului.
 
 ## Corelare CVE
 
-Se corelează cu NVD și BDU FSTEC atunci când este configurat un [bloc `cve:`](/ro/cve/).
+Se corelează cu NVD și BDU FSTEC atunci când este configurat un [bloc `cve:`](/ro/cve/). Începând cu 2.2, `cve.atlassian.path` adaugă
+datele proprii per versiune ale Atlassian — inclusiv CVE-urile
+dependențelor terțe, pe care intrările Atlassian din NVD nu le enumeră —
+iar, pentru o versiune pe care o enumeră, verdictul său are prioritate în
+cadrul propriei ramuri a versiunii. Consultați
+[Datele proprii ale producătorilor → Atlassian](/ro/cve/#atlassian).
 
 ## Rezolvatorul ciclului de viață
 

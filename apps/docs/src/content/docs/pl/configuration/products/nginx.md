@@ -35,7 +35,11 @@ Tylko `version` — ta sonda nie zapisuje żadnych pól `extra`.
 
 ## Korelacja CVE
 
-Dopasowywany do NVD i BDU FSTEC, gdy skonfigurowano [blok `cve:`](/pl/cve/).
+Dopasowywany do NVD i BDU FSTEC, gdy skonfigurowano [blok `cve:`](/pl/cve/). Od wersji 2.2 `cve.nginx.path` dodaje
+własne biuletyny bezpieczeństwa nginx, które podają pierwsze naprawione
+wydanie dla każdej gałęzi: stabilne wydanie z poprawką (1.30.5) nie jest
+już oznaczane przez zakres zapisany do poprawki w gałęzi mainline.
+Zobacz [Własne dane dostawców → nginx](/pl/cve/#nginx).
 
 ## Resolver cyklu życia
 

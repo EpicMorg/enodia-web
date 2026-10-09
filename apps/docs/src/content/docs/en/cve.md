@@ -1,6 +1,6 @@
 ---
 title: CVE correlation
-description: Matching every probed version against БДУ ФСТЭК and NIST NVD, and Linux hosts' installed packages against their vendors' own security data — from files you download yourself.
+description: Matching every probed version against БДУ ФСТЭК, NIST NVD and vendors' own security data, and Linux hosts' installed packages against their distributions' — from local files that enodia cve update or you download.
 ---
 
 Since 2.0, enodia can tell you which known vulnerabilities affect the
@@ -15,8 +15,9 @@ axes, not instead of them. It matches against two public databases:
 Either works alone; with both configured, their findings are merged per
 CVE.
 
-MariaDB is also matched against its own table of fixed CVEs (see
-[MariaDB: the vendor's own table](#mariadb-the-vendors-own-table)).
+Since 2.2, four vendors' own security data joins them where they
+publish it: MariaDB, Atlassian (Jira, Confluence, Bitbucket, Bamboo),
+PostgreSQL and nginx — see [Vendors' own data](#vendors-own-data).
 
 Since 2.1, ten Linux distributions are also matched **per installed
 package** against their vendors' own security data — the Debian
@@ -26,14 +27,84 @@ Security Tracker, vendor OVAL files and Alpine's secdb (see
 It's all opt-in: a config without a `cve:` block behaves exactly as 1.x
 did, and each source works on its own.
 
-## enodia never downloads the databases itself
+## Downloading the databases
 
-You download the files, you decide when to refresh them, and you point
-enodia at them. enodia has no code path that reaches any of these
-sources on its own — the same closed-network reasoning as the
+enodia matches against local files only. `check`, `collect` and `serve`
+never download anything — the same closed-network reasoning as the
 [two-phase design](/en/concepts/#two-phases-deliberately-separable): the
 machine running `check` doesn't need internet access for CVE matching,
-only a copy of the files.
+only a copy of the files. Since 2.2, one separate command fetches them,
+and only when you run it: `enodia cve update`. Or download them yourself,
+as described per source below — the files are the same either way.
+
+### `enodia cve update`
+
+```bash
+enodia cve update                         # every cve.*.path in the active config
+enodia cve update --from inventory.jsonl  # also what that inventory's hosts need
+enodia cve update --dry-run               # list what would be fetched, download nothing
+```
+
+Into each configured `cve.*.path` it fetches what that entry reads:
+
+- **БДУ** — `vulxml.zip`. `cve.bdu.path` has to be a `.zip` here; the
+  `.xml` and `.tar.gz` forms the lookup also accepts are your own
+  repackaging, which `update` doesn't produce.
+- **NVD** — this year's file, last year's, and any year not on disk yet;
+  `--all-years` refreshes every year (NVD rebuilds all yearly files
+  daily). `cve.nvd.path` has to be a directory.
+- **Debian** — the tracker's `.json`.
+- **OVAL, Alpine secdb, PostgreSQL's per-major pages** — one file per
+  release, so the releases come from three places: files already in the
+  directory, the inventories given with `--from` (whatever releases its
+  hosts run), and `--oval`, `--alpine` and `--postgresql`. `cve.oval.path`
+  and `cve.alpine.path` have to be directories; a `cve.postgresql.path`
+  that is a file gets the main page only.
+- **MariaDB, Atlassian, nginx** and PostgreSQL's main page — one file
+  each.
+
+| Flag | Fetches |
+|---|---|
+| `--from <inventory>` | the OVAL releases, Alpine branches and PostgreSQL majors that inventory's hosts need (repeatable) |
+| `--oval <release>` | one OVAL release: `ubuntu:<codename>`, `rhel:<N>`, `almalinux:<N>`, `oracle-linux:<N>`, `astra-linux:<X.Y>`, `redos:<X.Y>` (repeatable) |
+| `--alpine <branch>` | one Alpine branch's secdb, e.g. `v3.22` (repeatable) |
+| `--postgresql <major>` | one PostgreSQL major's own security page, e.g. `13` (repeatable) |
+| `--all-years` | every NVD year, not only this one, last one and missing ones |
+| `--dry-run` | list what would be fetched, download nothing |
+
+Each file is requested If-Modified-Since its copy on disk, downloaded
+into `.enodia-update/` beside it, **loaded by the same code the CVE
+lookup uses**, and only then moved over the old copy — a truncated zip or
+an HTML error page never replaces a working file. An unchanged file
+costs one request (MariaDB, PostgreSQL and Atlassian send no
+Last-Modified, so those are downloaded again and compared). Network
+errors, 429 and 5xx are retried twice. One failure doesn't stop the
+rest; the exit status is `1` if any file failed. Run it from cron — the
+next `check` or `serve` cycle picks the new files up.
+
+TLS is verified against the system's trusted roots, plus what a
+`cve.update` block adds:
+
+```yaml title="enodia.yaml"
+cve:
+  update:
+    ca_file: /etc/enodia/russian-trusted.pem  # added to the system roots: PEM (one or many) or DER
+    ca_dir: /etc/enodia/ca                    # every certificate file in it, likewise
+    tls_skip_verify: false                    # true: verify nothing, for every download
+```
+
+bdu.fstec.ru needs this: its chain ends at the Russian Trusted Root CA,
+which almost no trust store carries, and the server doesn't send its
+intermediate (see [БДУ ФСТЭК](#бду-фстэк) below). Without either, the
+БДУ download fails with `certificate signed by unknown authority` and
+the others still go through. The Root CA and the 2024 Sub CA are
+published at `http://nuc-cdp.digital.gov.ru/cdp/rootca_ssl_rsa2022.crt`
+and `http://nuc-cdp.digital.gov.ru/cdp/subca_ssl_rsa2024.crt`; a file
+with both concatenated works as `ca_file`.
+
+It names the files the same way the manual commands below do
+(`v3.22-main.json`, `13.html`, …), so the two can be mixed. The hosts it
+contacts are listed on the [Privacy](/en/privacy/) page.
 
 ### БДУ ФСТЭК
 
@@ -159,6 +230,40 @@ curl -fsSL -o /var/lib/enodia/cve/mariadb.md \
 
 Checked live on 2026-10-09.
 
+### Atlassian's vulnerability data
+
+One file, for `jira`, `confluence`, `bitbucket` and `bamboo` targets:
+Atlassian's vulnerability transparency export, the JSON this URL
+returns, saved as is (about 2.3 MB, no login):
+
+```bash
+curl -fsSL -o /var/lib/enodia/cve/atlassian.json \
+  https://api.atlassian.com/vuln-transparency/v1/products
+```
+
+### PostgreSQL's security pages
+
+For `postgresql` targets: the project's security page saved as HTML. It
+names only the majors supported today — for an older major, save its own
+page (`/support/security/<major>/`) into the same directory:
+
+```bash
+mkdir -p /var/lib/enodia/cve/postgresql && cd /var/lib/enodia/cve/postgresql
+curl -fsSL -o security.html https://www.postgresql.org/support/security/
+curl -fsSL -o 13.html   https://www.postgresql.org/support/security/13/
+```
+
+### nginx's security advisories
+
+One file, for `nginx` targets: the advisories page saved as HTML:
+
+```bash
+curl -fsSL -o /var/lib/enodia/cve/nginx.html \
+  https://nginx.org/en/security_advisories.html
+```
+
+All three URLs checked live on 2026-10-09.
+
 ## Configuration
 
 A `cve:` block in `enodia.yaml` — not `settings.yaml`, since it changes
@@ -179,6 +284,12 @@ cve:
     path: /var/lib/enodia/cve/alpine
   mariadb:
     path: /var/lib/enodia/cve/mariadb.md
+  atlassian:
+    path: /var/lib/enodia/cve/atlassian.json
+  postgresql:
+    path: /var/lib/enodia/cve/postgresql
+  nginx:
+    path: /var/lib/enodia/cve/nginx.html
 targets:
   - id: gitlab-main
     product: gitlab
@@ -194,6 +305,10 @@ targets:
 | `cve.oval.path` | one OVAL file (`.xml` or `.xml.bz2`), or a directory of them |
 | `cve.alpine.path` | one secdb `.json` file, or a directory of them |
 | `cve.mariadb.path` | MariaDB's `community-server.md`, saved as is |
+| `cve.atlassian.path` | Atlassian's vuln-transparency JSON, saved as is |
+| `cve.postgresql.path` | PostgreSQL's security page as HTML, or a directory of such pages |
+| `cve.nginx.path` | nginx's `security_advisories.html`, saved as is |
+| `cve.update` | TLS options for [`enodia cve update`](#enodia-cve-update) only: `ca_file`, `ca_dir`, `tls_skip_verify` |
 
 Relative paths resolve against the directory of the config file that
 names them, the same as `credentials_file`. The block is read from
@@ -208,8 +323,9 @@ all, `check --from` still works, just without CVEs.
 skip — `check` exits with `stat ...: no such file or directory` rather
 than producing a report that quietly has no CVEs in it. Since 2.1,
 `enodia config validate` checks that every configured path exists too,
-so a typo shows up there first. Whether a file actually parses is still
-only found out when a run loads it.
+so a typo shows up there first (since 2.2, `cve.update.ca_file` and
+`ca_dir` too). Whether a file actually parses is still only found out
+when a run loads it — or when `enodia cve update` downloads it.
 
 :::caution[Windows paths]
 Write a Windows path unquoted, in single quotes, with forward slashes,
@@ -263,7 +379,8 @@ from cron takes effect without restarting the server.
   the fix, with its CVE list folded underneath. It's pure CSS — the
   default offline report still contains no JavaScript at all.
 - **`export --format json`** — every per-source finding in full under
-  each assessment's `cves` array: the source (`bdu`/`nvd`), advisory ID,
+  each assessment's `cves` array: the source (`bdu`, `nvd`, or a
+  vendor's: `mariadb`, `atlassian`, `postgresql`, `nginx`), advisory ID,
   CVE IDs, title, the source's own severity text, the matched product
   name or CPE, the version range, and a parsed CVSS rating. Unlike the
   table and the HTML list, which count one line per CVE, JSON keeps every
@@ -281,10 +398,11 @@ should escalate severity is an open question upstream.
 
 ## Which products are matched
 
-64 of the 96 products: 54 by product name against БДУ and NVD (MariaDB
-also against its own table — see [below](#mariadb-the-vendors-own-table)), each
-vendor/product name checked verbatim against the real full exports, and
-10 Linux distributions per installed package (see the next section).
+91 of the 123 products: 81 by product name against БДУ and NVD (six of
+them also against their vendor's own data — see
+[below](#vendors-own-data)), each vendor/product name checked verbatim
+against the real full exports, and 10 Linux distributions per installed
+package (see the next section).
 See each product's own page under [Product setup](/en/products/) for
 its sources.
 
@@ -300,17 +418,14 @@ Not matched, each for a reason:
   with every CVE ever fixed in that release.
 - **ESXi and vCenter** — the same problem: almost all their entries are
   `7.0` + `update_1`-style literals.
-- **Synology DSM** — bounds like `6.2.4-25556-3` that the strict range
-  parser rejects.
 - **TrueNAS** — too few entries, versioned differently from what the
   probe reports.
 - **No usable data in either source** — Kitsu, Zou, postgres_exporter,
-  Perforce Proxy, Perforce Helix Swarm.
+  Perforce Proxy, Perforce Helix Swarm, Supermicro BMC, LibreTranslate,
+  TorrServer, and Euro-Office (a fork with no entries of its own).
+- **PostHog** — its NVD bounds are git commits, not versions.
 - **`generic`** — a hand-written parser has no product identity to look
   up.
-- **Not mapped yet** — pfSense and the three BMC probes (Supermicro,
-  Dell iDRAC, HP iLO 4), all new in 2.1. Upstream left their CVE mapping
-  for a later, dedicated pass.
 
 ## Package-level CVEs for Linux distributions
 
@@ -370,6 +485,39 @@ no longer sees enterprise-only findings — on real data, GitLab 19.2.2 CE
 sees 4 of NVD's 9, Nextcloud 27.1.3 CE 11 of 23. When the edition is
 unknown (an older server that doesn't report it), every finding is kept.
 
+Since 2.2, a few more products' versions say which line or edition a
+range applies to:
+
+- **Jenkins** — weekly (`2.580`) and LTS (`2.568.3`) releases get the
+  same fix under different numbers, and both databases write a range for
+  each. The version's shape picks the line (two parts weekly, three LTS),
+  so a fixed LTS is no longer flagged by the weekly bound of the same
+  fix.
+- **Splunk** — only Splunk Enterprise ranges apply (splunkd's own
+  `product_type` says which); Splunk Cloud isn't mapped.
+- **pfSense** — the probe reports Community Edition only, so pfSense
+  Plus ranges never apply.
+- **WAPT** — the server's own edition (`community` or `enterprise`) is
+  passed through as is.
+- **Kafka** — a Confluent Platform build (`7.6.1-ccs`) gets no lookup:
+  its own numbering would read as newer than every Apache Kafka bound.
+
+### Dell iDRAC and Synology DSM
+
+**iDRAC**: both databases name each iDRAC generation as its own product,
+and their firmware numbers overlap (iDRAC7 and iDRAC8 both run 2.x, with
+different fixes). The generation is read from the probe's
+`extra.model`, Redfish's own model string: 11G is iDRAC6, 12G iDRAC7,
+13G iDRAC8, 14G–16G iDRAC9, 17G iDRAC10. Without a model, only firmware
+3.x and later is looked up — that can only be iDRAC9.
+
+**Synology DSM**: a release is version, build and Update — Synology
+writes `DSM 7.2.1-69057 Update 6`, NVD and БДУ `7.2.1-69057-6`. Since
+2.2 the probe also records the Update in `extra.update`, and both sides
+are folded into one comparable version. An inventory collected before
+2.2 has no `extra.update` and reads as Update 0: fixed Updates may be
+flagged, none are missed.
+
 ### SSH
 
 The [`ssh`](/en/configuration/products/ssh/) probe covers any SSH
@@ -377,23 +525,39 @@ implementation, so it's matched by banner: `OpenSSH_…` looks up
 OpenSSH, `dropbear_…` looks up Dropbear, and any other SSH stack gets no
 lookup rather than borrowing OpenSSH's CVEs.
 
-## MariaDB: the vendor's own table
+## Vendors' own data
 
-MariaDB maintains five or six release series at once, and БДУ and NVD
-both describe a fix in one series as an open-ended range ("before
-11.4.10") — which then also covers every older series, including ones
-that never had the bug. On real fleet versions this flagged the latest,
-fully patched releases of maintained series (10.11.19, 11.4.13), while
+БДУ and NVD often describe a fix in one branch as an open-ended range
+("before 11.4.10"), which then covers every older branch too — including
+fixed releases and branches that never had the bug. Four vendors publish
+the per-branch truth themselves, and enodia reads it next to БДУ and NVD
+with one rule on top: **where the vendor's data knows a CVE, its verdict
+wins** — a БДУ or NVD finding whose CVEs the vendor covers and doesn't
+flag for this version is dropped. CVEs the vendor doesn't list still
+come from БДУ and NVD.
+
+| Key | Products | Source |
+|---|---|---|
+| `cve.mariadb.path` | `mariadb` | MariaDB's table of fixed CVEs |
+| `cve.atlassian.path` | `jira`, `confluence`, `bitbucket`, `bamboo` | Atlassian's per-release vulnerability data |
+| `cve.postgresql.path` | `postgresql` | PostgreSQL's security pages |
+| `cve.nginx.path` | `nginx` | nginx's security advisories |
+
+Without these keys the products are still matched against БДУ and NVD
+alone — with the overlap problem above.
+
+### MariaDB
+
+MariaDB maintains five or six release series at once. On real fleet
+versions, БДУ's and NVD's ranges flagged the latest, fully patched
+releases of maintained series (10.11.19, 11.4.13), while
 the same two databases missed 9 of the 21 CVEs MariaDB itself lists for
 10.11.8.
 
 `cve.mariadb.path` adds MariaDB's own table of fixed CVEs, which names
-the fixing release **per series**. It's merged with БДУ and NVD, with
-one rule on top: for a CVE MariaDB's table knows, its verdict wins — a
-БДУ or NVD finding whose CVEs the table covers and doesn't flag for this
-version is dropped. CVEs the table doesn't list (newer than your
-downloaded copy, БДУ-only, or without a CVE id) still come from БДУ and
-NVD.
+the fixing release **per series**. CVEs the table doesn't list (newer
+than your downloaded copy, БДУ-only, or without a CVE id) still come
+from БДУ and NVD.
 
 How the table is read:
 
@@ -407,8 +571,45 @@ How the table is read:
   (`FixStatus` says so). This errs toward reporting on purpose, and only
   for ended series.
 
-Without `cve.mariadb.path`, `mariadb` targets are still matched against
-БДУ and NVD alone — with the overlap problem above.
+### Atlassian
+
+Atlassian's export lists every Jira Software, Jira Core, Confluence,
+Bitbucket and Bamboo release (Server and Data Center) with the CVEs it
+is affected by and the release that fixes each — **third-party
+dependency CVEs included**, which NVD's Atlassian entries never list.
+The probe can't tell Server from Data Center, so both lists are read.
+Jira Service Management numbers its releases on its own and isn't
+mapped; release candidates and EAPs are skipped.
+
+A target is judged **within its own major.minor branch**: from an
+affected release to the next one listed as fixing it, or to the
+branch's end when no fix follows. Jira 10.3.26 isn't flagged for a CVE
+Atlassian lists only for 10.1 and 11.3. Since Atlassian lists releases
+one by one, its verdict holds only for a release it lists — a release
+newer than your copy of the file keeps БДУ's and NVD's findings.
+Upstream measured the newest release of each maintained branch with no
+Atlassian findings, while older ones gain many: Jira 10.3.12 went from 4
+CVEs to 119, almost all dependencies fixed in later 10.3 releases.
+
+### PostgreSQL
+
+The security page names, for every CVE, the supported majors it affects
+and the fix in each. Its verdict covers only the majors the saved pages
+name: the main page lists only majors supported today, so for an ended
+major (13, 9.6) save its own page into the same directory — without it,
+that major keeps БДУ's and NVD's findings. A major that had already
+ended before a CVE came out is flagged with no fix when the CVE reaches
+back to the oldest major still supported then, as with MariaDB's ended
+series. `packaging` rows (an installer or RPM build) are tracked but not
+flagged. Upstream measured the current 18/17/16/15/14 releases going
+from up to 55 БДУ findings each to none.
+
+### nginx
+
+Each advisory lists the vulnerable versions and, per branch, the first
+fixed release (`1.31.3+, 1.30.4+`): stable 1.30.5 is no longer flagged by
+a range written up to the mainline fix. Branches that never got the fix
+stay flagged; advisories for nginx/Windows only are skipped.
 
 ## Known limitations
 
@@ -416,7 +617,8 @@ Without `cve.mariadb.path`, `mariadb` targets are still matched against
   separate range per maintenance branch, all sharing one lower bound, so
   a version that is already the fix on its own branch can still fall
   inside a sibling branch's wider range (Confluence 8.3.3 against
-  CVE-2023-22515 is the documented example). NVD's ranges for the same
+  CVE-2023-22515 is the documented example; Synology DSM's per-branch
+  ranges do the same — DSM 7.2.1-69057 Update 8 gets 5 БДУ findings). NVD's ranges for the same
   CVE carry their own lower bounds and don't have this problem. enodia
   deliberately errs toward reporting a finding to double-check rather
   than silently missing a real one.

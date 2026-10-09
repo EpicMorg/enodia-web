@@ -44,9 +44,10 @@ documentación.
 
 ## Correlación de CVE
 
-Todavía no se contrasta: pfSense es nuevo en la 2.1, y upstream ha dejado su correspondencia de CVE para una pasada posterior y
-específica. Consulte
-[Correlación de CVE](/es/cve/#qué-productos-tienen-correspondencia).
+Se contrasta con NVD y BDU FSTEC cuando hay configurado un [bloque `cve:`](/es/cve/). Desde la 2.2. La sonda informa solo de
+Community Edition, así que los rangos de pfSense Plus de NVD
+(`sw_edition: plus`) nunca se aplican; consulte
+[Cotejo según la edición](/es/cve/#cotejo-según-la-edición).
 
 ## Resolvedor del ciclo de vida
 

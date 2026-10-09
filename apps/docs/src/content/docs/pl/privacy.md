@@ -27,9 +27,16 @@ samej enodia.
   Tak samo jak wyżej: w żądaniu jest tylko publiczna nazwa repozytorium.
   Jeśli ustawiono `GITHUB_TOKEN`, jest on wysyłany wyłącznie do GitHuba,
   aby podnieść limit zapytań.
+- **Wydawcy baz CVE** — wyłącznie przy uruchomieniu `enodia cve update`
+  i wyłącznie ci, których wskazują wpisy `cve.*.path`: nvd.nist.gov,
+  bdu.fstec.ru, security-tracker.debian.org, wydawcy OVAL (Canonical,
+  Red Hat, AlmaLinux, Oracle, Astra Linux, RED OS),
+  secdb.alpinelinux.org, mariadb.com, api.atlassian.com,
+  www.postgresql.org i nginx.org. Żądania to zwykłe pobrania publicznych
+  plików; jedyne, co mówią o flocie, to dla których wydań systemów
+  operacyjnych i wersji głównych PostgreSQL pobierane są dane.
 
-To wszystko. Bazy CVE (NVD, BDU FSTEC, Debian, OVAL, Alpine, MariaDB) to
-pliki pobierane samodzielnie; enodia jedynie odczytuje je z dysku —
+To wszystko. Każde inne polecenie jedynie odczytuje pliki CVE z dysku —
 zobacz [Korelacja CVE](/pl/cve/).
 
 Raport HTML ładuje Bootstrap z CDN (jsDelivr / cdnjs) **w przeglądarce,

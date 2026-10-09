@@ -33,12 +33,13 @@ Web API 调用即使失败也返回 `200`，并在响应体中带有 `success: f
 
 ## 记录的字段
 
-仅 `version`——从 `version_string` 的 `"DSM <version> Update
-<n>"` 格式中解析，例如 `"DSM 7.3.2-86009 Update 4"` → `7.3.2-86009`。
+- `version`——从 `version_string` 的 `"DSM <version> Update
+  <n>"` 格式中解析，例如 `"DSM 7.3.2-86009 Update 4"` → `7.3.2-86009`
+- `extra.update`——Update 编号（`4`），自 2.2 起，在字符串中带有该编号时记录；它与 `version` 分开保存，因此漂移和生命周期比较的仍是版本本身
 
 ## CVE 关联
 
-不进行匹配——其范围使用了 `6.2.4-25556-3` 这样的边界，而严格的范围解析器会拒绝它们。参见 [CVE 关联](/zh-cn/cve/#哪些产品会被匹配)。
+配置了 [`cve:` 块](/zh-cn/cve/)时，会与 NVD 和 BDU FSTEC 进行匹配。自 2.2 起。一个 DSM 版本由版本号、构建号和 Update 组成（`7.2.1-69057 Update 6`），而数据库把它的边界写作 `7.2.1-69057-6`；查询时，探针的 `version` 和 `extra.update` 会被合并成一个可比较的版本。2.2 之前收集的清单没有 `extra.update`，会被读作 Update 0——已修复的 Update 可能被标记，但不会漏掉任何一个。BDU 按分支划分的范围在较旧的分支上仍会过度报告（NVD 的不会）——参见 [Dell iDRAC 和 Synology DSM](/zh-cn/cve/#dell-idrac-和-synology-dsm) 和[已知限制](/zh-cn/cve/#已知限制)。
 
 ## 生命周期解析器
 

@@ -33,6 +33,14 @@ cve:                                 # необовʼязково, див. «З�
     path: alpine/
   mariadb:
     path: mariadb.md
+  atlassian:
+    path: atlassian.json
+  postgresql:
+    path: postgresql/
+  nginx:
+    path: nginx.html
+  update:                            # параметри TLS для «enodia cve update»
+    ca_file: russian-trusted.pem
 credentials: {}                      # необовʼязково, див. «Облікові дані»
 targets: []                          # Ваші сервіси
 ```
@@ -60,10 +68,14 @@ targets: []                          # Ваші сервіси
 Необовʼязково. Вказує enodia на вивантаження БДУ ФСТЕК (`cve.bdu.path`),
 JSON-фіди NVD (`cve.nvd.path`) і, для зіставлення за пакетами на хостах
 Linux, Debian Security Tracker (`cve.debian.path`), OVAL-файли вендорів
-(`cve.oval.path`) і secdb Alpine (`cve.alpine.path`), а також власну
-таблицю виправлених CVE від MariaDB (`cve.mariadb.path`) — будь-яке з них,
-кожне працює саме по собі, усі завантажені Вами самостійно; enodia
-ніколи не завантажує їх сама. Відносні шляхи обчислюються відносно
+(`cve.oval.path`) і secdb Alpine (`cve.alpine.path`), а також власні
+дані вендорів: таблицю виправлених CVE від MariaDB (`cve.mariadb.path`),
+дані Atlassian (`cve.atlassian.path`), PostgreSQL (`cve.postgresql.path`)
+і nginx (`cve.nginx.path`) — будь-яке з них, кожне працює саме по собі.
+`enodia cve update` завантажує їх за цими шляхами (її параметри TLS
+задаються в `cve.update`: `ca_file`, `ca_dir`, `tls_skip_verify`), або Ви
+завантажуєте їх самі; `check`, `collect` і `serve` ніколи нічого не
+завантажують. Відносні шляхи обчислюються відносно
 власного каталогу цієї конфігурації, а налаштований шлях, якого не
 існує, є помилкою. Що це робить, як отримати файли та які продукти
 зіставляються: [Зіставлення з CVE](/uk/cve/).
@@ -107,7 +119,7 @@ targets:
 FreeRADIUS, запущений у Docker або Podman.
 
 Точний endpoint, вимоги до автентифікації та записувані поля для кожної
-з 96 вбудованих проб див. у розділі **Налаштування продуктів** на бічній
+зі 123 вбудованих проб див. у розділі **Налаштування продуктів** на бічній
 панелі (або в таблиці [Підтримувані продукти](/uk/products/)) — `path`,
 `credentials` і `options` вище показують загальну форму; на власній
 сторінці кожного продукту сказано, що йому насправді потрібно.

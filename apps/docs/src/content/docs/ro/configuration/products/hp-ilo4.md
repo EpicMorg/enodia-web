@@ -49,9 +49,9 @@ lucru live, așa că încă nu are o sondă, în loc să aibă una ghicită.
 
 ## Corelare CVE
 
-Încă nu se corelează — sondele BMC sunt noi în 2.1, iar în amonte
-maparea lor CVE a fost lăsată pentru o etapă ulterioară, dedicată.
-Consultați [Corelare CVE](/ro/cve/#ce-produse-sunt-potrivite).
+Se corelează cu NVD și BDU FSTEC atunci când este configurat un [bloc `cve:`](/ro/cve/). Începând cu 2.2; versiunea de firmware
+a sondei (`2.82`) se compară ca atare cu intervalele
+`integrated_lights-out_4` ale NVD și cu „HP iLO 4” din BDU.
 
 ## Rezolvatorul ciclului de viață
 
