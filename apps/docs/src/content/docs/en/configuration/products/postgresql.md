@@ -41,7 +41,11 @@ different database name explicitly.
 
 ## CVE correlation
 
-Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured. Since 2.2, `cve.postgresql.path`
+adds the project's own security pages, which name the fix per major:
+for a major the saved pages name, their verdict replaces БДУ's
+branchless ranges, which otherwise flag every older major's latest
+release. See [Vendors' own data → PostgreSQL](/en/cve/#postgresql).
 
 ## Lifecycle resolver
 

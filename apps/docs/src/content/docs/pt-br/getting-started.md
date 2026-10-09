@@ -93,13 +93,16 @@ com seu próprio cronograma — e não mais pelo pipeline de release deste
 projeto, embora o endereço publicado e as tags continuem os mesmos. Ela
 também é publicada em `docker.io/epicmorg/enodia` e no Quay, com as mesmas
 tags — `latest`, a versão major isolada (`2`) e a versão exata sem sufixo de
-build (por exemplo, `2.0.0` — confirmado na prática nos três registries; as
+build (por exemplo, `2.1.1` — confirmado na prática nos três registries; as
 tags de um pipeline anterior tinham o formato `1.0.0-1`, que ainda podem ser
 baixadas, mas não é assim que as novas versões são marcadas daqui em diante).
 Duas mudanças reais que vale conhecer: a imagem agora é **apenas
 `linux/amd64`** (o arm64 foi descartado quando a publicação mudou de lugar)
 e ela roda como **root** em vez de um usuário dedicado, sobre a base própria
-do projeto, `debian:trixie-light`, em vez de `scratch`.
+do projeto, `debian:trixie-light`, em vez de `scratch`. Ela declara
+`/var/lib/enodia/cve` como um volume para os
+[bancos de dados de CVEs](/pt-br/cve/#baixando-os-bancos-de-dados) — monte
+as suas cópias ali, ou deixe que o `enodia cve update` o preencha.
 
 ### Compilar a partir do código-fonte
 

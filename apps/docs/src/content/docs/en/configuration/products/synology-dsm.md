@@ -43,12 +43,23 @@ code, to detect a rejected login.
 
 ## Recorded fields
 
-Only `version` — parsed out of `version_string`'s `"DSM <version> Update
-<n>"` shape, e.g. `"DSM 7.3.2-86009 Update 4"` → `7.3.2-86009`.
+- `version` — parsed out of `version_string`'s `"DSM <version> Update
+  <n>"` shape, e.g. `"DSM 7.3.2-86009 Update 4"` → `7.3.2-86009`
+- `extra.update` — the Update number (`4`), since 2.2, when the string
+  has one; kept apart from `version` so drift and lifecycle still
+  compare the release itself
 
 ## CVE correlation
 
-Not matched — its ranges use bounds like `6.2.4-25556-3`, which the strict range parser rejects. See [CVE correlation](/en/cve/#which-products-are-matched).
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured. Since 2.2. A DSM release is
+version, build and Update (`7.2.1-69057 Update 6`), and the databases
+bound it as `7.2.1-69057-6`; the probe's `version` and `extra.update`
+are folded into one comparable version for the lookup. An inventory
+collected before 2.2 has no `extra.update` and reads as Update 0 — fixed
+Updates may be flagged, none are missed. БДУ's per-branch ranges still
+over-report on older branches (NVD's don't) — see
+[Dell iDRAC and Synology DSM](/en/cve/#dell-idrac-and-synology-dsm) and
+[Known limitations](/en/cve/#known-limitations).
 
 ## Lifecycle resolver
 

@@ -41,7 +41,11 @@ sharing this same manifest convention.
 
 ## CVE correlation
 
-Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured. Since 2.2, `cve.atlassian.path` adds
+Atlassian's own per-release data — including third-party dependency
+CVEs, which NVD's Atlassian entries don't list — and, for a release it
+lists, its verdict wins within the release's own branch. See
+[Vendors' own data → Atlassian](/en/cve/#atlassian).
 
 ## Lifecycle resolver
 

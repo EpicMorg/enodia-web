@@ -7,6 +7,64 @@ description: enodia 各版本的重要变更。
 ——本页是它的镜像，每次发布时与本站其余内容一同保持同步，并在某项变更会影响您实际配置方式的地方，附上指向本文档其他部分的链接。标签遵循 `MAJOR.MINOR.PATCH+BUILD` 格式，不带 `v` 前缀；
 `+BUILD` 是 semver 的构建元数据，仅用于没有功能变化的重新构建，而不是用来规避真正的版本号提升。
 
+## 2.2.0+0 — 2026-10-09
+
+`enodia cve update` 会自行下载 CVE 数据库，厂商自己的安全数据（MariaDB、Atlassian、PostgreSQL、nginx）加入 BDU 和 NVD 的行列，CVE 匹配扩展到 iLO 4、iDRAC 和 Synology DSM，并新增 27 个探针——共计 123 个。每个新的 `cve:` 键都是可选的，2.1 的配置和清单无需修改即可继续使用——唯一的例外是其产品从不读取的类型的凭据，它现在会被视为错误（参见“修复”）。
+
+### 新增
+
+- **[`enodia cve update`](/zh-cn/cve/#enodia-cve-update)** 会下载每个已配置的 `cve.*.path` 所指明的 CVE 数据库——BDU、NVD（今年、去年和缺失的年份；`--all-years` 表示所有年份）、Debian、OVAL 和 Alpine（磁盘上已有的版本、`--from` 清单所需的版本、`--oval`/`--alpine`）、MariaDB、Atlassian、PostgreSQL（`--postgresql` 用于按大版本划分的页面）以及 nginx。使用 If-Modified-Since；下载的文件只有在成功加载后才会替换原文件。TLS 会对照系统根证书以及 `cve.update.ca_file` 和 `cve.update.ca_dir` 进行验证，或者通过 `cve.update.tls_skip_verify` 完全不验证。其他所有命令仍然从不下载任何内容。
+- **27 个新探针：**
+  - [`splunk`](/zh-cn/configuration/products/splunk/)——splunkd 在 8089 端口上的管理 API，使用 Basic 或 Splunk 令牌。
+  - [`code-server`](/zh-cn/configuration/products/code-server/)——从登录页面读取 `codeServerVersion`。
+  - [`phpipam`](/zh-cn/configuration/products/phpipam/)——登录页面的页脚和资源版本。
+  - [`domainmod`](/zh-cn/configuration/products/domainmod/)——其 Web 根目录中的 CHANGELOG。
+  - [`netdata`](/zh-cn/configuration/products/netdata/)——代理的匿名 `/api/v1/info`。
+  - [`libretranslate`](/zh-cn/configuration/products/libretranslate/)——公开的 OpenAPI 文档 `/spec`。
+  - [`torrserver`](/zh-cn/configuration/products/torrserver/)——`/echo`。
+  - [`kafka`](/zh-cn/configuration/products/kafka/)——通过 SSH 从代理（broker）自己的 jar 读取其版本，可选在容器中；Confluent Platform 构建会被报告为 `confluent`，并附带其所包含的 Apache Kafka 版本线。
+  - [`home-assistant`](/zh-cn/configuration/products/home-assistant/)——使用长期访问令牌读取 `/api/config`，`kind: bearer`。
+  - [`openhab`](/zh-cn/configuration/products/openhab/)——匿名的 REST 根路径 `/rest/`。
+  - [`doxygen`](/zh-cn/configuration/products/doxygen/)——根据生成器标记，判断文档站点是由哪个 Doxygen 生成的。
+  - [`qbittorrent`](/zh-cn/configuration/products/qbittorrent/)——表单登录后的 Web UI API，`kind: password`。
+  - [`netbox`](/zh-cn/configuration/products/netbox/)——匿名登录页面的 `data-netbox-version`。
+  - [`greenbone`](/zh-cn/configuration/products/greenbone/)——（别名 `openvas`、`gsad`）从 gsad 的 `/gmp` 响应中读取其版本，无需认证。
+  - [`posthog`](/zh-cn/configuration/products/posthog/)——从自托管 PostHog 的匿名登录页面读取其 git 提交。
+  - [`uptime-kuma`](/zh-cn/configuration/products/uptime-kuma/)——通过 Uptime Kuma 的 socket.io API 登录（`kind: password`），并读取它在登录后发送的版本。
+  - [`wapt`](/zh-cn/configuration/products/wapt/)——WAPT 服务器的匿名 `/ping`。
+  - [`minio`](/zh-cn/configuration/products/minio/)——通过 SSH 执行 `minio --version`，可选在容器中；MinIO 的 `RELEASE.<timestamp>` 名称现在可以作为版本比较。
+  - [`sentry`](/zh-cn/configuration/products/sentry/)——从自托管 Sentry 的匿名登录页面读取其版本。
+  - [`zookeeper`](/zh-cn/configuration/products/zookeeper/)——`srvr` 四字命令。
+  - [`ghost`](/zh-cn/configuration/products/ghost/)——匿名的 `/ghost/api/admin/site/`，给出 major.minor。
+  - [`onlyoffice`](/zh-cn/configuration/products/onlyoffice/)——以及 [`euro-office`](/zh-cn/configuration/products/euro-office/)：ONLYOFFICE Docs 及其 Euro-Office 分支，从文档服务器的 `/index.html` 匿名读取；另一品牌的服务器会被拒绝，并提示应使用的产品。
+  - [`weblate`](/zh-cn/configuration/products/weblate/)——匿名的“Powered by Weblate”页脚。
+  - [`memcached`](/zh-cn/configuration/products/memcached/)——文本协议的 `version` 命令，无需凭据。
+  - [`rabbitmq`](/zh-cn/configuration/products/rabbitmq/)——管理插件的 `/api/overview`，`kind: basic`。
+  - [`cassandra`](/zh-cn/configuration/products/cassandra/)——通过 CQL 原生协议 v4 读取 `release_version`；集群启用 PasswordAuthenticator 时使用 `kind: password`。
+- **[`mariadb`](/zh-cn/configuration/products/mariadb/) 目标的 CVE。** BDU 和 NVD 现在覆盖 MariaDB，新的 `cve.mariadb.path` 会读取 MariaDB 自己的已修复 CVE 表（`community-server.md`），该表按系列给出包含修复的版本。凡是 MariaDB 的表中列出的 CVE，都以它的结论取代 BDU 和 NVD 的开放式范围，因此仍在维护的系列的最新版本不再因只在更新系列中修复的 CVE 而被标记——参见[厂商自己的数据](/zh-cn/cve/#厂商自己的数据)。
+- **`cve.atlassian.path`**：Atlassian 自己按版本划分的 CVE 数据，用于 `jira`、`confluence`、`bitbucket` 和 `bamboo`，包括第三方依赖的 CVE。在各自分支内进行判断；对于 Atlassian 列出的版本，以它的结论为准——参见 [Atlassian](/zh-cn/cve/#atlassian)。
+- **`cve.postgresql.path` 和 `cve.nginx.path`**：两个项目自己的安全页面，附带每个分支的修复版本。当前的 PostgreSQL 17/16/15/14 版本和 nginx 1.30.5 不再显示 BDU 不区分分支的范围——参见 [PostgreSQL](/zh-cn/cve/#postgresql) 和 [nginx](/zh-cn/cve/#nginx)。
+- **另外 24 个产品的 CVE**：cassandra、code-server、domainmod、doxygen、ghost、greenbone、home-assistant、kafka、memcached、minio、netbox、netdata、onlyoffice、openhab、pfsense、phpipam、qbittorrent、rabbitmq、sentry、splunk、uptime-kuma、wapt、weblate、zookeeper。MinIO 的时间戳版本可以比较；pfSense CE 和 Splunk Enterprise 会跳过其他版本类型的范围；Confluent Kafka 构建不进行查询。
+- **[`hp-ilo4`](/zh-cn/configuration/products/hp-ilo4/)、[`dell-idrac`](/zh-cn/configuration/products/dell-idrac/) 和 [`synology-dsm`](/zh-cn/configuration/products/synology-dsm/) 的 CVE。** iDRAC 按代匹配，代数从 Redfish 型号中读取；DSM 比较版本号、构建号和 Update（`7.2.1-69057-6`），探针现在会把 Update 记录在 `extra.update` 中——参见 [Dell iDRAC 和 Synology DSM](/zh-cn/cve/#dell-idrac-和-synology-dsm)。总计 123 个产品中现有 91 个会被匹配——参见[哪些产品会被匹配](/zh-cn/cve/#哪些产品会被匹配)。
+- 新增[隐私](/zh-cn/privacy/)页面：enodia 会连接什么（您的目标、endoflife.date、GitHub API——只发送产品和仓库名称——以及仅在运行 `enodia cve update` 时连接的 CVE 数据库发布方），以及它会存储什么（只有您自己的文件和本地缓存）。没有遥测。
+
+### 变更
+
+- `github` 解析器会跳过标签名表明是预发布版本的发布（`5.3.0.M2`、`2026.10.0b7`、`-rc1`、`-beta.1`），即使 GitHub 没有这样标记它们；把使用下划线拼写的标签（`Release_1_18_0`）和带 `release-` 前缀的标签（`release-5.2.4`）读作版本；并去掉标签开头的 `<repo>-`/`<repo>_`，因此 `weblate-2026.10` 会读作 `2026.10`——参见[支持的产品](/zh-cn/products/)。
+- [`teamcity`](/zh-cn/configuration/products/teamcity/) 无需凭据即可工作：未配置凭据时，它会读取匿名的 `/app/rest/server/version`，该端点在已检查的每个 TeamCity（从 2017.2 到 2026.1）上都是开放的，即使访客登录已关闭也是如此。配置令牌时仍像以前一样使用 `/app/rest/server`。
+
+### 修复
+
+- [`jenkins`](/zh-cn/configuration/products/jenkins/) 的 CVE：已修复的 LTS 版本不再被同一修复的每周版范围标记（LTS 2.568.3 被“before 2.580”标记）。每周版和 LTS 的范围现在只适用于各自的发布线。
+- `github` 解析器在发布列表超过 1 MiB 的仓库上不再失败（minio/minio 的有 3.4 MB）：现在最多读取 8 MiB。
+- **其产品从不发送的类型的凭据现在会被视为配置错误**，而不是被静默丢弃。以前，HTTP 产品（RouterOS、Harbor 等）上的 `kind: password` 会导致请求完全不带 `Authorization` 请求头发送；现在 `config validate` 会列出该产品接受的类型——对于 Web 登录，就是 `kind: basic`。**升级前请检查您的配置**：带有此类凭据的运行现在会拒绝启动。参见[配置 → 凭据](/zh-cn/configuration/#凭据)。
+
+## 2.1.1+0 — 2026-10-08
+
+### 修复
+
+- MariaDB 11.0+ 不再用 `5.5.5-` 掩盖其版本（`11.4.9-MariaDB-…`），因此 [`mysql`](/zh-cn/configuration/products/mysql/) 会把这类服务器记录为 MySQL，而 [`mariadb`](/zh-cn/configuration/products/mariadb/) 会拒绝它们。现在两个探针都能识别 MariaDB 的这两种形式。指向 MariaDB 11.0+ 的 `product: mysql` 目标现在会失败——请将其改为 `product: mariadb`。
+
 ## 2.1.0+0 — 2026-10-01
 
 CVE 关联深入到十个 Linux 发行版上已安装的软件包，并新增六个探针。没有任何破坏性变更：新的 `cve:` 键是可选的，清单只会新增可选字段，因此 2.0 的配置和清单无需修改即可继续使用。
@@ -44,7 +102,7 @@ CVE 关联深入到十个 Linux 发行版上已安装的软件包，并新增六
 
 - 针对两个本地数据库（BDU FSTEC 和 NIST NVD）的 **[CVE 关联](/zh-cn/cve/)**。enodia 从不下载它们：由您获取 BDU 的 `vulxml.zip` 和 NVD 按年份划分的 `nvdcve-2.0-<year>.json.gz` 文件，并在
   `enodia.yaml` 中将 `cve.bdu.path` / `cve.nvd.path` 指向它们（一个文件，对于 NVD 也可以是包含这些文件的目录）。两个来源都可以单独使用。两者都以流式方式解析并缓存：数据库变化后的首次运行，全部 NVD 加上 BDU
-  大约需要一分钟，之后每次运行都不到一秒。请参阅[如何下载它们](/zh-cn/cve/#enodia-从不自行下载数据库)，包括 bdu.fstec.ru 所需的额外 CA 证书。
+  大约需要一分钟，之后每次运行都不到一秒。请参阅[如何下载它们](/zh-cn/cve/#下载数据库)，包括 bdu.fstec.ru 所需的额外 CA 证书。
 - **已匹配 52 个探针**（上游共 53 个产品名称——`ssh` 同时算作 OpenSSH 和 Dropbear），即在任一来源中有可用数据的所有探针。有意未匹配的产品，各有明确原因：通用 Linux 发行版（它们的 CVE 是软件包级别的）、各 BSD 系统和 Solaris、
   ESXi/vCenter 以及 Synology DSM（匹配器目前尚不读取的补丁级别和构建后缀）——请参阅[哪些产品会被匹配](/zh-cn/cve/#哪些产品会被匹配)以及各产品自己的页面。
 - 针对 [GitLab](/zh-cn/configuration/products/gitlab/)、[Vault](/zh-cn/configuration/products/vault/)、[Nextcloud](/zh-cn/configuration/products/nextcloud/) 和[MongoDB](/zh-cn/configuration/products/mongodb/) 的**区分版本类型的匹配**：社区版实例不会再看到仅限企业版的发现（在真实数据上，GitLab 19.2.2 CE 只看到 NVD 9 项中的 4 项，Nextcloud 27.1.3 CE 看到 23 项中的 11 项）。这四个探针现在会将其服务器的版本类型记录在 `extra.enterprise` 中；版本类型未知时保留所有发现。

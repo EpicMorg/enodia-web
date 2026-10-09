@@ -35,7 +35,7 @@ enodia export --format html -o report.html
 }
 ```
 
-`Severity` 和 `RangeText` 是来源自身的原文，逐字保留；`CVSS` 是从中解析出的一个评分，优先选取 CVSS 3.1/3.0，其次是 4.0，再次是 2.0——几乎每个 CVE 在两个来源中都带有 3.x 版本的评分，因此同一列表中的分数保持在同一尺度上。表格视图中的 `CVES` 列统计的是这些条目中不同 CVE 的数量，而不是条目本身的数量。
+`Severity` 和 `RangeText` 是来源自身的原文，逐字保留；`CVSS` 是从中解析出的一个评分，优先选取 CVSS 3.1/3.0，其次是 4.0，再次是 2.0——几乎每个 CVE 在两个来源中都带有 3.x 版本的评分，因此同一列表中的分数保持在同一尺度上。表格视图中的 `CVES` 列统计的是这些条目中不同 CVE 的数量，而不是条目本身的数量。来自厂商自己数据的发现（参见[厂商自己的数据](/zh-cn/cve/#厂商自己的数据)）具有相同的结构，`Source` 设置为 `mariadb`、`atlassian`、`postgresql` 或 `nginx`。
 
 Linux 主机的软件包级发现（请参阅 [CVE 关联](/zh-cn/cve/#linux-发行版的软件包级-cve)）使用相同的结构，其中 `Source` 为 `debian`、`oval` 或 `alpine`，`MatchedName` 为软件包名称，另外还有四个字段：`InstalledVersion`、`FixedVersion`（能消除 `CVEIDs` 中所有 CVE 的版本）、`AdvisoryURL` 和 `Advisories`（该软件包缺少的所有公告）。对于这类主机，清单本身也会变大：每条观测结果都带有一个 `packages` 映射（软件包 → 已安装版本），在 RHEL 系主机上还带有 `modules`（AppStream 模块流）——每台主机几十 KB。
 

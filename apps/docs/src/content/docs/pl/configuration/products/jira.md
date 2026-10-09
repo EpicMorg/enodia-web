@@ -39,7 +39,12 @@ Zobacz też produkty pokrewne stosujące tę samą konwencję manifestu:
 
 ## Korelacja CVE
 
-Dopasowywany do NVD i BDU FSTEC, gdy skonfigurowano [blok `cve:`](/pl/cve/).
+Dopasowywany do NVD i BDU FSTEC, gdy skonfigurowano [blok `cve:`](/pl/cve/). Od wersji 2.2 `cve.atlassian.path` dodaje
+własne dane Atlassian dla poszczególnych wydań — łącznie z CVE
+zależności zewnętrznych, których wpisy Atlassian w NVD nie wymieniają —
+a dla wydania, które te dane wymieniają, ich werdykt rozstrzyga
+w obrębie własnej gałęzi tego wydania. Zobacz
+[Własne dane dostawców → Atlassian](/pl/cve/#atlassian).
 
 ## Resolver cyklu życia
 

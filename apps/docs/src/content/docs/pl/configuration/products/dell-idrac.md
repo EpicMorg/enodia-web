@@ -54,9 +54,13 @@ w ogóle bez endpointu Redfish, i nie jest obsługiwany.
 
 ## Korelacja CVE
 
-Jeszcze bez dopasowania — sondy BMC są nowe w 2.1, a upstream odłożył
-ich mapowanie CVE na późniejszy, osobny etap. Zobacz stronę
-[Korelacja CVE](/pl/cve/#które-produkty-są-dopasowywane).
+Dopasowywany do NVD i BDU FSTEC, gdy skonfigurowano [blok `cve:`](/pl/cve/). Od wersji 2.2. Obie bazy
+traktują każdą generację iDRAC jako osobny produkt, z pokrywającymi się
+numerami firmware'u, więc generacja jest odczytywana z `extra.model`
+(model z Redfish, np. `12G Modular` → iDRAC7; 11G iDRAC6, 13G iDRAC8,
+14G–16G iDRAC9, 17G iDRAC10). Bez modelu wyszukiwany jest tylko firmware
+3.x i nowszy (może to być wyłącznie iDRAC9) — zobacz
+[Dell iDRAC i Synology DSM](/pl/cve/#dell-idrac-i-synology-dsm).
 
 ## Resolver cyklu życia
 

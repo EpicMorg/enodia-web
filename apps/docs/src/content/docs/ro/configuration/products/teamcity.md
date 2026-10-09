@@ -3,22 +3,39 @@ title: TeamCity
 description: Configurarea enodia pentru a sonda JetBrains TeamCity.
 ---
 
-Citește `GET /app/rest/server` — punctul de intrare indicat primul de
-referința API-ului REST al TeamCity — pentru versiune.
+Citește versiunea anonim din `GET /app/rest/server/version` atunci când
+nu sunt configurate credențiale, sau din `GET /app/rest/server` —
+punctul de intrare indicat primul de referința API-ului REST al
+TeamCity — atunci când este configurat un token.
 
 ```yaml
 targets:
   - id: teamcity-main
     product: teamcity
     address: https://teamcity.example.com
-    credentials: teamcity-pat
+    # credentials: teamcity-pat    # opțional, vedeți mai jos
 ```
 
-## Autentificare — obligatorie și ușor de configurat invers
+## Autentificare — opțională și ușor de configurat invers dacă o adăugați
 
-Implicit nu există acces anonim — o instanță nouă răspunde `401` cu
-provocări atât Basic, cât și Bearer (autentificarea ca guest este
-dezactivată implicit). TeamCity are **două tipuri distincte de token,
+**Nu sunt necesare credențiale.** TeamCity servește
+`/app/rest/server/version` oricui, ca text simplu —
+`2026.1.1 (build 222577)` — chiar și cu autentificarea ca guest
+dezactivată. Confirmat pe servere noi de la 2017.2 până la 2026.1, fără
+niciun administrator creat, și pe șapte instanțe de producție (2024.03
+până la 2026.1.3) fără credențiale. Nu este acces de guest:
+`/app/rest/server` și endpointurile rezervate guest sunt refuzate pe
+aceleași servere. Cât timp TeamCity pornește, răspunde la orice cale cu
+o pagină HTML de mentenanță cu codul 200, așa că răspunsul trebuie să
+corespundă integral formatului `YYYY.N[.N] (build N)`, altfel ținta
+eșuează ca neparsabilă.
+
+**Cu un token configurat**, sonda citește în schimb `/app/rest/server` —
+ați cerut o citire autentificată, aceasta conține și `internalId`, iar
+un token greșit rămâne o eroare de autentificare vizibilă, în loc să fie
+mascat de calea anonimă. `/app/rest/server` nu este niciodată anonim: o
+instanță nouă răspunde `401` cu provocări atât Basic, cât și Bearer.
+TeamCity are **două tipuri distincte de token,
 confirmate live, care funcționează doar ca tipuri de credențiale opuse**:
 
 - **Tokenul de bootstrap al superutilizatorului**, de unică folosință,
@@ -53,7 +70,8 @@ autentificare.
 ## Câmpuri înregistrate
 
 - `version` — șirul complet, de exemplu `2026.2 (build 238924)`
-- `extra.buildNumber`, `extra.internalId`
+- `extra.buildNumber`
+- `extra.internalId` — doar cu un token (`/app/rest/server`)
 
 ## Corelare CVE
 

@@ -31,6 +31,16 @@ cve:                                 # opcional, veja "Correlação de CVEs"
     path: oval/
   alpine:
     path: alpine/
+  mariadb:
+    path: mariadb.md
+  atlassian:
+    path: atlassian.json
+  postgresql:
+    path: postgresql/
+  nginx:
+    path: nginx.html
+  update:                            # opções de TLS para o "enodia cve update"
+    ca_file: russian-trusted.pem
 credentials: {}                      # opcional, veja "Credenciais"
 targets: []                          # os seus serviços
 ```
@@ -59,9 +69,14 @@ Opcional. Aponta o enodia para uma exportação do BDU FSTEC
 (`cve.bdu.path`), para feeds JSON do NVD (`cve.nvd.path`) e, para a
 correlação por pacote em hosts Linux, para o Debian Security Tracker
 (`cve.debian.path`), arquivos OVAL dos fornecedores (`cve.oval.path`) e o
-secdb do Alpine (`cve.alpine.path`) — qualquer um deles, cada um funciona
-sozinho, todos baixados por você mesmo; o enodia nunca os busca. Caminhos relativos são resolvidos
-em relação ao diretório desta própria configuração, e um caminho
+secdb do Alpine (`cve.alpine.path`), além dos dados dos próprios
+fornecedores: a tabela de CVEs corrigidas do MariaDB (`cve.mariadb.path`),
+os da Atlassian (`cve.atlassian.path`), os do PostgreSQL
+(`cve.postgresql.path`) e os do nginx (`cve.nginx.path`) — qualquer um
+deles, cada um funciona sozinho. O `enodia cve update` os baixa nesses
+caminhos (as suas opções de TLS ficam em `cve.update`: `ca_file`,
+`ca_dir`, `tls_skip_verify`), ou você mesmo os baixa; `check`, `collect` e
+`serve` nunca buscam nada. Caminhos relativos são resolvidos em relação ao diretório desta própria configuração, e um caminho
 configurado que não existe é um erro. O que ele faz, como obter os
 arquivos e quais produtos têm correspondência:
 [Correlação de CVEs](/pt-br/cve/).
@@ -106,7 +121,7 @@ FreeRADIUS rodando no Docker ou no Podman.
 
 Consulte **Configuração de produtos** na barra lateral (ou a tabela de
 [Produtos suportados](/pt-br/products/)) para o endpoint exato, os
-requisitos de autenticação e os campos registrados de cada uma das 96
+requisitos de autenticação e os campos registrados de cada uma das 123
 sondas embutidas — `path`, `credentials` e `options` acima são o formato
 geral; a página de cada produto diz o que ele realmente precisa.
 
@@ -176,6 +191,19 @@ para alvos SSH — as sondas SSH aceitam uma senha ou uma chave privada, como
 qualquer cliente SSH aceitaria (`username` mais `password` em
 `kind: password`, ou `username` mais `private_key_file` em
 `kind: ssh-key`).
+
+**O `kind` de uma credencial precisa corresponder ao que o seu produto
+lê** — produtos HTTP leem `basic`, `bearer` ou `token-header`; sondas SSH
+leem `ssh-key` ou `password`; Redis, PostgreSQL e as demais sondas de
+protocolo nativo leem `password`. Um usuário e senha para uma interface
+web ou API REST (RouterOS, Harbor, Jenkins, um BMC) é, portanto,
+`kind: basic`, e não `kind: password`. A página de cada produto informa
+quais tipos ele aceita. Uma incompatibilidade é um erro fatal no
+`enodia config validate` e em toda execução, citando os tipos que o
+produto de fato aceita — versões anteriores descartavam essa credencial
+silenciosamente e enviavam a requisição sem autenticação nenhuma, que
+então falhava com um erro de autenticação que não apontava nem de longe
+para a causa.
 
 ### Verificação da chave de host SSH
 

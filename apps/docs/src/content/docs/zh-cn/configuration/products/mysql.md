@@ -21,8 +21,11 @@ targets:
 
 ## MariaDB 是另一个产品
 
-对于早于 MariaDB 自身版本方案的 MySQL 客户端，MariaDB 会用 `5.5.5-` 前缀掩盖其真实版本——在当前的
-MariaDB 10.11 镜像上依然如此。把 `product: mysql` 指向 MariaDB 服务器时，探针会检测到这一点并**有意失败**，在错误信息中给出真实的 MariaDB 版本，而不是悄悄地将其记录为 MySQL 的事实。自 2.1 起，MariaDB 有了自己的探针——请对它使用 [`product: mariadb`](/zh-cn/configuration/products/mariadb/)。
+MariaDB 握手中的版本会暴露其身份：MariaDB 10.x 会为旧版 MySQL 客户端用 `5.5.5-` 前缀掩盖版本（`5.5.5-10.11.19-MariaDB-ubu2204`），而 MariaDB 11.0+ 发送的版本不带掩码，但带有标记（`11.4.13-MariaDB-ubu2404`）。把 `product: mysql` 指向 MariaDB 服务器时，探针能识别这两种形式并**有意失败**，在错误信息中给出真实的 MariaDB 版本，而不是悄悄地将其记录为 MySQL 的事实。自 2.1 起，MariaDB 有了自己的探针——请对它使用 [`product: mariadb`](/zh-cn/configuration/products/mariadb/)。
+
+:::caution[2.1.1 之前的 MariaDB 11.0+]
+在 2.1.0 及更早版本中只识别 `5.5.5-` 掩码，因此 `product: mysql` 目标背后的 MariaDB 11.0+ 服务器会被记录**为 MySQL**，并按 MySQL 的生命周期进行检查。自 2.1.1 起，这样的目标会改为失败——请将其改为 `product: mariadb`。
+:::
 
 ## CVE 关联
 

@@ -39,7 +39,12 @@ credentials:
 
 ## Correlación de CVE
 
-Se contrasta con NVD y BDU FSTEC cuando hay configurado un [bloque `cve:`](/es/cve/).
+Se contrasta con NVD y BDU FSTEC cuando hay configurado un [bloque `cve:`](/es/cve/). Las versiones semanales (`2.580`) y LTS
+(`2.568.3`) reciben la misma corrección con números distintos; desde la
+2.2, la propia forma de la versión elige la línea de versiones, así que
+una LTS corregida ya no se marca por el rango semanal de la misma
+corrección; consulte
+[Cotejo según la edición](/es/cve/#cotejo-según-la-edición).
 
 ## Resolvedor del ciclo de vida
 

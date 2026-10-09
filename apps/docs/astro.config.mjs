@@ -106,6 +106,11 @@ ym(112978858, 'init', {ssr:true, webvisor:true, trackHash:true, clickmap:true, e
 					slug: 'security',
 				},
 				{
+					label: 'Privacy',
+					translations: { ru: 'Конфиденциальность', es: 'Privacidad', 'pt-BR': 'Privacidade', ro: 'Confidențialitate', pl: 'Prywatność', 'zh-CN': '隐私', uk: 'Конфіденційність' },
+					slug: 'privacy',
+				},
+				{
 					label: 'Changelog',
 					translations: { ru: 'Чейнджлог', es: 'Registro de cambios', 'pt-BR': 'Registro de alterações', ro: 'Jurnal de modificări', pl: 'Historia zmian', 'zh-CN': '更新日志', uk: 'Журнал змін' },
 					slug: 'changelog',

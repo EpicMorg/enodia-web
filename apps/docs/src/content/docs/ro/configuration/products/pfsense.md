@@ -42,9 +42,10 @@ documentație.
 
 ## Corelare CVE
 
-Încă nu se corelează — pfSense este nou în 2.1, iar în amonte maparea
-sa CVE a fost lăsată pentru o etapă ulterioară, dedicată. Consultați
-[Corelare CVE](/ro/cve/#ce-produse-sunt-potrivite).
+Se corelează cu NVD și BDU FSTEC atunci când este configurat un [bloc `cve:`](/ro/cve/). Începând cu 2.2. Sonda raportează
+doar Community Edition, așa că intervalele pfSense Plus ale NVD
+(`sw_edition: plus`) nu se aplică niciodată — consultați
+[Potrivire în funcție de ediție](/ro/cve/#potrivire-în-funcție-de-ediție).
 
 ## Rezolvatorul ciclului de viață
 

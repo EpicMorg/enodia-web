@@ -27,13 +27,23 @@ poświadczenia w ogóle miałyby znaczenie.
 
 ## MariaDB to inny produkt
 
-MariaDB maskuje swoją prawdziwą wersję prefiksem `5.5.5-` na potrzeby
-klientów MySQL starszych niż własny schemat wersjonowania MariaDB — nadal
-dotyczy to aktualnego obrazu MariaDB 10.11. `product: mysql` wskazany na
-serwer MariaDB wykrywa to i **celowo kończy się błędem**, podając
-w komunikacie prawdziwą wersję MariaDB, zamiast po cichu zapisać ją jako
-fakt o MySQL. Od wersji 2.1 MariaDB ma własną sondę — należy dla niej
-użyć [`product: mariadb`](/pl/configuration/products/mariadb/).
+MariaDB zdradza wersja w handshake: MariaDB 10.x maskuje ją prefiksem
+`5.5.5-` na potrzeby starych klientów MySQL
+(`5.5.5-10.11.19-MariaDB-ubu2204`), a MariaDB 11.0+ wysyła ją bez maski,
+ale oznaczoną (`11.4.13-MariaDB-ubu2404`). `product: mysql` wskazany na
+serwer MariaDB wykrywa każdą z tych postaci i **celowo kończy się
+błędem**, podając w komunikacie prawdziwą wersję MariaDB, zamiast po
+cichu zapisać ją jako fakt o MySQL. Od wersji 2.1 MariaDB ma własną
+sondę — należy dla niej użyć
+[`product: mariadb`](/pl/configuration/products/mariadb/).
+
+:::caution[MariaDB 11.0+ przed wersją 2.1.1]
+Do wersji 2.1.0 włącznie rozpoznawana była tylko maska `5.5.5-`, więc
+serwer MariaDB 11.0+ za celem `product: mysql` był zapisywany **jako
+MySQL** i sprawdzany względem cyklu życia MySQL. Od wersji 2.1.1 taki
+cel zamiast tego kończy się błędem — należy przełączyć go na
+`product: mariadb`.
+:::
 
 ## Korelacja CVE
 

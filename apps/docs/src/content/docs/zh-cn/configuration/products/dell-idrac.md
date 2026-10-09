@@ -41,7 +41,7 @@ Dell **CMC**（刀片机箱的机箱级控制器）是另一个产品，根本�
 
 ## CVE 关联
 
-尚未进行匹配——各 BMC 探针是 2.1 新增的，上游将它们的 CVE 映射留给之后专门的一轮工作。参见 [CVE 关联](/zh-cn/cve/#哪些产品会被匹配)。
+配置了 [`cve:` 块](/zh-cn/cve/)时，会与 NVD 和 BDU FSTEC 进行匹配。自 2.2 起。两个数据库都把每一代 iDRAC 作为单独的产品，而且固件版本号相互重叠，因此代数从 `extra.model`（Redfish 的型号，例如 `12G Modular` → iDRAC7；11G 为 iDRAC6，13G 为 iDRAC8，14G–16G 为 iDRAC9，17G 为 iDRAC10）读取。没有型号时，只查询 3.x 及更高版本的固件（这只可能是 iDRAC9）——参见 [Dell iDRAC 和 Synology DSM](/zh-cn/cve/#dell-idrac-和-synology-dsm)。
 
 ## 生命周期解析器
 

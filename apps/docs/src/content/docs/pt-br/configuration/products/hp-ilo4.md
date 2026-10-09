@@ -50,9 +50,9 @@ suposições.
 
 ## Correlação de CVEs
 
-Ainda sem correlação — as sondas de BMC são novas na 2.1, e o upstream
-deixou o mapeamento de CVEs delas para uma etapa posterior, dedicada.
-Consulte [Correlação de CVEs](/pt-br/cve/#quais-produtos-têm-correspondência).
+Correlacionado com o NVD e o BDU FSTEC quando um [bloco `cve:`](/pt-br/cve/) está configurado. Desde a 2.2; a versão de firmware
+da sonda (`2.82`) é comparada como está com os intervalos
+`integrated_lights-out_4` do NVD e com o "HP iLO 4" do BDU.
 
 ## Resolvedor de ciclo de vida
 

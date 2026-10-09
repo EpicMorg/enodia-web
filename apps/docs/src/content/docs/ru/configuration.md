@@ -31,6 +31,16 @@ cve:                                 # опционально, см. «Сопо�
     path: oval/
   alpine:
     path: alpine/
+  mariadb:
+    path: mariadb.md
+  atlassian:
+    path: atlassian.json
+  postgresql:
+    path: postgresql/
+  nginx:
+    path: nginx.html
+  update:                            # параметры TLS для «enodia cve update»
+    ca_file: russian-trusted.pem
 credentials: {}                      # опционально, см. «Credentials»
 targets: []                          # ваши сервисы
 ```
@@ -56,9 +66,14 @@ targets: []                          # ваши сервисы
 Опционально. Указывает enodia на выгрузку БДУ ФСТЭК (`cve.bdu.path`),
 JSON-фиды NVD (`cve.nvd.path`) и, для сопоставления по пакетам на
 Linux-хостах, на выгрузку Debian Security Tracker (`cve.debian.path`),
-OVAL-файлы вендоров (`cve.oval.path`) и secdb Alpine (`cve.alpine.path`)
-— любые из них, каждый работает и по отдельности; всё это вы скачиваете
-сами, enodia их никогда не загружает. Относительные пути резолвятся относительно
+OVAL-файлы вендоров (`cve.oval.path`) и secdb Alpine (`cve.alpine.path`),
+а также собственные данные вендоров: таблицу исправленных CVE MariaDB
+(`cve.mariadb.path`), данные Atlassian (`cve.atlassian.path`), PostgreSQL
+(`cve.postgresql.path`) и nginx (`cve.nginx.path`) — любые из них,
+каждый работает и по отдельности. `enodia cve update` скачивает их по
+этим путям (её параметры TLS задаются в `cve.update`: `ca_file`,
+`ca_dir`, `tls_skip_verify`), либо вы скачиваете их сами; `check`,
+`collect` и `serve` никогда ничего не загружают. Относительные пути резолвятся относительно
 директории этого конфига, а указанный, но несуществующий путь — это
 ошибка. Что это даёт, как получить файлы и какие продукты
 сопоставляются — см. [Сопоставление с CVE](/ru/cve/).
@@ -105,7 +120,7 @@ FreeRADIUS, запущенный в Docker или Podman.
 
 Раздел **«Настройка продуктов»** в боковом меню (или таблица
 [Поддерживаемые продукты](/ru/products/)) содержит точный эндпоинт,
-требования к аутентификации и записываемые поля для каждой из 96
+требования к аутентификации и записываемые поля для каждой из 123
 встроенных проб — `path`, `credentials` и `options` выше описывают общую
 форму; страница конкретного продукта говорит, что ему нужно на самом
 деле.
@@ -175,6 +190,19 @@ password` и без `private_key_file` — SSH-пробы принимают л�
 либо приватный ключ, как и любой SSH-клиент (`username` плюс `password`
 под `kind: password`, либо `username` плюс `private_key_file` под
 `kind: ssh-key`).
+
+**`kind` у credential должен совпадать с тем, что читает его продукт**:
+HTTP-продукты читают `basic`, `bearer` или `token-header`; SSH-пробы —
+`ssh-key` или `password`; Redis, PostgreSQL и другие пробы на
+wire-протоколах — `password`. Поэтому логин и пароль для веб-интерфейса
+или REST API (RouterOS, Harbor, Jenkins, BMC) — это `kind: basic`, а не
+`kind: password`. Какие виды принимает продукт, сказано на его
+собственной странице. Несовпадение — жёсткая ошибка и в
+`enodia config validate`, и при каждом запуске, с перечислением видов,
+которые продукт принимает; прежние версии такой credential молча
+отбрасывали и отправляли запрос вообще без аутентификации, а он потом
+падал с ошибкой авторизации, которая указывала куда угодно, только не
+на причину.
 
 ### Проверка ключа хоста SSH
 

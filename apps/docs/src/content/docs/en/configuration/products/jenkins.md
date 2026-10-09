@@ -39,7 +39,11 @@ credentials:
 
 ## CVE correlation
 
-Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured. Weekly (`2.580`) and LTS
+(`2.568.3`) releases get the same fix under different numbers; since
+2.2, the version's own shape picks the release line, so a fixed LTS is
+no longer flagged by the weekly range of the same fix — see
+[Edition-aware matching](/en/cve/#edition-aware-matching).
 
 ## Lifecycle resolver
 

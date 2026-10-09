@@ -95,14 +95,16 @@ după propriul program — nu mai este publicată de pipeline-ul de lansare
 al acestui proiect, deși adresa publicată și tag-urile rămân aceleași.
 Este publicată și în `docker.io/epicmorg/enodia` și pe Quay, cu aceleași
 tag-uri — `latest`, versiunea majoră simplă (`2`) și versiunea exactă
-fără sufix de build (de exemplu `2.0.0` — confirmat în practică pe toate
+fără sufix de build (de exemplu `2.1.1` — confirmat în practică pe toate
 cele trei registre; tag-urile unui pipeline anterior arătau în schimb ca
 `1.0.0-1`, încă disponibile pentru pull, doar că noile versiuni nu mai
 sunt etichetate astfel de acum înainte). Două schimbări reale care merită
 știute: imaginea este acum **doar `linux/amd64`** (arm64 a fost renunțat
 odată cu mutarea publicării) și rulează ca **root** în loc de un
 utilizator dedicat, pe baza proprie a proiectului, `debian:trixie-light`,
-în loc de `scratch`.
+în loc de `scratch`. Declară `/var/lib/enodia/cve` ca volum pentru
+[bazele de date CVE](/ro/cve/#descărcarea-bazelor-de-date) — montați acolo
+copiile dumneavoastră sau lăsați `enodia cve update` să îl populeze.
 
 ### Build din surse
 

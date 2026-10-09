@@ -61,7 +61,8 @@ That's the whole loop: describe a target once, run `enodia check`, get
 back three independent facts per target — patch status, lifecycle
 status, and whether a newer branch exists — plus a severity computed
 from policy you control. Point a `cve:` block at a БДУ ФСТЭК and/or
-NVD export and the `CVES` column fills in with the known
+NVD export (`enodia cve update` downloads them) and the `CVES` column
+fills in with the known
 vulnerabilities of each exact installed version — and, on ten Linux
 distributions, of each installed package — see
 [CVE correlation](/en/cve/).
@@ -77,9 +78,9 @@ distributions, of each installed package — see
 - **[CLI reference](/en/cli-reference/)** — every command, straight from
   `--help`.
 - **[CVE correlation](/en/cve/)** — known vulnerabilities per installed
-  version, from БДУ ФСТЭК and NVD exports, and per installed package on
-  Linux hosts.
-- **[Supported products](/en/products/)** — all 96 probes.
+  version, from БДУ ФСТЭК, NVD and vendors' own data, and per installed
+  package on Linux hosts.
+- **[Supported products](/en/products/)** — all 123 probes.
 
 ## The name
 

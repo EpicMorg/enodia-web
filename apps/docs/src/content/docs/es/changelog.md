@@ -13,6 +13,143 @@ prefijo `v`; `+BUILD` son metadatos de compilación de semver, que se usan
 solo para una recompilación sin cambios funcionales, no para eludir un
 incremento de versión real.
 
+## 2.2.0+0 — 2026-10-09
+
+`enodia cve update` descarga por sí mismo las bases de datos de CVE, los
+propios datos de seguridad de los fabricantes (MariaDB, Atlassian,
+PostgreSQL, nginx) se suman a BDU y NVD, la correlación de CVE llega a
+iLO 4, iDRAC y Synology DSM, y se incorporan 27 sondas nuevas, 123 en
+total. Todas las nuevas claves de `cve:` son opcionales, y las
+configuraciones e inventarios de la 2.1 funcionan sin cambios, salvo una
+credencial de un tipo que su producto nunca lee, que ahora es un error
+(consulte Corregido).
+
+### Añadido
+
+- **[`enodia cve update`](/es/cve/#enodia-cve-update)** descarga las
+  bases de datos de CVE que nombra cada `cve.*.path` configurado: BDU,
+  NVD (este año, el año pasado y los años que falten; `--all-years` para
+  todos), Debian, OVAL y Alpine (las versiones que ya están en disco, las
+  que necesitan los inventarios de `--from`, `--oval`/`--alpine`),
+  MariaDB, Atlassian, PostgreSQL (`--postgresql` para las páginas por
+  versión mayor) y nginx. Usa If-Modified-Since; una descarga sustituye a
+  un archivo solo después de cargarse correctamente. TLS se verifica
+  contra las raíces del sistema más `cve.update.ca_file` y
+  `cve.update.ca_dir`, o no se verifica en absoluto con
+  `cve.update.tls_skip_verify`. Ningún otro comando descarga nada.
+- **27 sondas nuevas:**
+  - [`splunk`](/es/configuration/products/splunk/): la API de administración de splunkd en el 8089, Basic o un token de Splunk.
+  - [`code-server`](/es/configuration/products/code-server/): `codeServerVersion` de la página de inicio de sesión.
+  - [`phpipam`](/es/configuration/products/phpipam/): el pie de la página de inicio de sesión y la versión de sus recursos.
+  - [`domainmod`](/es/configuration/products/domainmod/): el CHANGELOG de su raíz web.
+  - [`netdata`](/es/configuration/products/netdata/): el `/api/v1/info` anónimo del agente.
+  - [`libretranslate`](/es/configuration/products/libretranslate/): el documento OpenAPI público `/spec`.
+  - [`torrserver`](/es/configuration/products/torrserver/): `/echo`.
+  - [`kafka`](/es/configuration/products/kafka/): la versión del broker por SSH a partir de su propio jar, opcionalmente en un contenedor; las compilaciones de Confluent Platform se notifican como `confluent` con la línea de Apache Kafka que incluyen.
+  - [`home-assistant`](/es/configuration/products/home-assistant/): `/api/config` con un token de acceso de larga duración, `kind: bearer`.
+  - [`openhab`](/es/configuration/products/openhab/): la raíz REST anónima `/rest/`.
+  - [`doxygen`](/es/configuration/products/doxygen/): qué Doxygen generó un sitio de documentación, a partir de su marca de generador.
+  - [`qbittorrent`](/es/configuration/products/qbittorrent/): la API de la Web UI tras un inicio de sesión por formulario, `kind: password`.
+  - [`netbox`](/es/configuration/products/netbox/): el `data-netbox-version` de la página de inicio de sesión anónima.
+  - [`greenbone`](/es/configuration/products/greenbone/): (alias `openvas`, `gsad`) la versión de gsad a partir de su respuesta en `/gmp`, sin autenticación.
+  - [`posthog`](/es/configuration/products/posthog/): el commit de git de PostHog autoalojado a partir de su página de inicio de sesión anónima.
+  - [`uptime-kuma`](/es/configuration/products/uptime-kuma/): inicia sesión mediante la API socket.io de Uptime Kuma (`kind: password`) y lee la versión que envía tras el inicio de sesión.
+  - [`wapt`](/es/configuration/products/wapt/): el `/ping` anónimo del servidor WAPT.
+  - [`minio`](/es/configuration/products/minio/): `minio --version` por SSH, opcionalmente en un contenedor; los nombres `RELEASE.<timestamp>` de MinIO ahora se comparan como versiones.
+  - [`sentry`](/es/configuration/products/sentry/): la versión de Sentry autoalojado a partir de su página de inicio de sesión anónima.
+  - [`zookeeper`](/es/configuration/products/zookeeper/): la palabra de cuatro letras `srvr`.
+  - [`ghost`](/es/configuration/products/ghost/): el `/ghost/api/admin/site/` anónimo, que da major.minor.
+  - [`onlyoffice`](/es/configuration/products/onlyoffice/): y [`euro-office`](/es/configuration/products/euro-office/): ONLYOFFICE Docs y su bifurcación Euro-Office, leídos de forma anónima del `/index.html` del servidor de documentos; un servidor de la otra marca se rechaza indicando el producto que debe usarse.
+  - [`weblate`](/es/configuration/products/weblate/): el pie anónimo «Powered by Weblate».
+  - [`memcached`](/es/configuration/products/memcached/): el comando `version` del protocolo de texto, sin credenciales.
+  - [`rabbitmq`](/es/configuration/products/rabbitmq/): el `/api/overview` del plugin de administración, `kind: basic`.
+  - [`cassandra`](/es/configuration/products/cassandra/): `release_version` mediante el protocolo nativo CQL v4, `kind: password` cuando el clúster tiene PasswordAuthenticator.
+- **CVE para los destinos [`mariadb`](/es/configuration/products/mariadb/).**
+  BDU y NVD ahora cubren MariaDB, y un nuevo `cve.mariadb.path` lee la
+  propia tabla de CVE corregidas de MariaDB (`community-server.md`), que
+  conoce la versión que corrige cada CVE por serie. Cuando la tabla de
+  MariaDB conoce una CVE, su veredicto sustituye a los rangos abiertos de
+  BDU y NVD, de modo que la última versión de una serie mantenida ya no se
+  marca por CVE corregidas solo en series más recientes; consulte
+  [Datos propios de los fabricantes](/es/cve/#datos-propios-de-los-fabricantes).
+- **`cve.atlassian.path`**: los propios datos de CVE por versión de
+  Atlassian para `jira`, `confluence`, `bitbucket` y `bamboo`, incluidas
+  las CVE de dependencias de terceros. Se evalúan dentro de cada rama;
+  para una versión que Atlassian incluye, su veredicto prevalece; consulte
+  [Atlassian](/es/cve/#atlassian).
+- **`cve.postgresql.path` y `cve.nginx.path`**: las propias páginas de
+  seguridad de los proyectos, con la versión que corrige cada CVE por
+  rama. Las versiones actuales de PostgreSQL 17/16/15/14 y nginx 1.30.5
+  ya no muestran los rangos sin rama de BDU; consulte
+  [PostgreSQL](/es/cve/#postgresql) y [nginx](/es/cve/#nginx).
+- **CVE para 24 productos más**: cassandra, code-server, domainmod,
+  doxygen, ghost, greenbone, home-assistant, kafka, memcached, minio,
+  netbox, netdata, onlyoffice, openhab, pfsense, phpipam, qbittorrent,
+  rabbitmq, sentry, splunk, uptime-kuma, wapt, weblate, zookeeper. Las
+  versiones con marca de tiempo de MinIO se comparan; pfSense CE y Splunk
+  Enterprise omiten los rangos de otras ediciones; las compilaciones de
+  Kafka de Confluent no reciben búsqueda.
+- **CVE para [`hp-ilo4`](/es/configuration/products/hp-ilo4/),
+  [`dell-idrac`](/es/configuration/products/dell-idrac/) y
+  [`synology-dsm`](/es/configuration/products/synology-dsm/).** iDRAC se
+  compara por generación, leída del modelo de Redfish; DSM compara
+  versión, compilación y Update (`7.2.1-69057-6`), y la sonda ahora
+  registra el Update en `extra.update`; consulte
+  [Dell iDRAC y Synology DSM](/es/cve/#dell-idrac-y-synology-dsm).
+  En total, ahora tienen correspondencia 91 de los 123 productos; consulte
+  [qué productos tienen correspondencia](/es/cve/#qué-productos-tienen-correspondencia).
+- Una página de [Privacidad](/es/privacy/): a qué se conecta enodia (sus
+  destinos, endoflife.date, la API de GitHub, solo con nombres de
+  productos y repositorios, y, solo para `enodia cve update`, los
+  editores de las bases de datos de CVE) y qué almacena (solo sus propios
+  archivos y una caché local). Sin telemetría.
+
+### Cambiado
+
+- El resolvedor `github` omite las versiones cuyo nombre de etiqueta
+  indica una versión preliminar (`5.3.0.M2`, `2026.10.0b7`, `-rc1`,
+  `-beta.1`) aunque GitHub no las marque como tales; lee como versiones
+  las etiquetas escritas con guiones bajos (`Release_1_18_0`) y con el
+  prefijo `release-` (`release-5.2.4`); y elimina un `<repo>-`/`<repo>_`
+  inicial de las etiquetas, de modo que `weblate-2026.10` se lee como
+  `2026.10`; consulte [Productos compatibles](/es/products/).
+- [`teamcity`](/es/configuration/products/teamcity/) funciona sin
+  credenciales: si no hay ninguna configurada, lee el
+  `/app/rest/server/version` anónimo, abierto en todas las versiones de
+  TeamCity comprobadas de la 2017.2 a la 2026.1, incluso con el inicio de
+  sesión como invitado desactivado. Un token sigue seleccionando
+  `/app/rest/server` como antes.
+
+### Corregido
+
+- Las CVE de [`jenkins`](/es/configuration/products/jenkins/): una versión
+  LTS corregida ya no se marca por el rango semanal de la misma
+  corrección (LTS 2.568.3 por «before 2.580»). Los rangos semanales y LTS
+  ahora se aplican solo a su propia línea de versiones.
+- El resolvedor `github` ya no falla en repositorios cuya lista de
+  versiones supera 1 MiB (la de minio/minio ocupa 3,4 MB): ahora lee hasta
+  8 MiB.
+- **Una credencial de un tipo que su producto nunca envía es ahora un
+  error de configuración** en lugar de descartarse en silencio.
+  `kind: password` en un producto HTTP (RouterOS, Harbor, …) enviaba la
+  solicitud sin ninguna cabecera `Authorization`; `config validate` ahora
+  nombra los tipos que acepta el producto: para un inicio de sesión web es
+  `kind: basic`. **Revise su configuración antes de actualizar**: una
+  ejecución con una credencial así ahora se niega a arrancar. Consulte
+  [Configuración → Credenciales](/es/configuration/#credenciales).
+
+## 2.1.1+0 — 2026-10-08
+
+### Corregido
+
+- MariaDB 11.0+ ya no oculta su versión tras `5.5.5-`
+  (`11.4.9-MariaDB-…`), por lo que [`mysql`](/es/configuration/products/mysql/)
+  registraba esos servidores como MySQL y
+  [`mariadb`](/es/configuration/products/mariadb/) los rechazaba. Ahora
+  ambas sondas reconocen MariaDB en cualquiera de las dos formas. Un
+  destino `product: mysql` que apunte a MariaDB 11.0+ ahora falla:
+  cámbielo a `product: mariadb`.
+
 ## 2.1.0+0 — 2026-10-01
 
 La correlación de CVE llega hasta los paquetes instalados en diez
@@ -119,7 +256,7 @@ una configuración sin él se comporta exactamente como en la 1.2.
   en flujo y se almacenan en caché: la primera ejecución tras cambiar una
   base de datos tarda alrededor de un minuto para todo NVD más BDU, y cada
   ejecución posterior menos de un segundo. Consulte
-  [cómo descargarlas](/es/cve/#enodia-nunca-descarga-las-bases-de-datos-por-sí-mismo),
+  [cómo descargarlas](/es/cve/#descarga-de-las-bases-de-datos),
   incluido el certificado de CA adicional que necesita bdu.fstec.ru.
 - **52 sondas con correspondencia** (53 nombres de producto upstream:
   `ssh` cuenta tanto como OpenSSH como Dropbear), todas las sondas con

@@ -99,6 +99,44 @@ Validates the config file and its credential references — including
 whether a target's declared `credentials:` name actually resolves to an
 entry the probe understands, entirely offline.
 
+## `enodia cve`
+
+One subcommand, no flags of its own beyond the global ones.
+
+### `enodia cve update`
+
+```
+update downloads into each configured cve.*.path what that entry reads:
+BDU's vulxml.zip, NVD's yearly files (this year, last year and any year
+not on disk yet; every year with --all-years), the Debian Security Tracker
+JSON, vendor OVAL files, Alpine secdb, and MariaDB's, Atlassian's,
+PostgreSQL's and nginx's own data. It is the only command that fetches
+them; check, collect and serve never do.
+
+OVAL releases, Alpine branches and PostgreSQL majors come from the files
+already in those directories, from the inventories given with --from, and
+from --oval/--alpine/--postgresql.
+
+Each file is sent If-Modified-Since its copy on disk, downloaded beside it,
+loaded by the same code the CVE lookup uses, and only then moved over the
+old one, so a failed or broken download never replaces a working file.
+TLS is verified against the system's roots plus cve.update.ca_file and
+cve.update.ca_dir; cve.update.tls_skip_verify turns verification off.
+Exit status 1 if any file failed; the rest are still updated.
+```
+
+```
+--all-years                refresh every NVD year, not only this one, last one and missing ones
+--alpine stringArray       an Alpine branch to fetch secdb for, e.g. v3.22 (repeatable)
+--dry-run                  list what would be fetched, download nothing
+--from stringArray         an inventory to read OVAL releases, Alpine branches and PostgreSQL majors from (repeatable)
+--oval stringArray         an OVAL release to fetch: ubuntu:<codename>, rhel:<N>, almalinux:<N>, oracle-linux:<N>, astra-linux:<X.Y>, redos:<X.Y> (repeatable)
+--postgresql stringArray   a PostgreSQL major whose own security page to fetch, e.g. 13 (repeatable)
+```
+
+What each source needs and how releases are picked:
+[CVE correlation → `enodia cve update`](/en/cve/#enodia-cve-update).
+
 ## `enodia products`
 
 Lists every supported product — see [Supported products](/en/products/)

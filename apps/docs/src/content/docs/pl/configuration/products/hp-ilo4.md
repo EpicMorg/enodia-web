@@ -49,9 +49,9 @@ niego sondy, zamiast sondy opartej na zgadywaniu.
 
 ## Korelacja CVE
 
-Jeszcze bez dopasowania — sondy BMC są nowe w 2.1, a upstream odłożył
-ich mapowanie CVE na późniejszy, osobny etap. Zobacz stronę
-[Korelacja CVE](/pl/cve/#które-produkty-są-dopasowywane).
+Dopasowywany do NVD i BDU FSTEC, gdy skonfigurowano [blok `cve:`](/pl/cve/). Od wersji 2.2; wersja
+firmware'u z sondy (`2.82`) jest porównywana bez zmian z zakresami
+`integrated_lights-out_4` w NVD i „HP iLO 4” w BDU.
 
 ## Resolver cyklu życia
 

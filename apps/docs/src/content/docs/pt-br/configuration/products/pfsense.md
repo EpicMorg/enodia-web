@@ -41,9 +41,10 @@ isso ao vivo — baseia-se apenas na documentação.
 
 ## Correlação de CVEs
 
-Ainda sem correlação — o pfSense é novo na 2.1, e o upstream deixou o
-mapeamento de CVEs dele para uma etapa posterior, dedicada. Consulte
-[Correlação de CVEs](/pt-br/cve/#quais-produtos-têm-correspondência).
+Correlacionado com o NVD e o BDU FSTEC quando um [bloco `cve:`](/pt-br/cve/) está configurado. Desde a 2.2. A sonda informa
+apenas a Community Edition, então os intervalos do pfSense Plus no NVD
+(`sw_edition: plus`) nunca se aplicam — consulte
+[Correspondência sensível à edição](/pt-br/cve/#correspondência-sensível-à-edição).
 
 ## Resolvedor de ciclo de vida
 

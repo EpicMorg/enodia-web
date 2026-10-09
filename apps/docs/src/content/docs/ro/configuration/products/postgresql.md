@@ -43,7 +43,13 @@ bază de date.
 
 ## Corelare CVE
 
-Se corelează cu NVD și BDU FSTEC atunci când este configurat un [bloc `cve:`](/ro/cve/).
+Se corelează cu NVD și BDU FSTEC atunci când este configurat un [bloc `cve:`](/ro/cve/). Începând cu 2.2, `cve.postgresql.path`
+adaugă paginile de securitate proprii ale proiectului, care numesc
+corecția per versiune majoră: pentru o versiune majoră numită în paginile
+salvate, verdictul lor înlocuiește intervalele fără ramură ale BDU, care
+altfel semnalează cea mai recentă versiune a fiecărei versiuni majore
+mai vechi. Consultați
+[Datele proprii ale producătorilor → PostgreSQL](/ro/cve/#postgresql).
 
 ## Rezolvatorul ciclului de viață
 

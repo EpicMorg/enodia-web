@@ -53,6 +53,10 @@ mai întâi CVSS 3.1/3.0, apoi 4.0, apoi 2.0 — 3.x este versiunea pe care
 o are aproape fiecare CVE în ambele surse, astfel încât scorurile dintr-o
 listă rămân pe aceeași scară. Coloana `CVES` din vizualizările tabelare
 numără CVE-urile distincte din aceste intrări, nu intrările în sine.
+Constatările din datele proprii ale unui producător (vedeți
+[Datele proprii ale producătorilor](/ro/cve/#datele-proprii-ale-producătorilor)) au
+aceeași formă, cu `Source` setat la `mariadb`, `atlassian`, `postgresql`
+sau `nginx`.
 
 Constatările la nivel de pachet pentru gazdele Linux (vedeți
 [Corelare CVE](/ro/cve/#cve-uri-la-nivel-de-pachet-pentru-distribuțiile-linux))

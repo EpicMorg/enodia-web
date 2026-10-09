@@ -40,9 +40,10 @@ was available to confirm this live — it's based on documentation alone.
 
 ## CVE correlation
 
-Not matched yet — pfSense is new in 2.1, and upstream left its CVE
-mapping for a later, dedicated pass. See
-[CVE correlation](/en/cve/#which-products-are-matched).
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured. Since 2.2. The probe reports
+Community Edition only, so NVD's pfSense Plus ranges (`sw_edition: plus`)
+never apply — see
+[Edition-aware matching](/en/cve/#edition-aware-matching).
 
 ## Lifecycle resolver
 

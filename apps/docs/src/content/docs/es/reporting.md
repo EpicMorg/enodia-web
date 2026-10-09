@@ -52,6 +52,10 @@ luego 4.0 y luego 2.0: 3.x es la versión que incluye casi cualquier CVE
 en ambas fuentes, así que las puntuaciones de una misma lista se
 mantienen en la misma escala. La columna `CVES` de las vistas en tabla
 cuenta las CVE distintas entre estas entradas, no las entradas en sí.
+Los hallazgos procedentes de los datos propios de un fabricante (consulte
+[Datos propios de los fabricantes](/es/cve/#datos-propios-de-los-fabricantes)) tienen la
+misma forma, con `Source` igual a `mariadb`, `atlassian`, `postgresql` o
+`nginx`.
 
 Los hallazgos a nivel de paquete de los hosts Linux (consulte
 [Correlación de CVE](/es/cve/#cve-a-nivel-de-paquete-para-distribuciones-linux))

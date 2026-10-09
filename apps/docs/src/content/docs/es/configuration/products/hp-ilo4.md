@@ -49,9 +49,9 @@ suposiciones.
 
 ## Correlación de CVE
 
-Todavía no se contrasta: las sondas de BMC son nuevas en la 2.1, y upstream ha dejado su correspondencia de CVE para una pasada
-posterior y específica. Consulte
-[Correlación de CVE](/es/cve/#qué-productos-tienen-correspondencia).
+Se contrasta con NVD y BDU FSTEC cuando hay configurado un [bloque `cve:`](/es/cve/). Desde la 2.2; la versión de
+firmware de la sonda (`2.82`) se compara tal cual con los rangos
+`integrated_lights-out_4` de NVD y con «HP iLO 4» de BDU.
 
 ## Resolvedor del ciclo de vida
 

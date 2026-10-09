@@ -1,6 +1,6 @@
 ---
 title: Correlación de CVE
-description: Cotejo de cada versión sondeada con BDU FSTEC y NIST NVD, y de los paquetes instalados en hosts Linux con los datos de seguridad propios de sus fabricantes, a partir de archivos que usted mismo descarga.
+description: Cotejo de cada versión sondeada con BDU FSTEC, NIST NVD y los datos de seguridad propios de los fabricantes, y de los paquetes instalados en hosts Linux con los de sus distribuciones, a partir de archivos locales que descarga enodia cve update o usted mismo.
 ---
 
 Desde la 2.0, enodia puede indicarle qué vulnerabilidades conocidas
@@ -16,6 +16,11 @@ datos públicas:
 Cualquiera de las dos funciona por separado; con ambas configuradas, sus
 hallazgos se combinan por CVE.
 
+Desde la 2.2, se suman los datos de seguridad propios de cuatro
+fabricantes allí donde los publican: MariaDB, Atlassian (Jira, Confluence,
+Bitbucket, Bamboo), PostgreSQL y nginx; consulte
+[Datos propios de los fabricantes](#datos-propios-de-los-fabricantes).
+
 Desde la 2.1, diez distribuciones Linux también se cotejan **por paquete
 instalado** con los datos de seguridad propios de sus fabricantes: el
 Debian Security Tracker, archivos OVAL del fabricante y el secdb de
@@ -25,14 +30,90 @@ Alpine (consulte
 Todo es opcional: una configuración sin bloque `cve:` se comporta
 exactamente como en la 1.x, y cada fuente funciona por separado.
 
-## enodia nunca descarga las bases de datos por sí mismo
+## Descarga de las bases de datos
 
-Usted descarga los archivos, decide cuándo actualizarlos y apunta enodia
-a ellos. enodia no tiene ninguna ruta de código que acceda por su cuenta
-a ninguna de estas fuentes; es el mismo razonamiento de red cerrada
-que el del [diseño en dos fases](/es/concepts/#dos-fases-separables-a-propósito):
+enodia coteja solo con archivos locales. `check`, `collect` y `serve`
+nunca descargan nada; es el mismo razonamiento de red cerrada que el del
+[diseño en dos fases](/es/concepts/#dos-fases-separables-a-propósito):
 la máquina que ejecuta `check` no necesita acceso a internet para la
-correlación de CVE, solo una copia de los archivos.
+correlación de CVE, solo una copia de los archivos. Desde la 2.2, un
+comando aparte los obtiene, y solo cuando usted lo ejecuta:
+`enodia cve update`. O descárguelos usted mismo, como se describe más
+abajo para cada fuente; los archivos son los mismos en ambos casos.
+
+### `enodia cve update`
+
+```bash
+enodia cve update                         # todos los cve.*.path de la configuración activa
+enodia cve update --from inventory.jsonl  # también lo que necesitan los hosts de ese inventario
+enodia cve update --dry-run               # enumera lo que se obtendría, sin descargar nada
+```
+
+En cada `cve.*.path` configurado obtiene lo que lee esa entrada:
+
+- **BDU**: `vulxml.zip`. Aquí `cve.bdu.path` tiene que ser un `.zip`; las
+  formas `.xml` y `.tar.gz` que también acepta la búsqueda son un
+  reempaquetado suyo, que `update` no produce.
+- **NVD**: el archivo de este año, el del año pasado y el de cualquier año
+  que aún no esté en disco; `--all-years` actualiza todos los años (NVD
+  regenera a diario todos los archivos anuales). `cve.nvd.path` tiene que
+  ser un directorio.
+- **Debian**: el `.json` del tracker.
+- **OVAL, secdb de Alpine, páginas por versión mayor de PostgreSQL**: un
+  archivo por versión, así que las versiones proceden de tres lugares:
+  los archivos que ya están en el directorio, los inventarios indicados
+  con `--from` (las versiones que ejecuten sus hosts) y `--oval`,
+  `--alpine` y `--postgresql`. `cve.oval.path` y `cve.alpine.path` tienen
+  que ser directorios; un `cve.postgresql.path` que sea un archivo recibe
+  solo la página principal.
+- **MariaDB, Atlassian, nginx** y la página principal de PostgreSQL: un
+  archivo cada uno.
+
+| Opción | Obtiene |
+|---|---|
+| `--from <inventory>` | las versiones OVAL, ramas de Alpine y versiones mayores de PostgreSQL que necesitan los hosts de ese inventario (repetible) |
+| `--oval <release>` | una versión OVAL: `ubuntu:<codename>`, `rhel:<N>`, `almalinux:<N>`, `oracle-linux:<N>`, `astra-linux:<X.Y>`, `redos:<X.Y>` (repetible) |
+| `--alpine <branch>` | el secdb de una rama de Alpine, p. ej. `v3.22` (repetible) |
+| `--postgresql <major>` | la página de seguridad propia de una versión mayor de PostgreSQL, p. ej. `13` (repetible) |
+| `--all-years` | todos los años de NVD, no solo este, el pasado y los que falten |
+| `--dry-run` | enumera lo que se obtendría, sin descargar nada |
+
+Cada archivo se solicita con If-Modified-Since respecto a su copia en
+disco, se descarga en `.enodia-update/` junto a ella, **se carga con el
+mismo código que usa la búsqueda de CVE** y solo entonces sustituye a la
+copia anterior: un zip truncado o una página de error HTML nunca
+sustituyen a un archivo que funciona. Un archivo sin cambios cuesta una
+solicitud (MariaDB, PostgreSQL y Atlassian no envían Last-Modified, así
+que esos se vuelven a descargar y se comparan). Los errores de red, 429 y
+5xx se reintentan dos veces. Un fallo no detiene el resto; el código de
+salida es `1` si falló algún archivo. Ejecútelo desde cron: el siguiente
+ciclo de `check` o `serve` recoge los archivos nuevos.
+
+TLS se verifica contra las raíces de confianza del sistema, más lo que
+añada un bloque `cve.update`:
+
+```yaml title="enodia.yaml"
+cve:
+  update:
+    ca_file: /etc/enodia/russian-trusted.pem  # se añade a las raíces del sistema: PEM (uno o varios) o DER
+    ca_dir: /etc/enodia/ca                    # cada archivo de certificado que contenga, igualmente
+    tls_skip_verify: false                    # true: no verifica nada, en ninguna descarga
+```
+
+bdu.fstec.ru lo necesita: su cadena termina en la Russian Trusted Root
+CA, que casi ningún almacén de confianza incluye, y el servidor no envía
+su intermedio (consulte [BDU FSTEC](#bdu-fstec) más abajo). Sin ninguno
+de los dos, la descarga de BDU falla con
+`certificate signed by unknown authority` y las demás se completan
+igualmente. La Root CA y la Sub CA de 2024 se publican en
+`http://nuc-cdp.digital.gov.ru/cdp/rootca_ssl_rsa2022.crt` y
+`http://nuc-cdp.digital.gov.ru/cdp/subca_ssl_rsa2024.crt`; un archivo con
+ambas concatenadas sirve como `ca_file`.
+
+Nombra los archivos igual que los comandos manuales de más abajo
+(`v3.22-main.json`, `13.html`, …), así que ambos métodos se pueden
+combinar. Los hosts a los que se conecta se enumeran en la página de
+[Privacidad](/es/privacy/).
 
 ### BDU FSTEC
 
@@ -149,6 +230,56 @@ for b in v3.20 v3.22; do
 done
 ```
 
+### Tabla de CVE propia de MariaDB
+
+Un único archivo, para los destinos `mariadb`: la propia página de MariaDB
+"Security Vulnerabilities (CVE) Fixed in MariaDB Community Server",
+guardada tal cual en su fuente Markdown (unos 320 KB):
+
+```bash
+curl -fsSL -o /var/lib/enodia/cve/mariadb.md \
+  https://mariadb.com/docs/server/security/cve/community-server.md
+```
+
+Comprobado en vivo el 2026-10-09.
+
+### Datos de vulnerabilidades de Atlassian
+
+Un único archivo, para los destinos `jira`, `confluence`, `bitbucket` y
+`bamboo`: la exportación de transparencia de vulnerabilidades de
+Atlassian, el JSON que devuelve esta URL, guardado tal cual (unos 2,3 MB,
+sin inicio de sesión):
+
+```bash
+curl -fsSL -o /var/lib/enodia/cve/atlassian.json \
+  https://api.atlassian.com/vuln-transparency/v1/products
+```
+
+### Páginas de seguridad de PostgreSQL
+
+Para los destinos `postgresql`: la página de seguridad del proyecto
+guardada como HTML. Solo nombra las versiones mayores que tienen soporte
+hoy; para una versión mayor más antigua, guarde su propia página
+(`/support/security/<major>/`) en el mismo directorio:
+
+```bash
+mkdir -p /var/lib/enodia/cve/postgresql && cd /var/lib/enodia/cve/postgresql
+curl -fsSL -o security.html https://www.postgresql.org/support/security/
+curl -fsSL -o 13.html   https://www.postgresql.org/support/security/13/
+```
+
+### Avisos de seguridad de nginx
+
+Un único archivo, para los destinos `nginx`: la página de avisos guardada
+como HTML:
+
+```bash
+curl -fsSL -o /var/lib/enodia/cve/nginx.html \
+  https://nginx.org/en/security_advisories.html
+```
+
+Las tres URL se comprobaron en vivo el 2026-10-09.
+
 ## Configuración
 
 Un bloque `cve:` en `enodia.yaml` —no en `settings.yaml`, ya que cambia
@@ -167,6 +298,14 @@ cve:
     path: /var/lib/enodia/cve/oval
   alpine:
     path: /var/lib/enodia/cve/alpine
+  mariadb:
+    path: /var/lib/enodia/cve/mariadb.md
+  atlassian:
+    path: /var/lib/enodia/cve/atlassian.json
+  postgresql:
+    path: /var/lib/enodia/cve/postgresql
+  nginx:
+    path: /var/lib/enodia/cve/nginx.html
 targets:
   - id: gitlab-main
     product: gitlab
@@ -181,6 +320,11 @@ targets:
 | `cve.debian.path` | la exportación del tracker: `.json`, `.json.gz` o `.json.zip` |
 | `cve.oval.path` | un archivo OVAL (`.xml` o `.xml.bz2`), o un directorio que los contenga |
 | `cve.alpine.path` | un archivo `.json` de secdb, o un directorio que los contenga |
+| `cve.mariadb.path` | el `community-server.md` de MariaDB, guardado tal cual |
+| `cve.atlassian.path` | el JSON vuln-transparency de Atlassian, guardado tal cual |
+| `cve.postgresql.path` | la página de seguridad de PostgreSQL como HTML, o un directorio con varias de esas páginas |
+| `cve.nginx.path` | el `security_advisories.html` de nginx, guardado tal cual |
+| `cve.update` | opciones de TLS solo para [`enodia cve update`](#enodia-cve-update): `ca_file`, `ca_dir`, `tls_skip_verify` |
 
 Las rutas relativas se resuelven respecto al directorio del archivo de
 configuración que las menciona, igual que `credentials_file`. El bloque
@@ -197,9 +341,10 @@ solo que sin CVE.
 silencio: `check` termina con `stat ...: no such file or directory` en
 lugar de producir un informe que, sin avisar, no contiene ninguna CVE.
 Desde la 2.1, `enodia config validate` también comprueba que exista cada
-ruta configurada, así que una errata aparece ahí primero. Si un archivo
-se puede analizar realmente sigue descubriéndose solo cuando una
-ejecución lo carga.
+ruta configurada, así que una errata aparece ahí primero (desde la 2.2,
+también `cve.update.ca_file` y `ca_dir`). Si un archivo se puede analizar
+realmente sigue descubriéndose solo cuando una ejecución lo carga, o
+cuando `enodia cve update` lo descarga.
 
 :::caution[Rutas de Windows]
 Escriba una ruta de Windows sin comillas, entre comillas simples, con
@@ -259,7 +404,8 @@ los archivos desde cron surte efecto sin reiniciar el servidor.
   incluye la corrección, con su lista de CVE plegada debajo. Es CSS puro: el informe predeterminado sin conexión sigue sin contener
   nada de JavaScript.
 - **`export --format json`**: cada hallazgo por fuente, completo, en la
-  matriz `cves` de cada evaluación: la fuente (`bdu`/`nvd`), el ID del
+  matriz `cves` de cada evaluación: la fuente (`bdu`, `nvd` o la de un
+  fabricante: `mariadb`, `atlassian`, `postgresql`, `nginx`), el ID del
   aviso, los ID de CVE, el título, el texto de severidad de la propia
   fuente, el nombre de producto o CPE coincidente, el rango de versiones
   y una puntuación CVSS analizada. A diferencia de la tabla y de la lista
@@ -280,7 +426,9 @@ cuestión abierta upstream.
 
 ## Qué productos tienen correspondencia
 
-63 de los 96 productos: 53 por nombre de producto con BDU y NVD, con cada
+91 de los 123 productos: 81 por nombre de producto con BDU y NVD (seis de
+ellos también con los datos propios de su fabricante; véase
+[más abajo](#datos-propios-de-los-fabricantes)), con cada
 nombre de fabricante/producto comprobado literalmente contra las
 exportaciones completas reales, y 10 distribuciones Linux por paquete
 instalado (véase la sección siguiente). Consulte la página de cada
@@ -301,18 +449,15 @@ Sin correspondencia, cada uno por un motivo:
   versión.
 - **ESXi y vCenter**: el mismo problema: casi todas sus entradas son
   literales del estilo `7.0` + `update_1`.
-- **Synology DSM**: límites como `6.2.4-25556-3` que el estricto
-  analizador de rangos rechaza.
 - **TrueNAS**: demasiado pocas entradas, con un esquema de versiones
   distinto del que informa la sonda.
 - **Sin datos utilizables en ninguna de las fuentes**: Kitsu, Zou,
-  postgres_exporter, Perforce Proxy, Perforce Helix Swarm.
+  postgres_exporter, Perforce Proxy, Perforce Helix Swarm, Supermicro
+  BMC, LibreTranslate, TorrServer y Euro-Office (una bifurcación sin
+  entradas propias).
+- **PostHog**: sus límites en NVD son commits de git, no versiones.
 - **`generic`**: un analizador escrito a mano no tiene una identidad de
   producto que buscar.
-- **Aún sin correspondencia**: MariaDB, pfSense y las tres sondas de BMC
-  (Supermicro, Dell iDRAC, HP iLO 4), todas nuevas en la 2.1. Upstream ha
-  dejado su correspondencia de CVE para una pasada posterior y
-  específica.
 
 ## CVE a nivel de paquete para distribuciones Linux
 
@@ -376,12 +521,143 @@ reales, GitLab 19.2.2 CE ve 4 de las 9 de NVD, y Nextcloud 27.1.3 CE, 11
 de 23. Cuando se desconoce la edición (un servidor antiguo que no la
 informa), se conservan todos los hallazgos.
 
+Desde la 2.2, las versiones de algunos productos más indican a qué línea
+o edición se aplica un rango:
+
+- **Jenkins**: las versiones semanales (`2.580`) y LTS (`2.568.3`)
+  reciben la misma corrección con números distintos, y ambas bases de
+  datos escriben un rango para cada una. La forma de la versión elige la
+  línea (dos partes, semanal; tres, LTS), así que una LTS corregida ya no
+  se marca por el límite semanal de la misma corrección.
+- **Splunk**: solo se aplican los rangos de Splunk Enterprise (el propio
+  `product_type` de splunkd indica cuál es); Splunk Cloud no tiene
+  correspondencia.
+- **pfSense**: la sonda informa solo de Community Edition, así que los
+  rangos de pfSense Plus nunca se aplican.
+- **WAPT**: la propia edición del servidor (`community` o `enterprise`)
+  se transmite tal cual.
+- **Kafka**: una compilación de Confluent Platform (`7.6.1-ccs`) no
+  recibe ninguna búsqueda: su propia numeración se leería como más
+  reciente que cualquier límite de Apache Kafka.
+
+### Dell iDRAC y Synology DSM
+
+**iDRAC**: ambas bases de datos nombran cada generación de iDRAC como un
+producto propio, y sus números de firmware se solapan (iDRAC7 e iDRAC8
+ejecutan ambos la 2.x, con correcciones distintas). La generación se lee
+del `extra.model` de la sonda, la propia cadena de modelo de Redfish: 11G
+es iDRAC6; 12G, iDRAC7; 13G, iDRAC8; 14G–16G, iDRAC9; 17G, iDRAC10. Sin
+modelo, solo se busca el firmware 3.x y posterior, que solo puede ser
+iDRAC9.
+
+**Synology DSM**: una versión consta de versión, compilación y Update:
+Synology escribe `DSM 7.2.1-69057 Update 6`, y NVD y BDU,
+`7.2.1-69057-6`. Desde la 2.2, la sonda registra además el Update en
+`extra.update`, y ambos lados se combinan en una única versión
+comparable. Un inventario recopilado antes de la 2.2 no tiene
+`extra.update` y se lee como Update 0: pueden marcarse Updates ya
+corregidos, pero no se pasa por alto ninguno.
+
 ### SSH
 
 La sonda [`ssh`](/es/configuration/products/ssh/) cubre cualquier
 implementación de SSH, así que se coteja por el banner: `OpenSSH_…` busca
 OpenSSH, `dropbear_…` busca Dropbear, y cualquier otra pila SSH no
 recibe ninguna búsqueda en lugar de tomar prestadas las CVE de OpenSSH.
+
+## Datos propios de los fabricantes
+
+BDU y NVD describen a menudo una corrección en una rama como un rango
+abierto ("before 11.4.10"), que entonces cubre también todas las ramas
+más antiguas, incluidas versiones corregidas y ramas que nunca tuvieron
+el fallo. Cuatro fabricantes publican ellos mismos la información exacta
+por rama, y enodia la lee junto a BDU y NVD con una regla adicional:
+**cuando los datos del fabricante conocen una CVE, su veredicto
+prevalece**; se descarta un hallazgo de BDU o NVD cuyas CVE cubre el
+fabricante y que este no marca para esta versión. Las CVE que el
+fabricante no incluye siguen procediendo de BDU y NVD.
+
+| Clave | Productos | Fuente |
+|---|---|---|
+| `cve.mariadb.path` | `mariadb` | la tabla de CVE corregidas de MariaDB |
+| `cve.atlassian.path` | `jira`, `confluence`, `bitbucket`, `bamboo` | los datos de vulnerabilidades por versión de Atlassian |
+| `cve.postgresql.path` | `postgresql` | las páginas de seguridad de PostgreSQL |
+| `cve.nginx.path` | `nginx` | los avisos de seguridad de nginx |
+
+Sin estas claves, los productos se siguen cotejando únicamente con BDU y
+NVD, con el problema de solapamiento descrito arriba.
+
+### MariaDB
+
+MariaDB mantiene cinco o seis series de versiones a la vez. Con versiones
+reales de un parque, los rangos de BDU y NVD marcaban las últimas
+versiones, totalmente parcheadas, de series mantenidas (10.11.19,
+11.4.13), mientras que esas mismas dos bases de datos pasaban por alto 9
+de las 21 CVE que la propia MariaDB indica para la 10.11.8.
+
+`cve.mariadb.path` añade la propia tabla de CVE corregidas de MariaDB,
+que nombra la versión que corrige cada CVE **por serie**. Las CVE que la
+tabla no incluye (más recientes que su copia descargada, exclusivas de
+BDU o sin identificador CVE) siguen procediendo de BDU y NVD.
+
+Cómo se lee la tabla:
+
+- Una serie con su propia corrección es vulnerable desde su primera
+  versión hasta esa corrección.
+- Una serie sin corrección propia que todavía se mantenía cuando la CVE
+  se corrigió en otra serie no está afectada: MariaDB corrige todas las
+  series vigentes a la vez.
+- Una serie que ya había finalizado para entonces se marca en todas sus
+  versiones, con la corrección más baja de una serie más reciente como la
+  versión a la que migrar (`FixStatus` lo indica). Esto tiende a informar
+  de más a propósito, y solo para series finalizadas.
+
+### Atlassian
+
+La exportación de Atlassian enumera cada versión de Jira Software, Jira
+Core, Confluence, Bitbucket y Bamboo (Server y Data Center) con las CVE
+que la afectan y la versión que corrige cada una, **incluidas las CVE de
+dependencias de terceros**, que las entradas de Atlassian en NVD nunca
+incluyen. La sonda no puede distinguir Server de Data Center, así que se
+leen ambas listas. Jira Service Management numera sus versiones por su
+cuenta y no tiene correspondencia; las versiones candidatas y las EAP se
+omiten.
+
+Un destino se evalúa **dentro de su propia rama major.minor**: desde una
+versión afectada hasta la siguiente que figure como su corrección, o
+hasta el final de la rama si no sigue ninguna corrección. Jira 10.3.26 no
+se marca por una CVE que Atlassian incluye solo para la 10.1 y la 11.3.
+Como Atlassian enumera las versiones una a una, su veredicto vale solo
+para una versión que figure en la lista: una versión más reciente que su
+copia del archivo conserva los hallazgos de BDU y NVD. Upstream midió que
+la versión más reciente de cada rama mantenida no tiene hallazgos de
+Atlassian, mientras que las más antiguas ganan muchos: Jira 10.3.12 pasó
+de 4 CVE a 119, casi todas de dependencias corregidas en versiones 10.3
+posteriores.
+
+### PostgreSQL
+
+La página de seguridad nombra, para cada CVE, las versiones mayores con
+soporte a las que afecta y la corrección en cada una. Su veredicto cubre
+solo las versiones mayores que nombran las páginas guardadas: la página
+principal enumera solo las versiones mayores con soporte hoy, así que
+para una versión mayor finalizada (13, 9.6) guarde su propia página en
+el mismo directorio; sin ella, esa versión mayor conserva los hallazgos
+de BDU y NVD. Una versión mayor que ya había finalizado antes de que
+apareciera una CVE se marca sin corrección cuando la CVE se remonta hasta
+la versión mayor más antigua que aún tenía soporte entonces, igual que
+con las series finalizadas de MariaDB. Las filas `packaging` (un
+instalador o una compilación RPM) se registran, pero no se marcan.
+Upstream midió que las versiones actuales 18/17/16/15/14 pasaron de hasta
+55 hallazgos de BDU cada una a ninguno.
+
+### nginx
+
+Cada aviso enumera las versiones vulnerables y, por rama, la primera
+versión corregida (`1.31.3+, 1.30.4+`): la estable 1.30.5 ya no se marca
+por un rango escrito hasta la corrección de mainline. Las ramas que nunca
+recibieron la corrección siguen marcadas; los avisos solo para
+nginx/Windows se omiten.
 
 ## Limitaciones conocidas
 
@@ -390,7 +666,8 @@ recibe ninguna búsqueda en lugar de tomar prestadas las CVE de OpenSSH.
   mismo límite inferior, de modo que una versión que ya es la corrección
   en su propia rama puede seguir cayendo dentro del rango más amplio de
   una rama hermana (Confluence 8.3.3 frente a CVE-2023-22515 es el
-  ejemplo documentado). Los rangos de NVD para la misma CVE tienen sus
+  ejemplo documentado; los rangos por rama de Synology DSM hacen lo
+  mismo: DSM 7.2.1-69057 Update 8 recibe 5 hallazgos de BDU). Los rangos de NVD para la misma CVE tienen sus
   propios límites inferiores y no presentan este problema. enodia opta
   deliberadamente por informar de un hallazgo que conviene verificar en
   lugar de omitir en silencio uno real.

@@ -3,23 +3,39 @@ title: TeamCity
 description: Configuración de enodia para sondear JetBrains TeamCity.
 ---
 
-Lee `GET /app/rest/server` (el punto de entrada al que remite en primer
-lugar la propia referencia de la API REST de TeamCity) para obtener la
-versión.
+Lee la versión de forma anónima desde `GET /app/rest/server/version`
+cuando no hay credenciales configuradas, o desde `GET /app/rest/server`
+(el punto de entrada al que remite en primer lugar la propia referencia
+de la API REST de TeamCity) cuando hay un token.
 
 ```yaml
 targets:
   - id: teamcity-main
     product: teamcity
     address: https://teamcity.example.com
-    credentials: teamcity-pat
+    # credentials: teamcity-pat    # opcional, véase más abajo
 ```
 
-## Autenticación — obligatoria, y fácil de confundir
+## Autenticación — opcional, y fácil de confundir si la añade
 
-No hay acceso anónimo por defecto: una instancia nueva responde `401` con
-desafíos tanto Basic como Bearer (el inicio de sesión como invitado está
-desactivado por defecto). TeamCity tiene **dos tipos distintos de token,
+**No se necesitan credenciales.** TeamCity sirve `/app/rest/server/version`
+a cualquiera, como texto plano (`2026.1.1 (build 222577)`), incluso con el
+inicio de sesión como invitado desactivado. Confirmado en servidores
+nuevos de la 2017.2 a la 2026.1 sin ningún administrador creado, y en
+siete instancias de producción (de la 2024.03 a la 2026.1.3) sin
+credenciales. No es acceso de invitado: `/app/rest/server` y los
+endpoints exclusivos de invitado se rechazan en esos mismos servidores.
+Mientras TeamCity se está iniciando, responde a cualquier ruta con una
+página HTML de mantenimiento con código 200, por lo que la respuesta debe
+coincidir por completo con `YYYY.N[.N] (build N)` o el destino falla como
+no analizable.
+
+**Con un token configurado**, la sonda lee `/app/rest/server` en su lugar:
+usted ha pedido una lectura autenticada, esta incluye además `internalId`,
+y un token incorrecto sigue siendo un error de autenticación visible en
+lugar de quedar enmascarado por la ruta anónima. `/app/rest/server` nunca
+es anónimo: una instancia nueva responde `401` con desafíos tanto Basic
+como Bearer. TeamCity tiene **dos tipos distintos de token,
 confirmado en vivo, que solo funcionan como tipos de credencial opuestos**:
 
 - El **token de arranque de superusuario** de un solo uso que un servidor
@@ -54,7 +70,8 @@ primer inicio de sesión.
 ## Campos registrados
 
 - `version`: la cadena completa, p. ej. `2026.2 (build 238924)`
-- `extra.buildNumber`, `extra.internalId`
+- `extra.buildNumber`
+- `extra.internalId`: solo con un token (`/app/rest/server`)
 
 ## Correlación de CVE
 

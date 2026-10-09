@@ -39,7 +39,12 @@ credentials:
 
 ## Corelare CVE
 
-Se corelează cu NVD și BDU FSTEC atunci când este configurat un [bloc `cve:`](/ro/cve/).
+Se corelează cu NVD și BDU FSTEC atunci când este configurat un [bloc `cve:`](/ro/cve/). Versiunile weekly (`2.580`) și LTS
+(`2.568.3`) primesc aceeași corecție sub numere diferite; începând cu
+2.2, forma versiunii alege linia de versiuni, astfel încât o versiune LTS
+corectată nu mai este semnalată de intervalul weekly al aceleiași
+corecții — consultați
+[Potrivire în funcție de ediție](/ro/cve/#potrivire-în-funcție-de-ediție).
 
 ## Rezolvatorul ciclului de viață
 

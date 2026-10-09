@@ -43,7 +43,13 @@ nombre de base de datos.
 
 ## Correlación de CVE
 
-Se contrasta con NVD y BDU FSTEC cuando hay configurado un [bloque `cve:`](/es/cve/).
+Se contrasta con NVD y BDU FSTEC cuando hay configurado un [bloque `cve:`](/es/cve/). Desde la 2.2, `cve.postgresql.path`
+añade las propias páginas de seguridad del proyecto, que nombran la
+corrección por versión mayor: para una versión mayor que nombren las
+páginas guardadas, su veredicto sustituye a los rangos sin rama de BDU,
+que de otro modo marcan la última versión de cada versión mayor más
+antigua. Consulte
+[Datos propios de los fabricantes → PostgreSQL](/es/cve/#postgresql).
 
 ## Resolvedor del ciclo de vida
 

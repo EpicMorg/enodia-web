@@ -38,7 +38,11 @@ Doar `version` — această sondă nu înregistrează niciun câmp `extra`.
 
 ## Corelare CVE
 
-Se corelează cu NVD și BDU FSTEC atunci când este configurat un [bloc `cve:`](/ro/cve/).
+Se corelează cu NVD și BDU FSTEC atunci când este configurat un [bloc `cve:`](/ro/cve/). Începând cu 2.2, `cve.nginx.path` adaugă
+avizele de securitate proprii ale nginx, care numesc prima versiune
+corectată per ramură: o versiune stabilă cu corecția (1.30.5) nu mai este
+semnalată de un interval scris până la corecția din mainline. Consultați
+[Datele proprii ale producătorilor → nginx](/ro/cve/#nginx).
 
 ## Rezolvatorul ciclului de viață
 

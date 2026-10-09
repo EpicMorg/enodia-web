@@ -32,6 +32,16 @@ cve:                                 # opțional, vedeți „Corelare CVE”
     path: oval/
   alpine:
     path: alpine/
+  mariadb:
+    path: mariadb.md
+  atlassian:
+    path: atlassian.json
+  postgresql:
+    path: postgresql/
+  nginx:
+    path: nginx.html
+  update:                            # opțiuni TLS pentru „enodia cve update”
+    ca_file: russian-trusted.pem
 credentials: {}                      # opțional, vedeți „Credențiale”
 targets: []                          # serviciile dumneavoastră
 ```
@@ -61,8 +71,14 @@ Opțional. Indică enodia un export BDU FSTEC (`cve.bdu.path`), feed-uri
 JSON NVD (`cve.nvd.path`) și, pentru potrivirea la nivel de pachet pe
 gazdele Linux, Debian Security Tracker (`cve.debian.path`), fișiere OVAL
 ale producătorilor (`cve.oval.path`) și secdb-ul Alpine
-(`cve.alpine.path`) — oricare dintre ele, fiecare funcționează singură,
-toate descărcate de dumneavoastră; enodia nu le descarcă niciodată. Căile relative se rezolvă față de
+(`cve.alpine.path`), plus datele proprii ale producătorilor: tabelul
+MariaDB cu CVE-urile corectate (`cve.mariadb.path`), datele Atlassian
+(`cve.atlassian.path`), ale PostgreSQL (`cve.postgresql.path`) și ale
+nginx (`cve.nginx.path`) — oricare dintre ele, fiecare funcționează
+singură. `enodia cve update` le descarcă în aceste căi (opțiunile sale
+TLS se află în `cve.update`: `ca_file`, `ca_dir`, `tls_skip_verify`) sau
+le descărcați dumneavoastră; `check`, `collect` și `serve` nu descarcă
+niciodată nimic. Căile relative se rezolvă față de
 directorul acestei configurații, iar o cale configurată care nu există
 reprezintă o eroare. Ce face, cum obțineți fișierele și ce produse sunt
 potrivite: [Corelare CVE](/ro/cve/).
@@ -109,7 +125,7 @@ FreeRADIUS care rulează în Docker sau Podman.
 Consultați **Configurarea produselor** în bara laterală (sau tabelul
 [Produse acceptate](/ro/products/)) pentru endpoint-ul exact, cerințele
 de autentificare și câmpurile înregistrate pentru fiecare dintre cele
-96 de sonde integrate — `path`, `credentials` și `options` de mai sus
+123 de sonde integrate — `path`, `credentials` și `options` de mai sus
 reprezintă forma generală; pagina fiecărui produs spune de ce are
 nevoie efectiv.
 
@@ -179,6 +195,19 @@ credentials:
 privată, la fel ca orice client SSH (`username` plus `password` cu
 `kind: password` sau `username` plus `private_key_file` cu
 `kind: ssh-key`).
+
+**`kind`-ul unei credențiale trebuie să corespundă cu ceea ce citește
+produsul său** — produsele HTTP citesc `basic`, `bearer` sau
+`token-header`; sondele SSH citesc `ssh-key` sau `password`; Redis,
+PostgreSQL și celelalte sonde pe protocoale native citesc `password`. Un
+nume de utilizator/parolă pentru o interfață web sau un API REST
+(RouterOS, Harbor, Jenkins, un BMC) este, așadar, `kind: basic`, nu
+`kind: password`. Pagina fiecărui produs indică ce tipuri acceptă. O
+nepotrivire este o eroare fatală în `enodia config validate` și în
+fiecare rulare, care numește tipurile pe care produsul le acceptă —
+versiunile anterioare ignorau tacit o astfel de credențială și trimiteau
+cererea fără nicio autentificare, care apoi eșua cu o eroare de
+autentificare ce nu indica nicidecum cauza.
 
 ### Verificarea cheii de host SSH
 

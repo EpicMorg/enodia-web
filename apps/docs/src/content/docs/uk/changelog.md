@@ -13,6 +13,141 @@ enodia; ця сторінка його віддзеркалює, синхрон�
 перезбирання без функціональних змін, а не для того, щоб оминути реальне
 підвищення версії.
 
+## 2.2.0+0 — 2026-10-09
+
+`enodia cve update` сама завантажує бази CVE, до БДУ і NVD долучаються
+власні дані безпеки вендорів (MariaDB, Atlassian, PostgreSQL, nginx),
+зіставлення з CVE охоплює iLO 4, iDRAC і Synology DSM, а також
+зʼявляються 27 нових проб — загалом 123. Кожен новий ключ `cve:`
+необовʼязковий, а конфігурації та інвентарі 2.1 працюють без змін — крім
+облікових даних такого виду, якого їхній продукт ніколи не читає: це
+тепер помилка (див. «Виправлено»).
+
+### Додано
+
+- **[`enodia cve update`](/uk/cve/#enodia-cve-update)** завантажує бази
+  CVE, які називає кожен налаштований `cve.*.path`, — БДУ, NVD (поточний
+  рік, минулий і відсутні роки; `--all-years` — усі), Debian, OVAL і
+  Alpine (релізи, які вже є на диску, ті, що потрібні інвентарям із
+  `--from`, `--oval`/`--alpine`), MariaDB, Atlassian, PostgreSQL
+  (`--postgresql` — для сторінок окремих мажорних версій) і nginx.
+  If-Modified-Since; завантаження замінює файл лише після того, як він
+  успішно завантажиться. TLS перевіряється за системними кореневими
+  сертифікатами плюс `cve.update.ca_file` і `cve.update.ca_dir` або не
+  перевіряється зовсім із `cve.update.tls_skip_verify`. Усі інші команди
+  й надалі ніколи нічого не завантажують.
+- **27 нових проб:**
+  - [`splunk`](/uk/configuration/products/splunk/) — management API splunkd на порту 8089, Basic або токен Splunk.
+  - [`code-server`](/uk/configuration/products/code-server/) — `codeServerVersion` зі сторінки входу.
+  - [`phpipam`](/uk/configuration/products/phpipam/) — футер сторінки входу та версія ресурсів.
+  - [`domainmod`](/uk/configuration/products/domainmod/) — CHANGELOG у його вебкорені.
+  - [`netdata`](/uk/configuration/products/netdata/) — анонімний `/api/v1/info` агента.
+  - [`libretranslate`](/uk/configuration/products/libretranslate/) — публічний документ OpenAPI `/spec`.
+  - [`torrserver`](/uk/configuration/products/torrserver/) — `/echo`.
+  - [`kafka`](/uk/configuration/products/kafka/) — версія брокера через SSH з його власного jar-файлу, за потреби в контейнері; збірки Confluent Platform повідомляються як `confluent` разом із лінійкою Apache Kafka, яку вони містять.
+  - [`home-assistant`](/uk/configuration/products/home-assistant/) — `/api/config` з довгостроковим токеном доступу, `kind: bearer`.
+  - [`openhab`](/uk/configuration/products/openhab/) — анонімний корінь REST `/rest/`.
+  - [`doxygen`](/uk/configuration/products/doxygen/) — яким Doxygen згенеровано сайт документації, за його позначкою генератора.
+  - [`qbittorrent`](/uk/configuration/products/qbittorrent/) — API Web UI після входу через форму, `kind: password`.
+  - [`netbox`](/uk/configuration/products/netbox/) — `data-netbox-version` анонімної сторінки входу.
+  - [`greenbone`](/uk/configuration/products/greenbone/) — (псевдоніми `openvas`, `gsad`) версія gsad з його відповіді `/gmp`, без автентифікації.
+  - [`posthog`](/uk/configuration/products/posthog/) — git-коміт self-hosted PostHog з його анонімної сторінки входу.
+  - [`uptime-kuma`](/uk/configuration/products/uptime-kuma/) — входить через API socket.io Uptime Kuma (`kind: password`) і читає версію, яку той надсилає після входу.
+  - [`wapt`](/uk/configuration/products/wapt/) — анонімний `/ping` сервера WAPT.
+  - [`minio`](/uk/configuration/products/minio/) — `minio --version` через SSH, за потреби в контейнері; назви MinIO вигляду `RELEASE.<timestamp>` тепер порівнюються як версії.
+  - [`sentry`](/uk/configuration/products/sentry/) — версія self-hosted Sentry з його анонімної сторінки входу.
+  - [`zookeeper`](/uk/configuration/products/zookeeper/) — чотирилітерна команда `srvr`.
+  - [`ghost`](/uk/configuration/products/ghost/) — анонімний `/ghost/api/admin/site/`, який дає major.minor.
+  - [`onlyoffice`](/uk/configuration/products/onlyoffice/) — і [`euro-office`](/uk/configuration/products/euro-office/): ONLYOFFICE Docs і його форк Euro-Office, що читаються анонімно з `/index.html` сервера документів; сервер іншого бренду відхиляється із зазначенням продукту, який слід використати.
+  - [`weblate`](/uk/configuration/products/weblate/) — анонімний футер «Powered by Weblate».
+  - [`memcached`](/uk/configuration/products/memcached/) — команда `version` текстового протоколу, без облікових даних.
+  - [`rabbitmq`](/uk/configuration/products/rabbitmq/) — `/api/overview` плагіна management, `kind: basic`.
+  - [`cassandra`](/uk/configuration/products/cassandra/) — `release_version` через нативний протокол CQL v4, `kind: password`, якщо в кластері ввімкнено PasswordAuthenticator.
+
+- **CVE для цілей [`mariadb`](/uk/configuration/products/mariadb/).**
+  БДУ і NVD тепер охоплюють MariaDB, а новий `cve.mariadb.path` читає
+  власну таблицю виправлених CVE від MariaDB (`community-server.md`),
+  яка знає реліз із виправленням для кожної серії. Там, де таблиця
+  MariaDB знає CVE, її висновок замінює відкриті діапазони БДУ і NVD, тож
+  останній реліз підтримуваної серії більше не позначається CVE,
+  виправленими лише в новіших серіях, — див. [Власні дані
+  вендорів](/uk/cve/#власні-дані-вендорів).
+- **`cve.atlassian.path`**: власні дані Atlassian про CVE для кожного
+  релізу `jira`, `confluence`, `bitbucket` і `bamboo`, включно з CVE
+  сторонніх залежностей. Оцінюється в межах кожної гілки; для релізу,
+  який перелічує Atlassian, переважає її висновок, — див.
+  [Atlassian](/uk/cve/#atlassian).
+- **`cve.postgresql.path` і `cve.nginx.path`**: власні сторінки безпеки
+  проєктів із релізом-виправленням для кожної гілки. Поточні релізи
+  PostgreSQL 17/16/15/14 і nginx 1.30.5 більше не показують діапазонів
+  БДУ без привʼязки до гілок — див. [PostgreSQL](/uk/cve/#postgresql) і
+  [nginx](/uk/cve/#nginx).
+- **CVE ще для 24 продуктів**: cassandra, code-server, domainmod,
+  doxygen, ghost, greenbone, home-assistant, kafka, memcached, minio,
+  netbox, netdata, onlyoffice, openhab, pfsense, phpipam, qbittorrent,
+  rabbitmq, sentry, splunk, uptime-kuma, wapt, weblate, zookeeper. Версії
+  MinIO у вигляді часових позначок порівнюються; для pfSense CE і Splunk
+  Enterprise діапазони інших редакцій пропускаються; збірки Confluent
+  Kafka не шукаються.
+- **CVE для [`hp-ilo4`](/uk/configuration/products/hp-ilo4/),
+  [`dell-idrac`](/uk/configuration/products/dell-idrac/) і
+  [`synology-dsm`](/uk/configuration/products/synology-dsm/).** iDRAC
+  зіставляється окремо для кожного покоління (його визначає модель
+  Redfish); DSM порівнює версію, збірку й Update (`7.2.1-69057-6`), а
+  проба тепер записує Update в `extra.update`, — див.
+  [Dell iDRAC і Synology DSM](/uk/cve/#dell-idrac-і-synology-dsm).
+  Загалом тепер зіставляється 91 зі 123 продуктів — див.
+  [які продукти зіставляються](/uk/cve/#які-продукти-зіставляються).
+- Сторінка [Конфіденційність](/uk/privacy/): до чого підключається
+  enodia (Ваші цілі, endoflife.date, GitHub API — лише назви продуктів і
+  репозиторіїв, — а також, лише для `enodia cve update`, видавці баз
+  CVE) і що вона зберігає (лише Ваші власні файли та локальний кеш).
+  Жодної телеметрії.
+
+### Змінено
+
+- Резолвер `github` пропускає релізи, тег яких позначає передреліз
+  (`5.3.0.M2`, `2026.10.0b7`, `-rc1`, `-beta.1`), навіть якщо GitHub їх так
+  не позначає; читає теги з підкресленнями (`Release_1_18_0`) і з
+  префіксом `release-` (`release-5.2.4`) як версії; а також відкидає
+  початкові `<repo>-`/`<repo>_` у тегах, тож `weblate-2026.10` читається
+  як `2026.10`, — див. [Підтримувані продукти](/uk/products/).
+- [`teamcity`](/uk/configuration/products/teamcity/) працює без
+  облікових даних: якщо їх не налаштовано, проба читає анонімний
+  `/app/rest/server/version`, відкритий на кожному перевіреному TeamCity
+  від 2017.2 до 2026.1 навіть із вимкненим гостьовим входом. Токен, як і
+  раніше, обирає `/app/rest/server`.
+
+### Виправлено
+
+- CVE для [`jenkins`](/uk/configuration/products/jenkins/): виправлений
+  LTS-реліз більше не позначається щотижневим діапазоном того самого
+  виправлення (LTS 2.568.3 — через «before 2.580»). Щотижневі та
+  LTS-діапазони тепер застосовуються лише до власної лінійки релізів.
+- Резолвер `github` більше не збоїть на репозиторіях, список релізів
+  яких перевищує 1 MiB (у minio/minio — 3,4 MB): тепер він читає до
+  8 MiB.
+- **Облікові дані такого виду, якого їхній продукт ніколи не надсилає,
+  тепер є помилкою конфігурації**, а не мовчки відкидаються. `kind:
+  password` на HTTP-продукті (RouterOS, Harbor, …) раніше призводив до
+  надсилання запиту взагалі без заголовка `Authorization`; тепер `config
+  validate` називає види, які продукт приймає, — для вебвходу це `kind:
+  basic`. **Перевірте конфігурацію перед оновленням**: запуск із такими
+  обліковими даними тепер відмовляється стартувати. Див. [Конфігурація →
+  Облікові дані](/uk/configuration/#облікові-дані).
+
+## 2.1.1+0 — 2026-10-08
+
+### Виправлено
+
+- MariaDB 11.0+ більше не приховує свою версію за префіксом `5.5.5-`
+  (`11.4.9-MariaDB-…`), тож [`mysql`](/uk/configuration/products/mysql/)
+  записувала такі сервери як MySQL, а
+  [`mariadb`](/uk/configuration/products/mariadb/) їх відхиляла. Тепер
+  обидві проби розпізнають MariaDB в будь-якому з двох виглядів. Ціль
+  `product: mysql`, спрямована на MariaDB 11.0+, тепер завершується
+  помилкою — переключіть її на `product: mariadb`.
+
 ## 2.1.0+0 — 2026-10-01
 
 Зіставлення з CVE опускається до рівня встановлених пакетів на десяти
@@ -115,7 +250,7 @@ enodia; ця сторінка його віддзеркалює, синхрон�
   або, для NVD, каталог файлів). Кожне джерело працює і саме по собі.
   Обидва розбираються потоково й кешуються: перший запуск після зміни
   бази даних триває близько хвилини для всього NVD разом із БДУ, кожен
-  наступний — менше секунди. Див. [як їх завантажити](/uk/cve/#enodia-ніколи-не-завантажує-бази-даних-сама),
+  наступний — менше секунди. Див. [як їх завантажити](/uk/cve/#завантаження-баз-даних),
   зокрема додатковий сертифікат CA, потрібний для bdu.fstec.ru.
 - **Зіставляється 52 проби** (53 назви продуктів в upstream — `ssh`
   рахується і як OpenSSH, і як Dropbear) — кожна проба, для якої є

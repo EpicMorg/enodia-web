@@ -3,22 +3,37 @@ title: TeamCity
 description: Configuring enodia to probe JetBrains TeamCity.
 ---
 
-Reads `GET /app/rest/server` — the entry point TeamCity's own REST API
-reference points at first — for the version.
+Reads the version anonymously from `GET /app/rest/server/version` when
+no credentials are configured, or from `GET /app/rest/server` — the
+entry point TeamCity's own REST API reference points at first — when a
+token is.
 
 ```yaml
 targets:
   - id: teamcity-main
     product: teamcity
     address: https://teamcity.example.com
-    credentials: teamcity-pat
+    # credentials: teamcity-pat    # optional, see below
 ```
 
-## Authentication — required, and easy to get backwards
+## Authentication — optional, and easy to get backwards if you add it
 
-There's no anonymous access by default — a fresh instance answers `401`
-with both Basic and Bearer challenges (guest login is off by default).
-TeamCity has **two distinct kinds of token, confirmed live, that only
+**No credentials needed.** TeamCity serves `/app/rest/server/version` to
+anyone, as plain text — `2026.1.1 (build 222577)` — even with guest login
+off. Confirmed on fresh servers 2017.2 through 2026.1 with no
+administrator created, and on seven production instances (2024.03 to
+2026.1.3) with no credentials. It isn't guest access: `/app/rest/server`
+and the guest-only endpoints are refused on the same servers. While
+TeamCity is starting up it answers every path with a 200 HTML
+maintenance page, so the reply has to match `YYYY.N[.N] (build N)` in
+full or the target fails as unparseable.
+
+**With a token configured** the probe reads `/app/rest/server` instead —
+you asked for an authenticated read, it also carries `internalId`, and
+a wrong token stays a visible auth error rather than being papered over
+by the anonymous path. `/app/rest/server` is never anonymous: a fresh
+instance answers `401` with both Basic and Bearer challenges. TeamCity
+has **two distinct kinds of token, confirmed live, that only
 work as opposite credential kinds**:
 
 - The one-time **superuser bootstrap token** a fresh server logs on
@@ -50,7 +65,8 @@ token is meant to be rotated away after first login.
 ## Recorded fields
 
 - `version` — the full string, e.g. `2026.2 (build 238924)`
-- `extra.buildNumber`, `extra.internalId`
+- `extra.buildNumber`
+- `extra.internalId` — only with a token (`/app/rest/server`)
 
 ## CVE correlation
 

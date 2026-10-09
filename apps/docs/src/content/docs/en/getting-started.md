@@ -88,12 +88,15 @@ on its own schedule — not by this project's own release pipeline
 anymore, though the published address and tags stay the same. Also
 published to `docker.io/epicmorg/enodia` and Quay, same tags — `latest`,
 a bare major (`2`), and the exact version with no build suffix (e.g.
-`2.0.0` — confirmed live on all three registries; an earlier pipeline's own tags looked like
+`2.1.1` — confirmed live on all three registries; an earlier pipeline's own tags looked like
 `1.0.0-1` instead, still pullable, just not how new releases tag from
 here on). Two real changes worth knowing about: the image is
 **`linux/amd64` only** now (arm64 was dropped when publishing moved),
 and it runs as **root** rather than a dedicated user, on the project's
-own `debian:trixie-light` house base instead of `scratch`.
+own `debian:trixie-light` house base instead of `scratch`. It declares
+`/var/lib/enodia/cve` as a volume for the
+[CVE databases](/en/cve/#downloading-the-databases) — mount your copies
+there, or let `enodia cve update` fill it.
 
 ### Build from source
 
