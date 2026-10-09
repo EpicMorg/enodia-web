@@ -12,6 +12,17 @@ seguem o formato `MAJOR.MINOR.PATCH+BUILD`, sem prefixo `v`; `+BUILD` são
 metadados de build do semver, usados apenas para uma recompilação sem
 mudança funcional, e não para evitar um incremento de versão real.
 
+## Não lançado
+
+<!-- NEXT-RELEASE: replace this heading with "## X.Y.Z+0 — YYYY-MM-DD" when the release is published. -->
+
+### Corrigido
+
+- [`kafka`](/pt-br/configuration/products/kafka/) executava `kafka-topics --version` (uma inicialização da
+  JVM, alguns segundos) a cada execução quando ele estava no `PATH`, mesmo
+  com o jar do broker já encontrado; agora ele só roda quando nenhum jar é
+  encontrado.
+
 ## 2.2.0+0 — 2026-10-09
 
 O `enodia cve update` baixa ele mesmo os bancos de dados de CVEs, os dados

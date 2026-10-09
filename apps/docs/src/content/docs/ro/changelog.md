@@ -13,6 +13,16 @@ configura efectiv ceva. Tag-urile urmează formatul
 metadate de build semver, folosite doar pentru un rebuild fără
 modificări funcționale, nu pentru a evita o creștere reală a versiunii.
 
+## Nelansat
+
+<!-- NEXT-RELEASE: replace this heading with "## X.Y.Z+0 — YYYY-MM-DD" when the release is published. -->
+
+### Corectat
+
+- [`kafka`](/ro/configuration/products/kafka/) pornea `kafka-topics --version` (o pornire a JVM, câteva
+  secunde) la fiecare rulare când acesta era în `PATH`, chiar dacă jar-ul
+  brokerului fusese găsit; acum rulează doar când nu se găsește niciun jar.
+
 ## 2.2.0+0 — 2026-10-09
 
 `enodia cve update` descarcă singur bazele de date CVE, datele de

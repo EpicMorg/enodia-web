@@ -12,6 +12,16 @@ affects how you'd actually configure something. Tags follow
 metadata, used only for a rebuild with no functional change, not to
 sidestep a real version bump.
 
+## Unreleased
+
+<!-- NEXT-RELEASE: replace this heading with "## X.Y.Z+0 — YYYY-MM-DD" when the release is published. -->
+
+### Fixed
+
+- [`kafka`](/en/configuration/products/kafka/) started `kafka-topics --version` (a JVM start, a few
+  seconds) on every run when it was on `PATH`, even with the broker's jar
+  found; it now runs only when no jar is.
+
 ## 2.2.0+0 — 2026-10-09
 
 `enodia cve update` downloads the CVE databases itself, vendors' own

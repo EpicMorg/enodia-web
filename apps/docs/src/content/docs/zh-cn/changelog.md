@@ -7,6 +7,14 @@ description: enodia 各版本的重要变更。
 ——本页是它的镜像，每次发布时与本站其余内容一同保持同步，并在某项变更会影响您实际配置方式的地方，附上指向本文档其他部分的链接。标签遵循 `MAJOR.MINOR.PATCH+BUILD` 格式，不带 `v` 前缀；
 `+BUILD` 是 semver 的构建元数据，仅用于没有功能变化的重新构建，而不是用来规避真正的版本号提升。
 
+## 未发布
+
+<!-- NEXT-RELEASE: replace this heading with "## X.Y.Z+0 — YYYY-MM-DD" when the release is published. -->
+
+### 修复
+
+- [`kafka`](/zh-cn/configuration/products/kafka/) 在 `kafka-topics --version` 位于 `PATH` 中时，即使已经找到 broker 的 jar，也会在每次运行时启动它（一次 JVM 启动，需要几秒）；现在只有在找不到 jar 时才会运行它。
+
 ## 2.2.0+0 — 2026-10-09
 
 `enodia cve update` 会自行下载 CVE 数据库，厂商自己的安全数据（MariaDB、Atlassian、PostgreSQL、nginx）加入 BDU 和 NVD 的行列，CVE 匹配扩展到 iLO 4、iDRAC 和 Synology DSM，并新增 27 个探针——共计 123 个。每个新的 `cve:` 键都是可选的，2.1 的配置和清单无需修改即可继续使用——唯一的例外是其产品从不读取的类型的凭据，它现在会被视为错误（参见“修复”）。

@@ -13,6 +13,17 @@ prefijo `v`; `+BUILD` son metadatos de compilación de semver, que se usan
 solo para una recompilación sin cambios funcionales, no para eludir un
 incremento de versión real.
 
+## Sin publicar
+
+<!-- NEXT-RELEASE: replace this heading with "## X.Y.Z+0 — YYYY-MM-DD" when the release is published. -->
+
+### Corregido
+
+- [`kafka`](/es/configuration/products/kafka/) ejecutaba `kafka-topics --version` (un arranque de la JVM,
+  unos segundos) en cada ejecución cuando estaba en el `PATH`, aunque ya
+  hubiera encontrado el jar del broker; ahora solo se ejecuta cuando no
+  encuentra ningún jar.
+
 ## 2.2.0+0 — 2026-10-09
 
 `enodia cve update` descarga por sí mismo las bases de datos de CVE, los

@@ -13,6 +13,17 @@ konfiguracji. Tagi mają postać `MAJOR.MINOR.PATCH+BUILD`, bez prefiksu
 ponownej kompilacji bez zmian funkcjonalnych, a nie do omijania
 rzeczywistego podbicia wersji.
 
+## Niewydane
+
+<!-- NEXT-RELEASE: replace this heading with "## X.Y.Z+0 — YYYY-MM-DD" when the release is published. -->
+
+### Naprawiono
+
+- [`kafka`](/pl/configuration/products/kafka/) uruchamiał `kafka-topics --version` (start JVM, kilka sekund)
+  przy każdym przebiegu, gdy był w `PATH`, nawet po znalezieniu jara
+  brokera; teraz uruchamia go tylko wtedy, gdy żaden jar nie zostanie
+  znaleziony.
+
 ## 2.2.0+0 — 2026-10-09
 
 `enodia cve update` samo pobiera bazy CVE, własne dane bezpieczeństwa
