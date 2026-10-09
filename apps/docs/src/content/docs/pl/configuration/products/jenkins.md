@@ -39,7 +39,11 @@ credentials:
 
 ## Korelacja CVE
 
-Dopasowywany do NVD i BDU FSTEC, gdy skonfigurowano [blok `cve:`](/pl/cve/).
+Dopasowywany do NVD i BDU FSTEC, gdy skonfigurowano [blok `cve:`](/pl/cve/). Wydania weekly (`2.580`)
+i LTS (`2.568.3`) otrzymują tę samą poprawkę pod różnymi numerami; od
+wersji 2.2 linię wydań wybiera sam kształt wersji, więc naprawione LTS
+nie jest już oznaczane przez zakres weekly tej samej poprawki — zobacz
+[Dopasowywanie z uwzględnieniem edycji](/pl/cve/#dopasowywanie-z-uwzględnieniem-edycji).
 
 ## Resolver cyklu życia
 

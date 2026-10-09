@@ -99,7 +99,10 @@ baixadas, mas não é assim que as novas versões são marcadas daqui em diante)
 Duas mudanças reais que vale conhecer: a imagem agora é **apenas
 `linux/amd64`** (o arm64 foi descartado quando a publicação mudou de lugar)
 e ela roda como **root** em vez de um usuário dedicado, sobre a base própria
-do projeto, `debian:trixie-light`, em vez de `scratch`.
+do projeto, `debian:trixie-light`, em vez de `scratch`. Ela declara
+`/var/lib/enodia/cve` como um volume para os
+[bancos de dados de CVEs](/pt-br/cve/#baixando-os-bancos-de-dados) — monte
+as suas cópias ali, ou deixe que o `enodia cve update` o preencha.
 
 ### Compilar a partir do código-fonte
 

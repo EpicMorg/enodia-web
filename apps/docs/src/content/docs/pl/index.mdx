@@ -62,8 +62,8 @@ To cała pętla: cel opisuje się raz, uruchamia `enodia check` i dla
 każdego celu otrzymuje trzy niezależne fakty — stan poprawek, stan
 cyklu życia oraz informację, czy istnieje nowsza gałąź — a do tego
 ważność wyliczoną na podstawie polityki, którą kontroluje użytkownik.
-Wystarczy wskazać w bloku `cve:` eksport BDU FSTEC i/lub NVD, a kolumna
-`CVES` wypełni się znanymi podatnościami każdej dokładnie zainstalowanej
+Wystarczy wskazać w bloku `cve:` eksport BDU FSTEC i/lub NVD (pobiera je
+`enodia cve update`), a kolumna `CVES` wypełni się znanymi podatnościami każdej dokładnie zainstalowanej
 wersji — a w dziesięciu dystrybucjach Linuksa także każdego
 zainstalowanego pakietu — zobacz [Korelacja CVE](/pl/cve/).
 
@@ -79,9 +79,9 @@ zainstalowanego pakietu — zobacz [Korelacja CVE](/pl/cve/).
 - **[Dokumentacja CLI](/pl/cli-reference/)** — każde polecenie, prosto
   z `--help`.
 - **[Korelacja CVE](/pl/cve/)** — znane podatności dla każdej
-  zainstalowanej wersji, z eksportów BDU FSTEC i NVD, oraz dla każdego
-  zainstalowanego pakietu na hostach z Linuksem.
-- **[Obsługiwane produkty](/pl/products/)** — wszystkie 96 sond.
+  zainstalowanej wersji, z BDU FSTEC, NVD i własnych danych dostawców,
+  oraz dla każdego zainstalowanego pakietu na hostach z Linuksem.
+- **[Obsługiwane produkty](/pl/products/)** — wszystkie 123 sondy.
 
 ## Nazwa
 

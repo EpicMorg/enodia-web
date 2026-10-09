@@ -48,9 +48,7 @@ odrzuca serwer MariaDB.
 
 ## Korelacja CVE
 
-Jeszcze bez dopasowania — MariaDB jest nowa w 2.1, a upstream odłożył jej
-mapowanie CVE na późniejszy, osobny etap. Zobacz stronę
-[Korelacja CVE](/pl/cve/#które-produkty-są-dopasowywane).
+Dopasowywany do NVD i BDU FSTEC, gdy skonfigurowano [blok `cve:`](/pl/cve/) — a przy `cve.mariadb.path` także do własnej tabeli naprawionych CVE MariaDB, której werdykt dla danej serii ma pierwszeństwo przed otwartymi zakresami BDU i NVD. Zobacz [Własne dane dostawców → MariaDB](/pl/cve/#mariadb).
 
 ## Resolver cyklu życia
 

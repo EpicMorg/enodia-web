@@ -42,9 +42,10 @@ wyłącznie na dokumentacji.
 
 ## Korelacja CVE
 
-Jeszcze bez dopasowania — pfSense jest nowy w 2.1, a upstream odłożył
-jego mapowanie CVE na późniejszy, osobny etap. Zobacz stronę
-[Korelacja CVE](/pl/cve/#które-produkty-są-dopasowywane).
+Dopasowywany do NVD i BDU FSTEC, gdy skonfigurowano [blok `cve:`](/pl/cve/). Od wersji 2.2. Sonda zgłasza
+wyłącznie Community Edition, więc zakresy pfSense Plus w NVD
+(`sw_edition: plus`) nigdy nie mają zastosowania — zobacz
+[Dopasowywanie z uwzględnieniem edycji](/pl/cve/#dopasowywanie-z-uwzględnieniem-edycji).
 
 ## Resolver cyklu życia
 

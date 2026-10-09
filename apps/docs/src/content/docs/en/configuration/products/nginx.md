@@ -35,7 +35,11 @@ Only `version` — this probe records no `extra` fields.
 
 ## CVE correlation
 
-Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured.
+Matched against NVD and БДУ ФСТЭК when a [`cve:` block](/en/cve/) is configured. Since 2.2, `cve.nginx.path` adds
+nginx's own security advisories, which name the first fixed release per
+branch: a stable release with the fix (1.30.5) is no longer flagged by a
+range written up to the mainline fix. See
+[Vendors' own data → nginx](/en/cve/#nginx).
 
 ## Lifecycle resolver
 

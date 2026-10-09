@@ -47,9 +47,7 @@ refuză un server MariaDB.
 
 ## Corelare CVE
 
-Încă nu se corelează — MariaDB este nou în 2.1, iar în amonte maparea
-sa CVE a fost lăsată pentru o etapă ulterioară, dedicată. Consultați
-[Corelare CVE](/ro/cve/#ce-produse-sunt-potrivite).
+Se corelează cu NVD și BDU FSTEC atunci când este configurat un [bloc `cve:`](/ro/cve/) — și, cu `cve.mariadb.path`, cu tabelul propriu al MariaDB cu CVE-urile corectate, al cărui verdict per serie are prioritate față de intervalele deschise ale BDU și NVD. Consultați [Datele proprii ale producătorilor → MariaDB](/ro/cve/#mariadb).
 
 ## Rezolvatorul ciclului de viață
 

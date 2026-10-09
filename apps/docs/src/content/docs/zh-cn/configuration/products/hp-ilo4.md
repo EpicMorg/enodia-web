@@ -38,7 +38,7 @@ iLO 4 的 API 自称“HP RESTful Root Service”——这是一个早于 Redfis
 
 ## CVE 关联
 
-尚未进行匹配——各 BMC 探针是 2.1 新增的，上游将它们的 CVE 映射留给之后专门的一轮工作。参见 [CVE 关联](/zh-cn/cve/#哪些产品会被匹配)。
+配置了 [`cve:` 块](/zh-cn/cve/)时，会与 NVD 和 BDU FSTEC 进行匹配。自 2.2 起；探针的固件版本（`2.82`）按原样与 NVD 的 `integrated_lights-out_4` 范围以及 BDU 的“HP iLO 4”进行比较。
 
 ## 生命周期解析器
 

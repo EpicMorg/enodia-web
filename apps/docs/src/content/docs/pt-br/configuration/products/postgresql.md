@@ -43,7 +43,12 @@ dados.
 
 ## Correlação de CVEs
 
-Correlacionado com o NVD e o BDU FSTEC quando um [bloco `cve:`](/pt-br/cve/) está configurado.
+Correlacionado com o NVD e o BDU FSTEC quando um [bloco `cve:`](/pt-br/cve/) está configurado. Desde a 2.2, o `cve.postgresql.path`
+adiciona as próprias páginas de segurança do projeto, que indicam a
+correção por major: para um major que as páginas salvas indicam, o
+veredito delas substitui os intervalos sem ramo do BDU, que de outra forma
+marcam a última versão de todos os majors mais antigos. Consulte
+[Dados dos próprios fornecedores → PostgreSQL](/pt-br/cve/#postgresql).
 
 ## Resolvedor de ciclo de vida
 

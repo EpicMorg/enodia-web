@@ -101,7 +101,9 @@ tagowane). Dwie realne zmiany, o których warto wiedzieć: obraz jest
 teraz **wyłącznie `linux/amd64`** (arm64 porzucono przy przeniesieniu
 publikacji) i działa jako **root**, a nie jako dedykowany użytkownik,
 na własnym obrazie bazowym projektu `debian:trixie-light` zamiast
-`scratch`.
+`scratch`. Deklaruje `/var/lib/enodia/cve` jako wolumin na
+[bazy CVE](/pl/cve/#pobieranie-baz-danych) — można tam zamontować
+własne kopie albo pozwolić, by wypełniło go `enodia cve update`.
 
 ### Kompilacja ze źródeł
 

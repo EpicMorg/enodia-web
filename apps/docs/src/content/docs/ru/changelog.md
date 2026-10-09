@@ -13,6 +13,129 @@ description: Значимые изменения в enodia, релиз за ре
 пересборки без функциональных изменений, а не для того, чтобы обойти
 настоящее повышение версии.
 
+## 2.2.0+0 — 2026-10-09
+
+`enodia cve update` сама скачивает базы CVE, собственные данные
+безопасности вендоров (MariaDB, Atlassian, PostgreSQL, nginx)
+добавляются к БДУ и NVD, сопоставление с CVE охватывает iLO 4, iDRAC и
+Synology DSM, и появляются 27 новых проб — всего их теперь 123. Все
+новые ключи `cve:` опциональны, а конфиги и инвентари 2.1 работают без
+изменений — кроме credential того вида, который продукт никогда не
+читает: теперь это ошибка (см. «Исправлено»).
+
+### Добавлено
+
+- **[`enodia cve update`](/ru/cve/#enodia-cve-update)** скачивает базы
+  CVE, которые называет каждый настроенный `cve.*.path`, — БДУ, NVD
+  (текущий год, прошлый и недостающие годы; `--all-years` — все), Debian,
+  OVAL и Alpine (релизы, уже лежащие на диске, нужные инвентарям из
+  `--from`, `--oval`/`--alpine`), MariaDB, Atlassian, PostgreSQL
+  (`--postgresql` — страницы по мажорным версиям) и nginx.
+  If-Modified-Since; скачанный файл заменяет старый только после того,
+  как успешно загрузился. TLS проверяется по системным корневым
+  сертификатам плюс `cve.update.ca_file` и `cve.update.ca_dir` или не
+  проверяется вовсе при `cve.update.tls_skip_verify`. Все остальные
+  команды по-прежнему ничего не скачивают.
+- **27 новых проб:**
+  - [`splunk`](/ru/configuration/products/splunk/) — management API splunkd на 8089, Basic или токен Splunk.
+  - [`code-server`](/ru/configuration/products/code-server/) — `codeServerVersion` со страницы входа.
+  - [`phpipam`](/ru/configuration/products/phpipam/) — подвал страницы входа и версия ассетов.
+  - [`domainmod`](/ru/configuration/products/domainmod/) — CHANGELOG в его веб-корне.
+  - [`netdata`](/ru/configuration/products/netdata/) — анонимный `/api/v1/info` агента.
+  - [`libretranslate`](/ru/configuration/products/libretranslate/) — публичный OpenAPI-документ `/spec`.
+  - [`torrserver`](/ru/configuration/products/torrserver/) — `/echo`.
+  - [`kafka`](/ru/configuration/products/kafka/) — версия брокера по SSH из его собственного jar, при необходимости в контейнере; сборки Confluent Platform сообщаются как `confluent` с линейкой Apache Kafka, которую они несут.
+  - [`home-assistant`](/ru/configuration/products/home-assistant/) — `/api/config` с долгоживущим токеном доступа, `kind: bearer`.
+  - [`openhab`](/ru/configuration/products/openhab/) — анонимный корень REST `/rest/`.
+  - [`doxygen`](/ru/configuration/products/doxygen/) — какой Doxygen сгенерировал сайт документации, по его отметке генератора.
+  - [`qbittorrent`](/ru/configuration/products/qbittorrent/) — API Web UI после входа через форму, `kind: password`.
+  - [`netbox`](/ru/configuration/products/netbox/) — `data-netbox-version` анонимной страницы входа.
+  - [`greenbone`](/ru/configuration/products/greenbone/) — (алиасы `openvas`, `gsad`) версия gsad из его ответа `/gmp`, без аутентификации.
+  - [`posthog`](/ru/configuration/products/posthog/) — git-коммит self-hosted PostHog с его анонимной страницы входа.
+  - [`uptime-kuma`](/ru/configuration/products/uptime-kuma/) — входит через socket.io API Uptime Kuma (`kind: password`) и читает версию, которую он присылает после входа.
+  - [`wapt`](/ru/configuration/products/wapt/) — анонимный `/ping` сервера WAPT.
+  - [`minio`](/ru/configuration/products/minio/) — `minio --version` по SSH, при необходимости в контейнере; имена MinIO вида `RELEASE.<timestamp>` теперь сравниваются как версии.
+  - [`sentry`](/ru/configuration/products/sentry/) — версия self-hosted Sentry с его анонимной страницы входа.
+  - [`zookeeper`](/ru/configuration/products/zookeeper/) — четырёхбуквенная команда `srvr`.
+  - [`ghost`](/ru/configuration/products/ghost/) — анонимный `/ghost/api/admin/site/`, который отдаёт major.minor.
+  - [`onlyoffice`](/ru/configuration/products/onlyoffice/) — и [`euro-office`](/ru/configuration/products/euro-office/): ONLYOFFICE Docs и его форк Euro-Office, читаются анонимно из `/index.html` сервера документов; сервер другого бренда отклоняется с указанием продукта, который нужно использовать.
+  - [`weblate`](/ru/configuration/products/weblate/) — анонимный подвал «Powered by Weblate».
+  - [`memcached`](/ru/configuration/products/memcached/) — команда `version` текстового протокола, без credentials.
+  - [`rabbitmq`](/ru/configuration/products/rabbitmq/) — `/api/overview` плагина management, `kind: basic`.
+  - [`cassandra`](/ru/configuration/products/cassandra/) — `release_version` по нативному протоколу CQL v4, `kind: password`, если в кластере включён PasswordAuthenticator.
+- **CVE для таргетов [`mariadb`](/ru/configuration/products/mariadb/).**
+  БДУ и NVD теперь охватывают MariaDB, а новый `cve.mariadb.path` читает
+  собственную таблицу исправленных CVE MariaDB (`community-server.md`),
+  в которой исправляющий релиз указан для каждой серии. По CVE,
+  известному таблице MariaDB, её вердикт заменяет открытые диапазоны БДУ
+  и NVD, так что последний релиз поддерживаемой серии больше не
+  помечается CVE, исправленными только в более новых сериях, — см.
+  [Собственные данные вендоров](/ru/cve/#собственные-данные-вендоров).
+- **`cve.atlassian.path`**: собственные данные Atlassian о CVE по каждому
+  релизу для `jira`, `confluence`, `bitbucket` и `bamboo`, включая CVE
+  сторонних зависимостей. Оценка идёт в пределах каждой ветки; для
+  релиза, который Atlassian перечисляет, решает её вердикт — см.
+  [Atlassian](/ru/cve/#atlassian).
+- **`cve.postgresql.path` и `cve.nginx.path`**: собственные страницы
+  безопасности проектов, с релизом исправления для каждой ветки. Текущие
+  релизы PostgreSQL 17/16/15/14 и nginx 1.30.5 больше не получают
+  диапазоны БДУ без привязки к ветке — см. [PostgreSQL](/ru/cve/#postgresql)
+  и [nginx](/ru/cve/#nginx).
+- **CVE ещё для 24 продуктов**: cassandra, code-server, domainmod,
+  doxygen, ghost, greenbone, home-assistant, kafka, memcached, minio,
+  netbox, netdata, onlyoffice, openhab, pfsense, phpipam, qbittorrent,
+  rabbitmq, sentry, splunk, uptime-kuma, wapt, weblate, zookeeper. Версии
+  MinIO в виде временных меток сравниваются; для pfSense CE и Splunk
+  Enterprise диапазоны других редакций пропускаются; сборки Confluent
+  Kafka остаются без сверки.
+- **CVE для [`hp-ilo4`](/ru/configuration/products/hp-ilo4/),
+  [`dell-idrac`](/ru/configuration/products/dell-idrac/) и
+  [`synology-dsm`](/ru/configuration/products/synology-dsm/).** iDRAC
+  сопоставляется по поколению, которое читается из модели Redfish; для DSM
+  сравниваются версия, сборка и Update (`7.2.1-69057-6`), и проба теперь
+  записывает Update в `extra.update` — см.
+  [Dell iDRAC и Synology DSM](/ru/cve/#dell-idrac-и-synology-dsm).
+  Всего теперь сопоставляется 91 из 123 продуктов — см.
+  [какие продукты сопоставляются](/ru/cve/#какие-продукты-сопоставляются).
+- Страница [Конфиденциальность](/ru/privacy/): куда подключается enodia
+  (ваши таргеты, endoflife.date, GitHub API — только имена продуктов и
+  репозиториев, — а также, только для `enodia cve update`, издатели баз
+  CVE) и что она хранит (только ваши собственные файлы и локальный кеш).
+  Без телеметрии.
+
+### Изменено
+
+- Резолвер `github` пропускает релизы, тег которых называет пре-релиз
+  (`5.3.0.M2`, `2026.10.0b7`, `-rc1`, `-beta.1`), даже если GitHub их так
+  не помечает; читает как версии теги с подчёркиваниями
+  (`Release_1_18_0`) и с префиксом `release-` (`release-5.2.4`); и
+  отбрасывает в тегах ведущий `<repo>-`/`<repo>_`, так что
+  `weblate-2026.10` читается как `2026.10` — см.
+  [Поддерживаемые продукты](/ru/products/).
+- [`teamcity`](/ru/configuration/products/teamcity/) работает без
+  credentials: если они не настроены, проба читает анонимный
+  `/app/rest/server/version`, доступный на всех проверенных TeamCity от
+  2017.2 до 2026.1 даже при выключенном гостевом входе. С токеном, как и
+  раньше, читается `/app/rest/server`.
+
+### Исправлено
+
+- CVE для [`jenkins`](/ru/configuration/products/jenkins/): исправленный
+  LTS-релиз больше не помечается weekly-диапазоном того же исправления
+  (LTS 2.568.3 — по «до 2.580»). Диапазоны weekly и LTS теперь
+  применяются только к своей линейке релизов.
+- Резолвер `github` больше не падает на репозиториях, у которых список
+  релизов больше 1 МиБ (у minio/minio — 3,4 МБ): теперь он читает до
+  8 МиБ.
+- **Credential того вида, который продукт никогда не отправляет, —
+  теперь ошибка конфигурации**, а не молча отброшенное значение.
+  `kind: password` на HTTP-продукте (RouterOS, Harbor, …) раньше
+  отправлял запрос вообще без заголовка `Authorization`; теперь
+  `config validate` называет виды, которые продукт принимает, — для
+  входа в веб-интерфейс это `kind: basic`. **Проверьте конфиг перед
+  обновлением**: запуск с таким credential теперь не стартует. См.
+  [Конфигурация → Credentials](/ru/configuration/#credentials).
+
 ## 2.1.1+0 — 2026-10-08
 
 ### Исправлено
@@ -126,7 +249,7 @@ description: Значимые изменения в enodia, релиз за ре
   также директория с файлами). Каждый источник работает и по
   отдельности. Оба разбираются потоково и кешируются: первый запуск
   после изменения базы занимает около минуты для всего NVD плюс БДУ,
-  все последующие — меньше секунды. См. [как их скачать](/ru/cve/#enodia-сама-базы-не-скачивает),
+  все последующие — меньше секунды. См. [как их скачать](/ru/cve/#скачивание-баз),
   включая дополнительный сертификат УЦ, который нужен для bdu.fstec.ru.
 - **Сопоставляются 52 пробы** (в апстриме — 53 имени продуктов: `ssh`
   считается и как OpenSSH, и как Dropbear) — все пробы, для которых

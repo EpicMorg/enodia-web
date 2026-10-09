@@ -49,7 +49,9 @@ is one rating parsed out of it, picked CVSS 3.1/3.0 first, then 4.0,
 then 2.0 — 3.x is the version nearly every CVE carries in both sources,
 so scores in one list stay on the same scale. The `CVES` column in the
 table views counts distinct CVEs across these entries, not the entries
-themselves.
+themselves. Findings from a vendor's own data (see
+[Vendors' own data](/en/cve/#vendors-own-data)) have the same shape, with
+`Source` set to `mariadb`, `atlassian`, `postgresql` or `nginx`.
 
 Package-level findings for Linux hosts (see
 [CVE correlation](/en/cve/#package-level-cves-for-linux-distributions))

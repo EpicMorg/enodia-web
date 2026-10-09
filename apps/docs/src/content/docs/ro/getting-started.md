@@ -102,7 +102,9 @@ sunt etichetate astfel de acum înainte). Două schimbări reale care merită
 știute: imaginea este acum **doar `linux/amd64`** (arm64 a fost renunțat
 odată cu mutarea publicării) și rulează ca **root** în loc de un
 utilizator dedicat, pe baza proprie a proiectului, `debian:trixie-light`,
-în loc de `scratch`.
+în loc de `scratch`. Declară `/var/lib/enodia/cve` ca volum pentru
+[bazele de date CVE](/ro/cve/#descărcarea-bazelor-de-date) — montați acolo
+copiile dumneavoastră sau lăsați `enodia cve update` să îl populeze.
 
 ### Build din surse
 

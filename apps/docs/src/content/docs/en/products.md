@@ -1,9 +1,9 @@
 ---
 title: Supported products
-description: All 96 built-in probes, straight from `enodia products`.
+description: All 123 built-in probes, straight from `enodia products`.
 ---
 
-96 products, each a compiled-in probe (see
+123 products, each a compiled-in probe (see
 [Concepts](/en/concepts/#probes-are-compiled-in-not-a-yaml-dsl)). Use the
 value in **Product** as `product:` in a target. **Resolver** is the
 lifecycle-data identifier — `endoflife:<slug>` for
@@ -30,9 +30,19 @@ set the **`GITHUB_TOKEN`** environment variable (the same convention
 5000/hour; empty or unset just falls back to the unauthenticated cap,
 nothing breaks either way.
 
+Since 2.2, the GitHub resolvers also read release tags the way projects
+actually spell them: a leading `<repo>-`/`<repo>_` is dropped
+(`weblate-2026.10` reads as `2026.10`), underscore-spelled
+(`Release_1_18_0`) and `release-`-prefixed (`release-5.2.4`) tags parse
+as versions, and a tag that names a pre-release (`5.3.0.M2`,
+`2026.10.0b7`, `-rc1`, `-beta.1`) is skipped even when GitHub doesn't
+flag it as one.
+
 **CVE** lists which databases the product is matched against when a
 [`cve:` block](/en/cve/) is configured — `NVD`, `BDU` (БДУ ФСТЭК), or
-`—` for no CVE lookup. Ten Linux distributions are matched per
+`—` for no CVE lookup; `MariaDB data`, `Atlassian data`, `PostgreSQL
+data` and `nginx data` add that vendor's own security data (see
+[Vendors' own data](/en/cve/#vendors-own-data)). Ten Linux distributions are matched per
 installed package instead of by release — `(packages)` names the
 source: the Debian Security Tracker, the vendor's OVAL, or Alpine's
 secdb (see
@@ -51,82 +61,112 @@ itself; see [its own page](/en/configuration/products/sonarqube/).
 
 ## Applications and infrastructure services
 
-65 products, probed over HTTP(S) or a raw wire protocol (MySQL, Redis,
-MongoDB, ...). Three are exceptions:
+92 products, probed over HTTP(S) or a raw wire protocol (MySQL, Redis,
+MongoDB, Cassandra, ...). Five are exceptions:
 [`p4d`](/en/configuration/products/p4d/) and
 [`p4p`](/en/configuration/products/p4p/) speak no wire protocol enodia
 implements at all — both shell out to the operator's own `p4` CLI,
 which needs to be installed alongside enodia itself, not just reachable
 over the network — and
-[`freeradius`](/en/configuration/products/freeradius/) is read over SSH,
-because RADIUS has no way to report a version.
+[`freeradius`](/en/configuration/products/freeradius/),
+[`kafka`](/en/configuration/products/kafka/) and
+[`minio`](/en/configuration/products/minio/) are read over SSH, from the
+server's own binary or jar — RADIUS has no way to report a version,
+Kafka's is only in JMX, and MinIO's only behind an admin key.
 
 | Product | Summary | Resolver | CVE |
 |---|---|---|---|
 | [`apache`](/en/configuration/products/apache/) | Apache HTTP Server | `endoflife:apache-http-server` | NVD, BDU |
 | [`artifactory`](/en/configuration/products/artifactory/) | JFrog Artifactory | `endoflife:artifactory` | NVD, BDU |
-| [`bamboo`](/en/configuration/products/bamboo/) | Atlassian Bamboo (Data Center) | `endoflife:bamboo` | NVD, BDU |
-| [`bitbucket`](/en/configuration/products/bitbucket/) | Atlassian Bitbucket (Data Center) | `endoflife:bitbucket` | NVD, BDU |
+| [`bamboo`](/en/configuration/products/bamboo/) | Atlassian Bamboo (Data Center) | `endoflife:bamboo` | NVD, BDU, Atlassian data |
+| [`bitbucket`](/en/configuration/products/bitbucket/) | Atlassian Bitbucket (Data Center) | `endoflife:bitbucket` | NVD, BDU, Atlassian data |
 | [`bitwarden`](/en/configuration/products/bitwarden/) | Bitwarden (self-hosted) | `github:bitwarden/server` | NVD |
+| [`cassandra`](/en/configuration/products/cassandra/) | Apache Cassandra (CQL native protocol) | `endoflife:apache-cassandra` | NVD, BDU |
 | [`clickhouse`](/en/configuration/products/clickhouse/) | ClickHouse | `endoflife:clickhouse` | NVD, BDU |
-| [`confluence`](/en/configuration/products/confluence/) | Atlassian Confluence (Data Center) | `endoflife:confluence` | NVD, BDU |
-| [`dell-idrac`](/en/configuration/products/dell-idrac/) | Dell iDRAC | — | — |
+| [`code-server`](/en/configuration/products/code-server/) | code-server (VS Code in the browser) | `github:coder/code-server` | NVD |
+| [`confluence`](/en/configuration/products/confluence/) | Atlassian Confluence (Data Center) | `endoflife:confluence` | NVD, BDU, Atlassian data |
+| [`dell-idrac`](/en/configuration/products/dell-idrac/) | Dell iDRAC | — | NVD, BDU |
+| [`domainmod`](/en/configuration/products/domainmod/) | DomainMOD | `github:domainmod/domainmod` | NVD |
+| [`doxygen`](/en/configuration/products/doxygen/) | Doxygen-generated documentation site | `github:doxygen/doxygen` | NVD |
 | [`elasticsearch`](/en/configuration/products/elasticsearch/) | Elasticsearch | `endoflife:elasticsearch` | NVD, BDU |
 | [`esxi`](/en/configuration/products/esxi/) | VMware ESXi | `endoflife:esxi` | — |
+| [`euro-office`](/en/configuration/products/euro-office/) | Euro-Office Docs (ONLYOFFICE fork) | `github:Euro-Office/DocumentServer` | — |
 | [`forgejo`](/en/configuration/products/forgejo/) | Forgejo | `endoflife:forgejo` | NVD, BDU |
 | [`fortios`](/en/configuration/products/fortios/) | Fortinet FortiOS (FortiGate) | `endoflife:fortios` | NVD, BDU |
 | [`freeradius`](/en/configuration/products/freeradius/) | FreeRADIUS | `github-tag-branches:FreeRADIUS/freeradius-server` | NVD, BDU |
 | [`generic`](/en/configuration/products/generic/) | Hand-written parser for systems enodia doesn't know — see [Configuration](/en/configuration/#the-generic-probe) | — | — |
+| [`ghost`](/en/configuration/products/ghost/) | Ghost | `github:TryGhost/Ghost` | NVD, BDU |
 | [`gitlab`](/en/configuration/products/gitlab/) | GitLab | `endoflife:gitlab` | NVD, BDU |
 | [`grafana`](/en/configuration/products/grafana/) | Grafana | `endoflife:grafana` | NVD, BDU |
 | [`graylog`](/en/configuration/products/graylog/) | Graylog | `endoflife:graylog` | NVD, BDU |
+| [`greenbone`](/en/configuration/products/greenbone/) | Greenbone / OpenVAS (gsad web daemon) | `github:greenbone/gsad` | NVD |
 | [`haproxy`](/en/configuration/products/haproxy/) | HAProxy | `endoflife:haproxy` | NVD, BDU |
 | [`harbor`](/en/configuration/products/harbor/) | Harbor (container registry) | `endoflife:harbor` | NVD, BDU |
-| [`hp-ilo4`](/en/configuration/products/hp-ilo4/) | HP iLO 4 | — | — |
+| [`home-assistant`](/en/configuration/products/home-assistant/) | Home Assistant (REST API, long-lived token) | `github:home-assistant/core` | NVD |
+| [`hp-ilo4`](/en/configuration/products/hp-ilo4/) | HP iLO 4 | — | NVD, BDU |
 | [`jaeger`](/en/configuration/products/jaeger/) | Jaeger | `endoflife:jaeger` | NVD |
 | [`jellyfin`](/en/configuration/products/jellyfin/) | Jellyfin | `github:jellyfin/jellyfin` | NVD |
 | [`jenkins`](/en/configuration/products/jenkins/) | Jenkins | `endoflife:jenkins` | NVD, BDU |
-| [`jira`](/en/configuration/products/jira/) | Atlassian Jira (Data Center) | `endoflife:jira-software` | NVD, BDU |
+| [`jira`](/en/configuration/products/jira/) | Atlassian Jira (Data Center) | `endoflife:jira-software` | NVD, BDU, Atlassian data |
+| [`kafka`](/en/configuration/products/kafka/) | Apache Kafka broker (over SSH) | `endoflife:apache-kafka` | NVD, BDU |
 | [`keycloak`](/en/configuration/products/keycloak/) | Keycloak | `endoflife:keycloak` | NVD, BDU |
 | [`kibana`](/en/configuration/products/kibana/) | Kibana | `endoflife:kibana` | NVD, BDU |
 | [`kitsu`](/en/configuration/products/kitsu/) | Kitsu (CG-Wire / Zou frontend) | `github:cgwire/kitsu` | — |
+| [`libretranslate`](/en/configuration/products/libretranslate/) | LibreTranslate | `github:LibreTranslate/LibreTranslate` | — |
 | [`logstash`](/en/configuration/products/logstash/) | Logstash | `endoflife:logstash` | NVD, BDU |
-| [`mariadb`](/en/configuration/products/mariadb/) | MariaDB Server | `endoflife:mariadb` | — |
+| [`mariadb`](/en/configuration/products/mariadb/) | MariaDB Server | `endoflife:mariadb` | NVD, BDU, MariaDB data |
 | [`mattermost`](/en/configuration/products/mattermost/) | Mattermost | `endoflife:mattermost` | NVD, BDU |
+| [`memcached`](/en/configuration/products/memcached/) | memcached | `endoflife:memcached` | NVD, BDU |
+| [`minio`](/en/configuration/products/minio/) | MinIO (server binary, over SSH) | `github:minio/minio` | NVD, BDU |
 | [`mongodb`](/en/configuration/products/mongodb/) | MongoDB | `endoflife:mongodb` | NVD, BDU |
 | [`mysql`](/en/configuration/products/mysql/) | MySQL Server | `endoflife:mysql` | NVD, BDU |
+| [`netbox`](/en/configuration/products/netbox/) | NetBox | `github:netbox-community/netbox` | NVD |
+| [`netdata`](/en/configuration/products/netdata/) | Netdata agent | `github:netdata/netdata` | NVD, BDU |
 | [`nextcloud`](/en/configuration/products/nextcloud/) | Nextcloud | `endoflife:nextcloud` | NVD, BDU |
 | [`nexus`](/en/configuration/products/nexus/) | Sonatype Nexus Repository | `endoflife:nexus` | NVD, BDU |
-| [`nginx`](/en/configuration/products/nginx/) | nginx | `endoflife:nginx` | NVD, BDU |
+| [`nginx`](/en/configuration/products/nginx/) | nginx | `endoflife:nginx` | NVD, BDU, nginx data |
 | [`oauth2-proxy`](/en/configuration/products/oauth2-proxy/) | oauth2-proxy | `github:oauth2-proxy/oauth2-proxy` | NVD, BDU |
+| [`onlyoffice`](/en/configuration/products/onlyoffice/) | ONLYOFFICE Docs (Document Server) | `github:ONLYOFFICE/DocumentServer` | NVD, BDU |
+| [`openhab`](/en/configuration/products/openhab/) | openHAB | `github:openhab/openhab-distro` | NVD |
 | [`opensearch`](/en/configuration/products/opensearch/) | OpenSearch | `endoflife:opensearch` | NVD, BDU |
 | [`owncast`](/en/configuration/products/owncast/) | Owncast | `github:owncast/owncast` | NVD |
 | [`p4d`](/en/configuration/products/p4d/) | Perforce Helix Core Server (p4d) | — | NVD, BDU |
 | [`p4p`](/en/configuration/products/p4p/) | Perforce Proxy (p4p) | — | — |
 | [`perforce-swarm`](/en/configuration/products/perforce-swarm/) | Perforce Helix Swarm | — | — |
 | [`pgadmin`](/en/configuration/products/pgadmin/) | pgAdmin | `github-tags:pgadmin-org/pgadmin4` | NVD, BDU |
+| [`phpipam`](/en/configuration/products/phpipam/) | phpIPAM | `github:phpipam/phpipam` | NVD, BDU |
 | [`phpmyadmin`](/en/configuration/products/phpmyadmin/) | phpMyAdmin | `endoflife:phpmyadmin` | NVD, BDU |
 | [`portainer`](/en/configuration/products/portainer/) | Portainer | `github:portainer/portainer` | NVD, BDU |
 | [`postgres_exporter`](/en/configuration/products/postgres_exporter/) | prometheus-community/postgres_exporter | `github:prometheus-community/postgres_exporter` | — |
-| [`postgresql`](/en/configuration/products/postgresql/) | PostgreSQL | `endoflife:postgresql` | NVD, BDU |
+| [`postgresql`](/en/configuration/products/postgresql/) | PostgreSQL | `endoflife:postgresql` | NVD, BDU, PostgreSQL data |
+| [`posthog`](/en/configuration/products/posthog/) | PostHog (self-hosted; version is the git commit) | — | — |
 | [`proftpd`](/en/configuration/products/proftpd/) | ProFTPD | `endoflife:proftpd` | NVD, BDU |
 | [`proxmox`](/en/configuration/products/proxmox/) | Proxmox VE | `endoflife:proxmox-ve` | NVD, BDU |
+| [`qbittorrent`](/en/configuration/products/qbittorrent/) | qBittorrent (Web UI API) | `github:qbittorrent/qBittorrent` | NVD, BDU |
+| [`rabbitmq`](/en/configuration/products/rabbitmq/) | RabbitMQ (management plugin API) | `endoflife:rabbitmq` | NVD, BDU |
 | [`redis`](/en/configuration/products/redis/) | Redis | `endoflife:redis` | NVD, BDU |
 | [`routeros`](/en/configuration/products/routeros/) | MikroTik RouterOS | `endoflife:routeros` | NVD, BDU |
+| [`sentry`](/en/configuration/products/sentry/) | Sentry (self-hosted) | `github:getsentry/self-hosted` | NVD |
 | [`sonarqube`](/en/configuration/products/sonarqube/) | SonarQube (Server or Community Build) | `endoflife:sonarqube-server`\* | NVD, BDU |
+| [`splunk`](/en/configuration/products/splunk/) | Splunk Enterprise (splunkd management API) | `endoflife:splunk` | NVD, BDU |
 | [`ssh`](/en/configuration/products/ssh/) | SSH banner (any implementation) | — | NVD, BDU |
 | [`supermicro-bmc`](/en/configuration/products/supermicro-bmc/) | Supermicro BMC | — | — |
-| [`synology-dsm`](/en/configuration/products/synology-dsm/) | Synology DSM | — | — |
+| [`synology-dsm`](/en/configuration/products/synology-dsm/) | Synology DSM | — | NVD, BDU |
 | [`teamcity`](/en/configuration/products/teamcity/) | JetBrains TeamCity | — | NVD, BDU |
 | [`testrail`](/en/configuration/products/testrail/) | TestRail | — | NVD |
+| [`torrserver`](/en/configuration/products/torrserver/) | TorrServer | `github:YouROK/TorrServer` | — |
 | [`traefik`](/en/configuration/products/traefik/) | Traefik | `endoflife:traefik` | NVD, BDU |
 | [`truenas`](/en/configuration/products/truenas/) | TrueNAS | `endoflife:truenas` | — |
+| [`uptime-kuma`](/en/configuration/products/uptime-kuma/) | Uptime Kuma (socket.io login) | `github:louislam/uptime-kuma` | NVD |
 | [`vault`](/en/configuration/products/vault/) | HashiCorp Vault | `endoflife:hashicorp-vault` | NVD, BDU |
 | [`vaultwarden`](/en/configuration/products/vaultwarden/) | Vaultwarden | `github:dani-garcia/vaultwarden` | NVD, BDU |
 | [`vcenter`](/en/configuration/products/vcenter/) | VMware vCenter Server | `endoflife:vcenter` | — |
+| [`wapt`](/en/configuration/products/wapt/) | WAPT server (Tranquil IT) | — | NVD |
+| [`weblate`](/en/configuration/products/weblate/) | Weblate | `github:WeblateOrg/weblate` | NVD |
 | [`wordpress`](/en/configuration/products/wordpress/) | WordPress | `endoflife:wordpress` | NVD, BDU |
 | [`youtrack`](/en/configuration/products/youtrack/) | YouTrack | `endoflife:youtrack` | NVD, BDU |
 | [`zabbix`](/en/configuration/products/zabbix/) | Zabbix | `endoflife:zabbix` | NVD, BDU |
+| [`zookeeper`](/en/configuration/products/zookeeper/) | Apache ZooKeeper | `endoflife:zookeeper` | NVD, BDU |
 | [`zou`](/en/configuration/products/zou/) | Zou (CG-Wire API backend) | — | — |
 
 ## Operating systems
@@ -159,7 +199,7 @@ for the shared mechanism every one of these uses.
 | [`opnsense`](/en/configuration/products/opnsense/) | OPNsense | `endoflife:opnsense` | NVD, BDU |
 | [`oracle-linux`](/en/configuration/products/oracle-linux/) | Oracle Linux | `endoflife:oracle-linux` | OVAL (packages) |
 | [`oracle-solaris`](/en/configuration/products/oracle-solaris/) | Oracle Solaris | `endoflife:oracle-solaris` | — |
-| [`pfsense`](/en/configuration/products/pfsense/) | pfSense Community Edition | — | — |
+| [`pfsense`](/en/configuration/products/pfsense/) | pfSense Community Edition | — | NVD, BDU |
 | [`photon`](/en/configuration/products/photon/) | VMware Photon OS | `endoflife:photon` | — |
 | [`postmarketos`](/en/configuration/products/postmarketos/) | postmarketOS | `endoflife:postmarketos` | — |
 | [`redos`](/en/configuration/products/redos/) | RED OS | — | OVAL (packages) |

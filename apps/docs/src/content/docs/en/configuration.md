@@ -31,6 +31,16 @@ cve:                                 # optional, see "CVE correlation"
     path: oval/
   alpine:
     path: alpine/
+  mariadb:
+    path: mariadb.md
+  atlassian:
+    path: atlassian.json
+  postgresql:
+    path: postgresql/
+  nginx:
+    path: nginx.html
+  update:                            # TLS options for "enodia cve update"
+    ca_file: russian-trusted.pem
 credentials: {}                      # optional, see "Credentials"
 targets: []                          # your services
 ```
@@ -56,8 +66,14 @@ Durations use Go's duration syntax: `500ms`, `10s`, `2m`, `1h30m`.
 Optional. Points enodia at a БДУ ФСТЭК export (`cve.bdu.path`), NVD
 JSON feeds (`cve.nvd.path`) and, for package-level matching on Linux
 hosts, the Debian Security Tracker (`cve.debian.path`), vendor OVAL files
-(`cve.oval.path`) and Alpine's secdb (`cve.alpine.path`) — any of them,
-each works alone, all downloaded yourself; enodia never fetches them. Relative paths resolve against this config's own
+(`cve.oval.path`) and Alpine's secdb (`cve.alpine.path`), plus vendors'
+own data: MariaDB's fixed-CVE table (`cve.mariadb.path`), Atlassian's
+(`cve.atlassian.path`), PostgreSQL's (`cve.postgresql.path`) and
+nginx's (`cve.nginx.path`) — any of them, each works alone.
+`enodia cve update` downloads them into those paths (its TLS options go
+in `cve.update`: `ca_file`, `ca_dir`, `tls_skip_verify`), or you
+download them yourself; `check`, `collect` and `serve` never fetch
+anything. Relative paths resolve against this config's own
 directory, and a configured path that doesn't exist is an error. What
 it does, how to get the files, and which products are matched:
 [CVE correlation](/en/cve/).
@@ -102,7 +118,7 @@ FreeRADIUS running in Docker or Podman.
 
 See **Product setup** in the sidebar (or the
 [Supported products](/en/products/) table) for the exact endpoint, auth
-requirements, and recorded fields for each of the 96 built-in probes —
+requirements, and recorded fields for each of the 123 built-in probes —
 `path`, `credentials`, and `options` above are the general shape; each
 product's own page says what it actually needs.
 
@@ -171,6 +187,18 @@ works for SSH targets — the SSH probes accept either a password or a
 private key, same as any SSH client would (`username` plus `password`
 under `kind: password`, or `username` plus `private_key_file` under
 `kind: ssh-key`).
+
+**A credential's `kind` has to match what its product reads** — HTTP
+products read `basic`, `bearer` or `token-header`; SSH probes read
+`ssh-key` or `password`; Redis, PostgreSQL and the other wire-protocol
+probes read `password`. A username/password for a web UI or REST API
+(RouterOS, Harbor, Jenkins, a BMC) is therefore `kind: basic`, not
+`kind: password`. Each product's own page says which kinds it accepts.
+A mismatch is a hard error in `enodia config validate` and in every run,
+naming the kinds the product does accept — earlier versions silently
+dropped such a credential and sent the request with no authentication
+at all, which then failed with an auth error pointing nowhere near the
+cause.
 
 ### SSH host key verification
 

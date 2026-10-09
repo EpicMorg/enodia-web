@@ -28,7 +28,7 @@ nginx 自己的加固设置（在生产环境中很常见）会把该响应头�
 
 ## CVE 关联
 
-配置了 [`cve:` 块](/zh-cn/cve/)时，会与 NVD 和 BDU FSTEC 进行匹配。
+配置了 [`cve:` 块](/zh-cn/cve/)时，会与 NVD 和 BDU FSTEC 进行匹配。从 2.2 开始，`cve.nginx.path` 会加入 nginx 自己的安全公告，其中列出每个分支的首个修复版本：包含该修复的稳定版（1.30.5）不再被一个写到 mainline 修复为止的范围标记。参见[厂商自己的数据 → nginx](/zh-cn/cve/#nginx)。
 
 ## 生命周期解析器
 

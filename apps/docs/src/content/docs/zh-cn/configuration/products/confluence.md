@@ -29,7 +29,7 @@ manifest 中的 `<typeId>` 会与 `product: confluence` 所期望的值（`confl
 
 ## CVE 关联
 
-配置了 [`cve:` 块](/zh-cn/cve/)时，会与 NVD 和 BDU FSTEC 进行匹配。
+配置了 [`cve:` 块](/zh-cn/cve/)时，会与 NVD 和 BDU FSTEC 进行匹配。从 2.2 开始，`cve.atlassian.path` 会加入 Atlassian 自己按版本划分的数据——包括 NVD 的 Atlassian 条目中没有列出的第三方依赖 CVE——并且对于它列出的版本，其结论在该版本自身的分支内优先。参见[厂商自己的数据 → Atlassian](/zh-cn/cve/#atlassian)。
 
 ## 生命周期解析器
 

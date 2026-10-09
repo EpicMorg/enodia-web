@@ -38,7 +38,11 @@ Apenas `version` — esta sonda não registra nenhum campo `extra`.
 
 ## Correlação de CVEs
 
-Correlacionado com o NVD e o BDU FSTEC quando um [bloco `cve:`](/pt-br/cve/) está configurado.
+Correlacionado com o NVD e o BDU FSTEC quando um [bloco `cve:`](/pt-br/cve/) está configurado. Desde a 2.2, o `cve.nginx.path` adiciona
+os próprios avisos de segurança do nginx, que indicam a primeira versão
+corrigida por ramo: uma versão stable com a correção (1.30.5) não é mais
+marcada por um intervalo escrito até a correção da mainline. Consulte
+[Dados dos próprios fornecedores → nginx](/pt-br/cve/#nginx).
 
 ## Resolvedor de ciclo de vida
 

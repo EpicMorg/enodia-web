@@ -45,12 +45,24 @@ odczytuje treść, a nie kod statusu, aby wykryć odrzucone logowanie.
 
 ## Rejestrowane pola
 
-Tylko `version` — wyodrębniona z `version_string` w postaci `"DSM <version>
-Update <n>"`, np. `"DSM 7.3.2-86009 Update 4"` → `7.3.2-86009`.
+- `version` — wyodrębniona z `version_string` w postaci `"DSM <version>
+  Update <n>"`, np. `"DSM 7.3.2-86009 Update 4"` → `7.3.2-86009`
+- `extra.update` — numer Update (`4`), od wersji 2.2, jeśli ciąg go
+  zawiera; przechowywany oddzielnie od `version`, aby drift i cykl życia
+  nadal porównywały samo wydanie
 
 ## Korelacja CVE
 
-Brak dopasowania — jego zakresy używają granic takich jak `6.2.4-25556-3`, które ścisły parser zakresów odrzuca. Zobacz stronę [Korelacja CVE](/pl/cve/#które-produkty-są-dopasowywane).
+Dopasowywany do NVD i BDU FSTEC, gdy skonfigurowano [blok `cve:`](/pl/cve/). Od wersji 2.2. Wydanie DSM
+to wersja, kompilacja i Update (`7.2.1-69057 Update 6`), a bazy
+zapisują jego granice jako `7.2.1-69057-6`; `version` i `extra.update`
+z sondy są na potrzeby wyszukiwania składane w jedną porównywalną
+wersję. Inwentarz zebrany przed 2.2 nie ma `extra.update` i jest
+odczytywany jako Update 0 — naprawione Update mogą zostać oznaczone, ale
+żadne nie zostanie pominięte. Zakresy BDU dla poszczególnych gałęzi
+nadal zgłaszają nadmiarowo w starszych gałęziach (zakresy NVD nie) —
+zobacz [Dell iDRAC i Synology DSM](/pl/cve/#dell-idrac-i-synology-dsm)
+oraz [Znane ograniczenia](/pl/cve/#znane-ograniczenia).
 
 ## Resolver cyklu życia
 

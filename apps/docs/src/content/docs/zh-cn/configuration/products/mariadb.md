@@ -32,7 +32,7 @@ MariaDB 和 MySQL 使用完全相同的握手，只在版本字符串上不同�
 
 ## CVE 关联
 
-尚未进行匹配——MariaDB 是 2.1 新增的，上游将它的 CVE 映射留给之后专门的一轮工作。参见 [CVE 关联](/zh-cn/cve/#哪些产品会被匹配)。
+配置了 [`cve:` 块](/zh-cn/cve/)时，会与 NVD 和 BDU FSTEC 进行匹配——如果设置了 `cve.mariadb.path`，还会与 MariaDB 自己的已修复 CVE 表进行匹配，其按系列给出的结论优先于 BDU 和 NVD 的开放式范围。参见[厂商自己的数据 → MariaDB](/zh-cn/cve/#mariadb)。
 
 ## 生命周期解析器
 
