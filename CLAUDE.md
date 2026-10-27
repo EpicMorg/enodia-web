@@ -1135,7 +1135,24 @@ credential kind a hard error — the docs keep a "check your config before
 upgrading" note. Agents found two upstream code/doc mismatches, reported
 to the user: `kafka` always runs `kafka-topics --version` even when the jar
 was found (D63 says jar first, "no JVM start"); `container.go`'s comment
-lists only freeradius/minio as users.
+lists only freeradius/minio as users. (Both fixed upstream in 2.2.1.)
+
+**Synced with enodia 2.2.1+0, 2026-10-27** ([PR #26](https://github.com/EpicMorg/enodia-web/pull/26),
+8 locales; first release to go through the `next-release` flow end to
+end — the kafka entry was already waiting there). `postgresql` now asks
+for the `postgres` database, `options.database` overrides (new
+`## Database` section + caution on `postgresql.md`); `mysql`/`mariadb`
+answer the greeting with a throwaway login as user `enodia` so the host
+isn't blocked (`ERR 1129`, new `mysql.md` section, linked from
+`mariadb.md`); `${VAR}` expanded on the parsed YAML tree (verbatim
+values, `configuration.md`); `cve update` errors on an OVAL/Alpine path
+with nothing to fetch (`cve.md`). Docker: the `2.2.0` image appeared on
+all three registries (`latest` = `2.2.0`, same digest), so the
+getting-started tag example went `2.1.1` → `2.2.0`; no `2.2.1` image yet.
+The master deploy run sat queued for 30+ min: the user's own build
+runners were busy (the org's runners pick up `ubuntu-latest` jobs) — not
+a GitHub problem. A long "queued" deploy just means waiting; don't
+cancel/re-dispatch or deploy around CI for it.
 
 ### `apps/landing` — done, 2026-09-07
 
