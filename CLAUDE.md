@@ -1148,7 +1148,7 @@ isn't blocked (`ERR 1129`, new `mysql.md` section, linked from
 values, `configuration.md`); `cve update` errors on an OVAL/Alpine path
 with nothing to fetch (`cve.md`). Docker: the `2.2.0` image appeared on
 all three registries (`latest` = `2.2.0`, same digest), so the
-getting-started tag example went `2.1.1` → `2.2.0`; no `2.2.1` image yet.
+getting-started tag example went `2.1.1` → `2.2.0`, then → `2.2.1` on 2026-10-28 once the "[emg] docker repo" session (EpicMorg/docker) announced it — verified same digest for `2.2.1`/`2`/`latest` on all three registries. That session pings here when an image is published.
 The master deploy run sat queued for 30+ min: the user's own build
 runners were busy (the org's runners pick up `ubuntu-latest` jobs) — not
 a GitHub problem. A long "queued" deploy just means waiting; don't
