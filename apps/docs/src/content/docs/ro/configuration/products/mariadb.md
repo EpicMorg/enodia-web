@@ -19,7 +19,10 @@ targets:
 
 ## Autentificare
 
-Niciuna — versiunea este citită direct din handshake.
+Niciuna — versiunea este citită direct din handshake. Începând cu 2.2.1,
+sonda răspunde apoi la mesajul de salut cu un login de unică folosință,
+așa că conexiunea nu mai contează pentru `max_connect_errors` — vedeți
+[MySQL → Blocarea gazdei](/ro/configuration/products/mysql/#blocarea-gazdei-err-1129).
 
 ## Verificarea identității producătorului
 

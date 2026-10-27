@@ -7,6 +7,21 @@ description: enodia 各版本的重要变更。
 ——本页是它的镜像，每次发布时与本站其余内容一同保持同步，并在某项变更会影响您实际配置方式的地方，附上指向本文档其他部分的链接。标签遵循 `MAJOR.MINOR.PATCH+BUILD` 格式，不带 `v` 前缀；
 `+BUILD` 是 semver 的构建元数据，仅用于没有功能变化的重新构建，而不是用来规避真正的版本号提升。
 
+## 2.2.1+0 — 2026-10-27
+
+一个维护版本：探针不再被自己的版本检查绊倒（MySQL/MariaDB 主机封锁、仅有登录权限的 PostgreSQL 角色），`${VAR}` 的值按原样取用，并修复了 `cve update` 的两个边界情况。没有新探针，清单保持不变。有一处行为变更：`postgresql` 探针现在连接 `postgres` 数据库，而不是以登录用户命名的数据库——对于没有 `postgres` 数据库的服务器，请设置 [`options.database`](/zh-cn/configuration/products/postgresql/#数据库)。
+
+### 新增
+
+- [`postgresql`](/zh-cn/configuration/products/postgresql/#数据库) 目标支持 `options.database`。探针现在默认请求 `postgres` 数据库，而不是以登录用户命名的数据库，因此只有 `LOGIN` 权限的角色无需拥有自己的数据库即可获取版本。
+
+### 修复
+
+- [`mysql`](/zh-cn/configuration/products/mysql/#主机封锁err-1129) 和 [`mariadb`](/zh-cn/configuration/products/mariadb/) 不再有让 enodia 自身所在主机被封锁（`ERR 1129`）的风险。它们以前从问候包中读取版本后就挂断连接，服务器会将其计为身份验证前中止的连接；这类连接足够多时就会触发 `max_connect_errors`。现在探针会用一次性登录回应问候包，因此该连接会被计为一次身份验证失败，而这不会导致主机被封锁。版本仍然来自问候包；不使用任何凭据。
+- 配置或 `credentials_file` 中的 [`${VAR}`](/zh-cn/configuration/#环境变量插值) 现在在解析 YAML 之后才展开，因此变量的值按原样取用：包含反斜杠、`#`、`: ` 或以 `*`/`&`/`[` 开头的密码不再会破坏文件或 `config validate`。
+- [`enodia cve update`](/zh-cn/cve/#enodia-cve-update) 在设置了 `cve.oval.path` 或 `cve.alpine.path`、但没有任何要获取的版本或分支（磁盘上、`--from` 中和参数中都没有）时，会悄无声息地成功，留下一个随后被 `check` 拒绝的目录；现在它会明确报告这一点并以 `1` 退出。
+- [`kafka`](/zh-cn/configuration/products/kafka/) 在 `kafka-topics --version` 位于 `PATH` 中时，即使已经找到 broker 的 jar，也会在每次运行时启动它（一次 JVM 启动，需要几秒）；现在只有在找不到 jar 时才会运行它。
+
 ## 2.2.0+0 — 2026-10-09
 
 `enodia cve update` 会自行下载 CVE 数据库，厂商自己的安全数据（MariaDB、Atlassian、PostgreSQL、nginx）加入 BDU 和 NVD 的行列，CVE 匹配扩展到 iLO 4、iDRAC 和 Synology DSM，并新增 27 个探针——共计 123 个。每个新的 `cve:` 键都是可选的，2.1 的配置和清单无需修改即可继续使用——唯一的例外是其产品从不读取的类型的凭据，它现在会被视为错误（参见“修复”）。

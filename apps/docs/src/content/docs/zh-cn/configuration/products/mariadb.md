@@ -14,7 +14,7 @@ targets:
 
 ## 身份验证
 
-无——版本直接从握手中读取。
+无——版本直接从握手中读取。自 2.2.1 起，探针随后会用一次性登录回应问候包，因此该连接不再计入 `max_connect_errors`——参见 [MySQL → 主机封锁](/zh-cn/configuration/products/mysql/#主机封锁err-1129)。
 
 ## 厂商身份校验
 

@@ -8,10 +8,9 @@ fără schema `https://`/`http://` (nu există nimic de semnalat în privința
 unei scheme lipsă; consultați [Configurare](/ro/configuration/#targets)).
 Portul implicit este `3306` atunci când este omis.
 
-Nu se trimite niciodată vreo cerere: MySQL își anunță versiunea din
-proprie inițiativă, în pachetul inițial de handshake, înaintea oricărui
-pas de autentificare — așa că această sondă nu are niciodată nevoie de o
-credențială pentru a o observa.
+MySQL își anunță versiunea din proprie inițiativă, în pachetul inițial
+de handshake, înaintea oricărui pas de autentificare — așa că această
+sondă nu are niciodată nevoie de o credențială pentru a o observa.
 
 ```yaml
 targets:
@@ -24,6 +23,22 @@ targets:
 
 Niciuna — versiunea este citită direct din handshake, înainte de momentul
 în care o credențială ar conta măcar.
+
+## Blocarea gazdei (ERR 1129)
+
+Începând cu 2.2.1, sonda răspunde la mesajul de salut cu un login de
+unică folosință (utilizatorul `enodia`, fără parolă) și citește refuzul
+serverului. Până la 2.2.0 închidea conexiunea imediat după mesajul de
+salut, pe care serverul o contorizează ca o conexiune întreruptă înainte
+de autentificare; suficient de multe de la aceeași gazdă declanșează
+`max_connect_errors`, iar serverul refuză apoi acea gazdă cu
+`ERR 1129 Host '…' is blocked` — pentru fiecare client de pe ea, nu doar
+pentru enodia. Un login refuzat contează în schimb ca o autentificare
+eșuată, care nu contribuie la blocare. Acolo unde serverul înregistrează
+autentificările eșuate, fiecare rulare lasă o linie
+`Access denied for user 'enodia'`. Dacă 2.2.0 a blocat deja o gazdă,
+deblocați-o cu `FLUSH HOSTS` (MySQL 8.0 acceptă și
+`TRUNCATE TABLE performance_schema.host_cache`).
 
 ## MariaDB este un produs diferit
 

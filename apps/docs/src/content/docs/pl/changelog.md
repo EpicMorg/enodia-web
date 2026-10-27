@@ -13,6 +13,51 @@ konfiguracji. Tagi mają postać `MAJOR.MINOR.PATCH+BUILD`, bez prefiksu
 ponownej kompilacji bez zmian funkcjonalnych, a nie do omijania
 rzeczywistego podbicia wersji.
 
+## 2.2.1+0 — 2026-10-27
+
+Wydanie konserwacyjne: sondy przestają potykać się o własne sprawdzanie
+wersji (blokady hostów w MySQL/MariaDB, role PostgreSQL służące tylko do
+logowania), wartości `${VAR}` są przyjmowane dosłownie, a dwa przypadki
+brzegowe `cve update` zostały naprawione. Brak nowych sond, inwentarze
+pozostają bez zmian. Jedna zmiana zachowania: sonda `postgresql` łączy
+się teraz z bazą danych `postgres` zamiast z bazą nazwaną tak jak
+użytkownik logujący się — dla serwera bez bazy `postgres` należy ustawić
+[`options.database`](/pl/configuration/products/postgresql/#baza-danych).
+
+### Dodano
+
+- Cele [`postgresql`](/pl/configuration/products/postgresql/#baza-danych)
+  przyjmują `options.database`. Sonda domyślnie prosi teraz o bazę
+  danych `postgres` zamiast bazy nazwanej tak jak użytkownik logujący
+  się, więc rola mająca wyłącznie `LOGIN` ujawnia wersję bez własnej
+  bazy danych.
+
+### Naprawiono
+
+- [`mysql`](/pl/configuration/products/mysql/#blokowanie-hosta-err-1129) i
+  [`mariadb`](/pl/configuration/products/mariadb/) nie grożą już
+  zablokowaniem hosta samej enodia (`ERR 1129`). Odczytywały wersję
+  z powitania i rozłączały się, co serwer liczy jako połączenie
+  przerwane przed uwierzytelnieniem; wystarczająco wiele takich połączeń
+  przekracza `max_connect_errors`. Sondy odpowiadają teraz na powitanie
+  jednorazowym logowaniem, więc połączenie liczy się jako nieudane
+  uwierzytelnienie, które nie blokuje hosta. Wersja nadal pochodzi
+  z powitania; żadne poświadczenia nie są używane.
+- [`${VAR}`](/pl/configuration/#podstawianie-zmiennych-środowiskowych)
+  w konfiguracji lub `credentials_file` jest rozwijane po sparsowaniu
+  YAML, więc wartość zmiennej jest przyjmowana dosłownie: hasło
+  z ukośnikiem wstecznym, `#`, `: ` lub początkowym `*`/`&`/`[` nie psuje
+  już pliku ani `config validate`.
+- [`enodia cve update`](/pl/cve/#enodia-cve-update) z ustawionym
+  `cve.oval.path` lub `cve.alpine.path`, ale bez wydania lub gałęzi do
+  pobrania (żadnych na dysku, w `--from` ani we flagach) kończyło się po
+  cichu sukcesem, zostawiając katalog, który `check` następnie
+  odrzucało; teraz zgłasza to i kończy się kodem `1`.
+- [`kafka`](/pl/configuration/products/kafka/) uruchamiał `kafka-topics --version` (start JVM, kilka sekund)
+  przy każdym przebiegu, gdy był w `PATH`, nawet po znalezieniu jara
+  brokera; teraz uruchamia go tylko wtedy, gdy żaden jar nie zostanie
+  znaleziony.
+
 ## 2.2.0+0 — 2026-10-09
 
 `enodia cve update` samo pobiera bazy CVE, własne dane bezpieczeństwa

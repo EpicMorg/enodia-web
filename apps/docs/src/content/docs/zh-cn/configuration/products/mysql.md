@@ -6,7 +6,7 @@ description: 配置 enodia 探测 MySQL Server。
 一个原始 TCP 协议，而不是 HTTP——`address` 为 `host` 或 `host:port`，不带
 `https://`/`http://` 协议前缀（因此也不存在缺少协议前缀的警告；参见[配置](/zh-cn/configuration/#targets)）。省略端口时默认为 `3306`。
 
-从不发送任何请求：MySQL 会在身份验证步骤之前的初始握手包中主动公布其版本——因此本探针观测版本时从不需要凭据。
+MySQL 会在身份验证步骤之前的初始握手包中主动公布其版本——因此本探针观测版本时从不需要凭据。
 
 ```yaml
 targets:
@@ -18,6 +18,10 @@ targets:
 ## 身份验证
 
 无——版本直接从握手中读取，此时还远未到凭据起作用的阶段。
+
+## 主机封锁（ERR 1129）
+
+自 2.2.1 起，探针会用一次性登录（用户名 `enodia`，无密码）回应问候包，并读取服务器的拒绝响应。在 2.2.0 及更早版本中，它在问候包之后立即挂断，服务器会将其计为身份验证前中止的连接；来自同一主机的此类连接足够多时就会触发 `max_connect_errors`，此后服务器会以 `ERR 1129 Host '…' is blocked` 拒绝该主机——该主机上的所有客户端都会被拒绝，而不仅仅是 enodia。被拒绝的登录则会被计为一次身份验证失败，不会累加到封锁计数中。如果服务器记录失败的登录，每次运行都会留下一行 `Access denied for user 'enodia'`。如果 2.2.0 已经导致某个主机被封锁，请使用 `FLUSH HOSTS` 解除（MySQL 8.0 也支持 `TRUNCATE TABLE performance_schema.host_cache`）。
 
 ## MariaDB 是另一个产品
 

@@ -37,9 +37,29 @@ credentials:
     password: "${PG_PASSWORD}"
 ```
 
-Baza danych, z którą następuje połączenie, domyślnie ma tę samą nazwę co
-użytkownik (domyślne ustawienie po stronie serwera) — obecnie nie ma pola
-konfiguracji pozwalającego jawnie wskazać inną nazwę bazy danych.
+## Baza danych
+
+Sonda prosi o bazę danych `postgres`, którą ma każdy serwer i która
+nadaje `CONNECT` wszystkim — więc rola mająca wyłącznie `LOGIN` ujawnia
+wersję bez własnej bazy danych. Dla serwera bez bazy `postgres` należy
+wskazać inną w `options.database`:
+
+```yaml
+targets:
+  - id: pg-main
+    product: postgresql
+    address: db.example.com:5432
+    credentials: pg-app
+    options:
+      database: inventory
+```
+
+:::caution[Zmiana w wersji 2.2.1]
+Do wersji 2.2.0 włącznie sonda prosiła o bazę danych nazwaną tak jak
+użytkownik logujący się, więc rola służąca tylko do logowania kończyła
+się błędem `database "<user>" does not exist`. Cel, który na tym polegał,
+musi teraz wskazać swoją bazę danych w `options.database`.
+:::
 
 ## Korelacja CVE
 

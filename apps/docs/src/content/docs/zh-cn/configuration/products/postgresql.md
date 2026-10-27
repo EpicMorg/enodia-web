@@ -30,7 +30,23 @@ credentials:
     password: "${PG_PASSWORD}"
 ```
 
-连接的数据库默认与用户名相同（服务端默认行为）——目前没有配置字段可以显式指定其他数据库名。
+## 数据库
+
+探针会请求 `postgres` 数据库，每台服务器都有该数据库，并且它向所有人授予 `CONNECT` 权限——因此只有 `LOGIN` 权限的角色无需拥有自己的数据库即可获取版本。对于没有 `postgres` 数据库的服务器，请在 `options.database` 中指定另一个数据库：
+
+```yaml
+targets:
+  - id: pg-main
+    product: postgresql
+    address: db.example.com:5432
+    credentials: pg-app
+    options:
+      database: inventory
+```
+
+:::caution[2.2.1 中的变更]
+在 2.2.0 及更早版本中，探针请求以登录用户命名的数据库，因此仅有登录权限的角色会以 `database "<user>" does not exist` 失败。依赖这一行为的目标现在必须在 `options.database` 中指定其数据库。
+:::
 
 ## CVE 关联
 

@@ -119,7 +119,9 @@ ją ignoruje. [`p4d`/`p4p`](/pl/configuration/products/p4d/) są pierwszymi,
 które faktycznie ją odczytują: `options.binary` nadpisuje ścieżkę do CLI
 `p4`, które wywołują. [`freeradius`](/pl/configuration/products/freeradius/)
 odczytuje `options.container` (oraz `options.container_runtime`), aby
-znaleźć FreeRADIUS działający w Dockerze lub Podmanie.
+znaleźć FreeRADIUS działający w Dockerze lub Podmanie, a
+[`postgresql`](/pl/configuration/products/postgresql/#baza-danych) odczytuje
+`options.database`.
 
 Dokładny endpoint, wymagania dotyczące uwierzytelniania i rejestrowane
 pola dla każdej ze 123 wbudowanych sond opisuje sekcja **Konfiguracja
@@ -265,6 +267,14 @@ odwoływać się do zmiennej środowiskowej:
 - `${VAR}` — zastępowane wartością `$VAR`; brak zmiennej jest błędem.
 - `${VAR:-default}` — zastępowane wartością `$VAR` lub `default`, jeśli
   zmienna nie jest ustawiona.
+
+Od wersji 2.2.1 podstawianie odbywa się po sparsowaniu YAML, wewnątrz
+każdej wartości tekstowej, więc wartość jest przyjmowana dosłownie:
+hasło z ukośnikiem wstecznym, `#`, `: ` lub początkowym `*`, `&` albo `[`
+nie psuje już pliku ani `enodia config validate`, a wartość wyglądająca
+jak liczba lub `true` pozostaje ciągiem znaków. Do wersji 2.2.0 włącznie
+zmienna była najpierw wklejana do surowego tekstu pliku, więc taką
+wartość trzeba było ręcznie ująć w cudzysłów w YAML.
 
 ## Integracja z HashiCorp Vault Agent
 

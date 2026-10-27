@@ -114,7 +114,9 @@ entirely. [`p4d`/`p4p`](/en/configuration/products/p4d/) are the first
 to actually read one: `options.binary` overrides the `p4` CLI path they
 shell out to. [`freeradius`](/en/configuration/products/freeradius/)
 reads `options.container` (and `options.container_runtime`) to find a
-FreeRADIUS running in Docker or Podman.
+FreeRADIUS running in Docker or Podman, and
+[`postgresql`](/en/configuration/products/postgresql/#database) reads
+`options.database`.
 
 See **Product setup** in the sidebar (or the
 [Supported products](/en/products/) table) for the exact endpoint, auth
@@ -254,6 +256,14 @@ environment variable:
 
 - `${VAR}` — replaced with `$VAR`'s value; missing is an error.
 - `${VAR:-default}` — replaced with `$VAR`'s value, or `default` if unset.
+
+Since 2.2.1 the substitution happens after the YAML is parsed, inside
+each string value, so the value is taken verbatim: a password with a
+backslash, a `#`, a `: ` or a leading `*`, `&` or `[` no longer breaks
+the file or `enodia config validate`, and a value that looks like a
+number or `true` stays a string. Up to 2.2.0 the variable was pasted
+into the raw file text first, so such a value had to be quoted in YAML
+by hand.
 
 ## HashiCorp Vault Agent integration
 

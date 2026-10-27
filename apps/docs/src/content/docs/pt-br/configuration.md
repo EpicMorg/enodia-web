@@ -117,7 +117,9 @@ completamente. [`p4d`/`p4p`](/pt-br/configuration/products/p4d/) são as
 primeiras a de fato ler um: `options.binary` sobrescreve o caminho da CLI
 `p4` que elas chamam. [`freeradius`](/pt-br/configuration/products/freeradius/)
 lê `options.container` (e `options.container_runtime`) para encontrar um
-FreeRADIUS rodando no Docker ou no Podman.
+FreeRADIUS rodando no Docker ou no Podman, e
+[`postgresql`](/pt-br/configuration/products/postgresql/#banco-de-dados) lê
+`options.database`.
 
 Consulte **Configuração de produtos** na barra lateral (ou a tabela de
 [Produtos suportados](/pt-br/products/)) para o endpoint exato, os
@@ -263,6 +265,14 @@ referenciar uma variável de ambiente:
   erro.
 - `${VAR:-default}` — substituído pelo valor de `$VAR`, ou por `default` se
   não estiver definida.
+
+Desde a 2.2.1, a substituição acontece depois que o YAML é analisado,
+dentro de cada valor de string, então o valor é usado literalmente: uma
+senha com barra invertida, um `#`, um `: ` ou um `*`, `&` ou `[` no
+início não quebra mais o arquivo nem o `enodia config validate`, e um
+valor que parece um número ou `true` continua sendo uma string. Até a
+2.2.0, a variável era colada primeiro no texto bruto do arquivo, então um
+valor assim precisava ser colocado entre aspas no YAML manualmente.
 
 ## Integração com o HashiCorp Vault Agent
 

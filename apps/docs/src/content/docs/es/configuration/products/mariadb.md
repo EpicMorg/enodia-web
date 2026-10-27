@@ -19,7 +19,10 @@ targets:
 
 ## Autenticación
 
-Ninguna: la versión se lee directamente del handshake.
+Ninguna: la versión se lee directamente del handshake. Desde la 2.2.1 la
+sonda responde después al saludo con un login desechable, de modo que la
+conexión ya no cuenta para `max_connect_errors`; consulte
+[MySQL → Bloqueo del host](/es/configuration/products/mysql/#bloqueo-del-host-err-1129).
 
 ## Verificación de la identidad del fabricante
 

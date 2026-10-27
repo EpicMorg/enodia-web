@@ -67,7 +67,10 @@ dany wpis:
   `--from` (jakiekolwiek wydania działają na ich hostach) oraz z `--oval`,
   `--alpine` i `--postgresql`. `cve.oval.path` i `cve.alpine.path` muszą
   być katalogami; `cve.postgresql.path` będące plikiem otrzymuje tylko
-  stronę główną.
+  stronę główną. Od wersji 2.2.1 katalog OVAL lub Alpine bez wydania
+  z żadnego z tych trzech źródeł jest błędem (kod wyjścia `1`) — należy
+  wskazać wydanie lub usunąć klucz, ponieważ `check` i tak odrzuca pusty
+  katalog.
 - **MariaDB, Atlassian, nginx** oraz strona główna PostgreSQL — po
   jednym pliku.
 
