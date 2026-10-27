@@ -90,7 +90,7 @@ targets:
 前缀的裸主机名会被自动解析（请参阅[核心概念](/zh-cn/concepts/#https-优先默认绝不以明文发送凭据)），您也可以运行 `enodia config resolve`，在不发送任何凭据的情况下查看每个目标将使用哪种协议。
 
 `options` 是一个因产品而异的自由格式映射——大多数探针完全忽略它。[`p4d`/`p4p`](/zh-cn/configuration/products/p4d/)
-是最先真正读取它的探针：`options.binary` 会覆盖它们所调用的 `p4` CLI 的路径。[`freeradius`](/zh-cn/configuration/products/freeradius/) 读取 `options.container`（以及 `options.container_runtime`），用于找到运行在 Docker 或 Podman 中的 FreeRADIUS。
+是最先真正读取它的探针：`options.binary` 会覆盖它们所调用的 `p4` CLI 的路径。[`freeradius`](/zh-cn/configuration/products/freeradius/) 读取 `options.container`（以及 `options.container_runtime`），用于找到运行在 Docker 或 Podman 中的 FreeRADIUS，[`postgresql`](/zh-cn/configuration/products/postgresql/#数据库) 读取 `options.database`。
 
 每个内置的 123 个探针的确切端点、身份验证要求和记录的字段，请参阅侧边栏中的**产品配置**（或[支持的产品](/zh-cn/products/)表格）——上面的 `path`、`credentials` 和 `options` 只是通用结构；每个产品自己的页面会说明它实际需要什么。
 
@@ -203,6 +203,8 @@ targets:
 
 - `${VAR}`——替换为 `$VAR` 的值；未设置时报错。
 - `${VAR:-default}`——替换为 `$VAR` 的值，未设置时替换为 `default`。
+
+自 2.2.1 起，替换在解析 YAML 之后、在每个字符串值内部进行，因此值会按原样取用：包含反斜杠、`#`、`: ` 或以 `*`、`&`、`[` 开头的密码不再会破坏文件或 `enodia config validate`，看起来像数字或 `true` 的值也仍然是字符串。在 2.2.0 及更早版本中，变量会先被粘贴到原始文件文本中，因此这类值必须在 YAML 中手动加引号。
 
 ## HashiCorp Vault Agent 集成
 

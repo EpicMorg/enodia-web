@@ -18,7 +18,10 @@ targets:
 
 ## Autenticação
 
-Nenhuma — a versão é lida diretamente do handshake.
+Nenhuma — a versão é lida diretamente do handshake. Desde a 2.2.1, a
+sonda em seguida responde à saudação com um login descartável, então a
+conexão não conta mais para o `max_connect_errors` — consulte
+[MySQL → Bloqueio de host](/pt-br/configuration/products/mysql/#bloqueio-de-host-err-1129).
 
 ## Verificação da identidade do fornecedor
 

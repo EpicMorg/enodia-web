@@ -36,10 +36,29 @@ credentials:
     password: "${PG_PASSWORD}"
 ```
 
-O banco de dados ao qual a conexão é feita tem, por padrão, o mesmo valor
-do nome de usuário (padrão do lado do servidor) — atualmente não há campo
-de configuração para apontar explicitamente para outro nome de banco de
-dados.
+## Banco de dados
+
+A sonda pede o banco de dados `postgres`, que todo servidor tem e que
+concede `CONNECT` a todos — então uma role que tem apenas `LOGIN` revela a
+versão sem precisar de um banco de dados próprio. Para um servidor sem o
+banco de dados `postgres`, indique outro em `options.database`:
+
+```yaml
+targets:
+  - id: pg-main
+    product: postgresql
+    address: db.example.com:5432
+    credentials: pg-app
+    options:
+      database: inventory
+```
+
+:::caution[Alterado na 2.2.1]
+Até a 2.2.0, a sonda pedia um banco de dados com o nome do usuário de
+login, então uma role apenas com login falhava com
+`database "<user>" does not exist`. Um alvo que dependia disso agora
+precisa indicar o seu banco de dados em `options.database`.
+:::
 
 ## Correlação de CVEs
 

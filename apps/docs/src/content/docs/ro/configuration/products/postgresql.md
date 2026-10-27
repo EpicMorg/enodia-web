@@ -36,10 +36,29 @@ credentials:
     password: "${PG_PASSWORD}"
 ```
 
-Baza de date la care se face conectarea are implicit aceeași valoare ca
-numele de utilizator (valoarea implicită de pe server) — în prezent nu
-există un câmp de configurare pentru a indica explicit un alt nume de
-bază de date.
+## Bază de date
+
+Sonda cere baza de date `postgres`, pe care o are orice server și care
+acordă `CONNECT` tuturor — așa că un rol care nu are decât `LOGIN`
+dezvăluie versiunea fără o bază de date proprie. Pentru un server fără
+baza de date `postgres`, indicați alta în `options.database`:
+
+```yaml
+targets:
+  - id: pg-main
+    product: postgresql
+    address: db.example.com:5432
+    credentials: pg-app
+    options:
+      database: inventory
+```
+
+:::caution[Modificat în 2.2.1]
+Până la 2.2.0 sonda cerea o bază de date numită după utilizatorul de
+login, așa că un rol doar cu login eșua cu
+`database "<user>" does not exist`. O țintă care se baza pe acest lucru
+trebuie acum să își numească baza de date în `options.database`.
+:::
 
 ## Corelare CVE
 

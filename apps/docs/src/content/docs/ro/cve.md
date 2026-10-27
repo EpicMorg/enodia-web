@@ -69,7 +69,10 @@ respectivă:
   `--from` (orice versiuni rulează gazdele lor) și `--oval`, `--alpine`
   și `--postgresql`. `cve.oval.path` și `cve.alpine.path` trebuie să fie
   directoare; un `cve.postgresql.path` care este un fișier primește doar
-  pagina principală.
+  pagina principală. Începând cu 2.2.1, un director OVAL sau Alpine fără
+  nicio versiune din vreuna dintre cele trei surse este o eroare (cod de
+  ieșire `1`) — numiți una sau eliminați cheia, deoarece `check` refuză
+  oricum un director gol.
 - **MariaDB, Atlassian, nginx** și pagina principală a PostgreSQL — câte
   un fișier fiecare.
 

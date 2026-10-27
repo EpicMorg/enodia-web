@@ -18,7 +18,10 @@ targets:
 
 ## Authentication
 
-None — the version is read straight out of the handshake.
+None — the version is read straight out of the handshake. Since 2.2.1
+the probe then answers the greeting with a throwaway login, so the
+connection no longer counts towards `max_connect_errors` — see
+[MySQL → Host blocking](/en/configuration/products/mysql/#host-blocking-err-1129).
 
 ## Vendor identity check
 

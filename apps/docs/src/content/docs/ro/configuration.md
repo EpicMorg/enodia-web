@@ -120,7 +120,9 @@ sunt primele care citesc efectiv o astfel de hartă: `options.binary`
 suprascrie calea către CLI-ul `p4` pe care îl apelează.
 [`freeradius`](/ro/configuration/products/freeradius/) citește
 `options.container` (și `options.container_runtime`) pentru a găsi un
-FreeRADIUS care rulează în Docker sau Podman.
+FreeRADIUS care rulează în Docker sau Podman, iar
+[`postgresql`](/ro/configuration/products/postgresql/#bază-de-date) citește
+`options.database`.
 
 Consultați **Configurarea produselor** în bara laterală (sau tabelul
 [Produse acceptate](/ro/products/)) pentru endpoint-ul exact, cerințele
@@ -267,6 +269,14 @@ face referire la o variabilă de mediu:
   eroare.
 - `${VAR:-default}` — înlocuit cu valoarea lui `$VAR` sau cu `default`
   dacă nu este setată.
+
+Începând cu 2.2.1, substituția are loc după parsarea YAML, în interiorul
+fiecărei valori de tip șir, așa că valoarea este preluată întocmai: o
+parolă cu backslash, cu `#`, cu `: ` sau cu un `*`, `&` ori `[` la
+început nu mai strică fișierul sau `enodia config validate`, iar o
+valoare care arată ca un număr sau ca `true` rămâne șir. Până la 2.2.0
+variabila era inserată mai întâi în textul brut al fișierului, așa că o
+astfel de valoare trebuia pusă manual între ghilimele în YAML.
 
 ## Integrarea cu HashiCorp Vault Agent
 

@@ -8,10 +8,9 @@ esquema `https://`/`http://` (não há nada a alertar sobre a falta de
 esquema; consulte [Configuração](/pt-br/configuration/#targets)). A porta
 padrão é `3306` quando omitida.
 
-Nenhuma requisição é enviada: o MySQL anuncia a sua versão
-espontaneamente, no pacote inicial de handshake, antes de qualquer etapa
-de autenticação — então esta sonda nunca precisa de uma credencial para
-observá-la.
+O MySQL anuncia a sua versão espontaneamente, no pacote inicial de
+handshake, antes de qualquer etapa de autenticação — então esta sonda
+nunca precisa de uma credencial para observá-la.
 
 ```yaml
 targets:
@@ -24,6 +23,21 @@ targets:
 
 Nenhuma — a versão é lida diretamente do handshake, antes do ponto em que
 uma credencial teria qualquer importância.
+
+## Bloqueio de host (ERR 1129)
+
+Desde a 2.2.1, a sonda responde à saudação com um login descartável
+(usuário `enodia`, sem senha) e lê a recusa do servidor. Até a 2.2.0, ela
+desligava logo após a saudação, o que o servidor conta como uma conexão
+abortada antes da autenticação; um número suficiente delas vindas de um
+mesmo host dispara o `max_connect_errors`, e o servidor passa a recusar
+esse host com `ERR 1129 Host '…' is blocked` — todos os clientes nele,
+não apenas o enodia. Um login recusado conta, em vez disso, como uma
+autenticação falha, que não soma para o bloqueio. Onde o servidor
+registra logins falhos, cada execução deixa uma linha
+`Access denied for user 'enodia'`. Se a 2.2.0 já fez um host ser
+bloqueado, libere-o com `FLUSH HOSTS` (o MySQL 8.0 também aceita
+`TRUNCATE TABLE performance_schema.host_cache`).
 
 ## MariaDB é um produto diferente
 
