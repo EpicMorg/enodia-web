@@ -59,7 +59,10 @@ Into each configured `cve.*.path` it fetches what that entry reads:
   directory, the inventories given with `--from` (whatever releases its
   hosts run), and `--oval`, `--alpine` and `--postgresql`. `cve.oval.path`
   and `cve.alpine.path` have to be directories; a `cve.postgresql.path`
-  that is a file gets the main page only.
+  that is a file gets the main page only. Since 2.2.1 an OVAL or Alpine
+  directory with no release from any of the three is an error (exit
+  status `1`) — name one or drop the key, since `check` refuses an empty
+  directory anyway.
 - **MariaDB, Atlassian, nginx** and PostgreSQL's main page — one file
   each.
 

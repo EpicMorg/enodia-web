@@ -8,9 +8,9 @@ A raw TCP protocol, not HTTP — `address` is `host` or `host:port`, no
 scheme for; see [Configuration](/en/configuration/#targets)). Port
 defaults to `3306` when omitted.
 
-No request is ever sent: MySQL announces its version unprompted, in the
-initial handshake packet, before any authentication step — so this probe
-never needs a credential to observe it.
+MySQL announces its version unprompted, in the initial handshake packet,
+before any authentication step — so this probe never needs a credential
+to observe it.
 
 ```yaml
 targets:
@@ -23,6 +23,20 @@ targets:
 
 None — the version is read straight out of the handshake, ahead of the
 point where a credential would even matter.
+
+## Host blocking (ERR 1129)
+
+Since 2.2.1 the probe answers the greeting with a throwaway login
+(username `enodia`, no password) and reads the server's refusal. Up to
+2.2.0 it hung up right after the greeting, which the server counts as an
+aborted connection before authentication; enough of them from one host
+trip `max_connect_errors`, and the server then refuses that host with
+`ERR 1129 Host '…' is blocked` — every client on it, not just enodia. A
+refused login counts as a failed authentication instead, which doesn't
+add to the block. Where the server logs failed logins, each run leaves
+an `Access denied for user 'enodia'` line. If 2.2.0 already got a host
+blocked, clear it with `FLUSH HOSTS` (MySQL 8.0 also takes
+`TRUNCATE TABLE performance_schema.host_cache`).
 
 ## MariaDB is a different product
 

@@ -34,7 +34,7 @@ enodia cve update --dry-run               # 列出将要获取的内容，不下
 - **BDU**——`vulxml.zip`。此处 `cve.bdu.path` 必须是 `.zip`；查询同样接受的 `.xml` 和 `.tar.gz` 形式是您自己重新打包的结果，`update` 不会生成它们。
 - **NVD**——今年的文件、去年的文件，以及磁盘上尚不存在的任何年份；`--all-years` 会刷新所有年份（NVD 每天都会重建所有年份的文件）。`cve.nvd.path` 必须是目录。
 - **Debian**——跟踪器的 `.json`。
-- **OVAL、Alpine secdb、PostgreSQL 按大版本划分的页面**——每个版本一个文件，因此版本来自三个地方：目录中已有的文件、通过 `--from` 给出的清单（其主机运行的任何版本），以及 `--oval`、`--alpine` 和 `--postgresql`。`cve.oval.path` 和 `cve.alpine.path` 必须是目录；如果 `cve.postgresql.path` 是一个文件，则只获取主页面。
+- **OVAL、Alpine secdb、PostgreSQL 按大版本划分的页面**——每个版本一个文件，因此版本来自三个地方：目录中已有的文件、通过 `--from` 给出的清单（其主机运行的任何版本），以及 `--oval`、`--alpine` 和 `--postgresql`。`cve.oval.path` 和 `cve.alpine.path` 必须是目录；如果 `cve.postgresql.path` 是一个文件，则只获取主页面。自 2.2.1 起，如果 OVAL 或 Alpine 目录从这三个来源都得不到任何版本，就会报错（退出状态 `1`）——请指定一个版本或删除该键，因为 `check` 无论如何都会拒绝空目录。
 - **MariaDB、Atlassian、nginx** 以及 PostgreSQL 的主页面——各一个文件。
 
 | 参数 | 获取的内容 |

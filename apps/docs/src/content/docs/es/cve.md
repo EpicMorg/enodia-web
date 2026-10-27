@@ -65,7 +65,10 @@ En cada `cve.*.path` configurado obtiene lo que lee esa entrada:
   con `--from` (las versiones que ejecuten sus hosts) y `--oval`,
   `--alpine` y `--postgresql`. `cve.oval.path` y `cve.alpine.path` tienen
   que ser directorios; un `cve.postgresql.path` que sea un archivo recibe
-  solo la página principal.
+  solo la página principal. Desde la 2.2.1, un directorio de OVAL o de
+  Alpine sin ninguna versión procedente de esos tres lugares es un error
+  (código de salida `1`): indique una o elimine la clave, ya que `check`
+  rechaza de todos modos un directorio vacío.
 - **MariaDB, Atlassian, nginx** y la página principal de PostgreSQL: un
   archivo cada uno.
 

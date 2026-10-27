@@ -35,9 +35,29 @@ credentials:
     password: "${PG_PASSWORD}"
 ```
 
-The database connected to defaults to the same value as the username
-(server-side default) — there's currently no config field to point at a
-different database name explicitly.
+## Database
+
+The probe asks for the `postgres` database, which every server has and
+which grants `CONNECT` to everyone — so a role with nothing but `LOGIN`
+reveals the version without a database of its own. For a server with no
+`postgres` database, name another one in `options.database`:
+
+```yaml
+targets:
+  - id: pg-main
+    product: postgresql
+    address: db.example.com:5432
+    credentials: pg-app
+    options:
+      database: inventory
+```
+
+:::caution[Changed in 2.2.1]
+Up to 2.2.0 the probe asked for a database named after the login user,
+so a login-only role failed with `database "<user>" does not exist`. A
+target that relied on that has to name its database in
+`options.database` now.
+:::
 
 ## CVE correlation
 

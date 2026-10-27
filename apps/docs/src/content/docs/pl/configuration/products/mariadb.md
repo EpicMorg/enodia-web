@@ -19,7 +19,10 @@ targets:
 
 ## Uwierzytelnianie
 
-Brak — wersja jest odczytywana bezpośrednio z handshake.
+Brak — wersja jest odczytywana bezpośrednio z handshake. Od wersji 2.2.1
+sonda odpowiada następnie na powitanie jednorazowym logowaniem, więc
+połączenie nie wlicza się już do `max_connect_errors` — zobacz
+[MySQL → Blokowanie hosta](/pl/configuration/products/mysql/#blokowanie-hosta-err-1129).
 
 ## Weryfikacja tożsamości producenta
 

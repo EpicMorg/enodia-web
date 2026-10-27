@@ -13,6 +13,51 @@ configura efectiv ceva. Tag-urile urmează formatul
 metadate de build semver, folosite doar pentru un rebuild fără
 modificări funcționale, nu pentru a evita o creștere reală a versiunii.
 
+## 2.2.1+0 — 2026-10-27
+
+O lansare de întreținere: sondele nu se mai împiedică de propriile
+verificări de versiune (blocarea gazdelor MySQL/MariaDB, rolurile
+PostgreSQL doar cu login), valorile `${VAR}` sunt preluate întocmai, iar
+două cazuri limită ale `cve update` sunt corectate. Nicio sondă nouă,
+inventarele sunt neschimbate. O modificare de comportament: sonda
+`postgresql` se conectează acum la baza de date `postgres` în loc de una
+numită după utilizatorul de login — setați
+[`options.database`](/ro/configuration/products/postgresql/#bază-de-date)
+pentru un server care nu are o bază de date `postgres`.
+
+### Adăugat
+
+- Țintele [`postgresql`](/ro/configuration/products/postgresql/#bază-de-date)
+  acceptă `options.database`. Sonda cere acum implicit baza de date
+  `postgres` în loc de una numită după utilizatorul de login, așa că un
+  rol care nu are decât `LOGIN` dezvăluie versiunea fără o bază de date
+  proprie.
+
+### Corectat
+
+- [`mysql`](/ro/configuration/products/mysql/#blocarea-gazdei-err-1129) și
+  [`mariadb`](/ro/configuration/products/mariadb/) nu mai riscă blocarea
+  gazdei proprii a enodia (`ERR 1129`). Citeau versiunea din mesajul de
+  salut și închideau conexiunea, pe care serverul o contorizează ca o
+  conexiune întreruptă înainte de autentificare; suficient de multe
+  declanșează `max_connect_errors`. Sondele răspund acum la mesajul de
+  salut cu un login de unică folosință, așa că conexiunea contează ca o
+  autentificare eșuată, care nu blochează gazda. Versiunea provine în
+  continuare din mesajul de salut; nu se folosește nicio credențială.
+- [`${VAR}`](/ro/configuration/#interpolarea-variabilelor-de-mediu) dintr-o
+  configurație sau dintr-un `credentials_file` este expandat după
+  parsarea YAML, așa că valoarea unei variabile este preluată întocmai:
+  o parolă cu backslash, `#`, `: ` sau cu un `*`/`&`/`[` la început nu mai
+  strică fișierul sau `config validate`.
+- [`enodia cve update`](/ro/cve/#enodia-cve-update) cu `cve.oval.path` sau
+  `cve.alpine.path` setat, dar fără nicio versiune sau ramură de descărcat
+  (niciuna pe disc, în `--from` sau în opțiuni), reușea în tăcere, lăsând
+  un director pe care `check` îl refuza apoi; acum semnalează acest lucru
+  și iese cu `1`.
+- [`kafka`](/ro/configuration/products/kafka/) pornea `kafka-topics --version` (o pornire a JVM, câteva
+  secunde) la fiecare rulare când acesta era în `PATH`, chiar dacă jar-ul
+  brokerului fusese găsit; acum rulează doar când nu se găsește niciun jar.
+
 ## 2.2.0+0 — 2026-10-09
 
 `enodia cve update` descarcă singur bazele de date CVE, datele de

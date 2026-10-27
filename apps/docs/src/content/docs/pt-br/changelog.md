@@ -12,6 +12,52 @@ seguem o formato `MAJOR.MINOR.PATCH+BUILD`, sem prefixo `v`; `+BUILD` são
 metadados de build do semver, usados apenas para uma recompilação sem
 mudança funcional, e não para evitar um incremento de versão real.
 
+## 2.2.1+0 — 2026-10-27
+
+Uma versão de manutenção: as sondas param de tropeçar nas suas próprias
+verificações de versão (bloqueio de host no MySQL/MariaDB, roles do
+PostgreSQL apenas com login), os valores de `${VAR}` são usados
+literalmente, e dois casos-limite do `cve update` foram corrigidos.
+Nenhuma sonda nova, os inventários não mudam. Uma mudança de
+comportamento: a sonda `postgresql` agora se conecta ao banco de dados
+`postgres` em vez de a um com o nome do usuário de login — defina
+[`options.database`](/pt-br/configuration/products/postgresql/#banco-de-dados)
+para um servidor que não tenha o banco de dados `postgres`.
+
+### Adicionado
+
+- Os alvos [`postgresql`](/pt-br/configuration/products/postgresql/#banco-de-dados)
+  aceitam `options.database`. Por padrão, a sonda agora pede o banco de
+  dados `postgres` em vez de um com o nome do usuário de login, então uma
+  role que tem apenas `LOGIN` revela a versão sem precisar de um banco de
+  dados próprio.
+
+### Corrigido
+
+- [`mysql`](/pt-br/configuration/products/mysql/#bloqueio-de-host-err-1129) e
+  [`mariadb`](/pt-br/configuration/products/mariadb/) não correm mais o
+  risco de fazer o próprio host do enodia ser bloqueado (`ERR 1129`). Elas
+  liam a versão da saudação e desligavam, o que o servidor conta como uma
+  conexão abortada antes da autenticação; um número suficiente delas
+  dispara o `max_connect_errors`. Agora as sondas respondem à saudação com
+  um login descartável, então a conexão conta como uma autenticação
+  falha, que não bloqueia o host. A versão continua vindo da saudação;
+  nenhuma credencial é usada.
+- [`${VAR}`](/pt-br/configuration/#interpolação-de-variáveis-de-ambiente) em
+  uma configuração ou em um `credentials_file` é expandido depois que o
+  YAML é analisado, então o valor da variável é usado literalmente: uma
+  senha com barra invertida, `#`, `: ` ou um `*`/`&`/`[` no início não
+  quebra mais o arquivo nem o `config validate`.
+- [`enodia cve update`](/pt-br/cve/#enodia-cve-update) com `cve.oval.path`
+  ou `cve.alpine.path` definido, mas sem nenhuma versão ou ramo para
+  baixar (nenhum no disco, em `--from` ou nas flags), terminava com
+  sucesso em silêncio, deixando um diretório que o `check` depois
+  recusava; agora ele avisa e sai com `1`.
+- [`kafka`](/pt-br/configuration/products/kafka/) executava `kafka-topics --version` (uma inicialização da
+  JVM, alguns segundos) a cada execução quando ele estava no `PATH`, mesmo
+  com o jar do broker já encontrado; agora ele só roda quando nenhum jar é
+  encontrado.
+
 ## 2.2.0+0 — 2026-10-09
 
 O `enodia cve update` baixa ele mesmo os bancos de dados de CVEs, os dados

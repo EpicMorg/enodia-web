@@ -12,6 +12,47 @@ affects how you'd actually configure something. Tags follow
 metadata, used only for a rebuild with no functional change, not to
 sidestep a real version bump.
 
+## 2.2.1+0 — 2026-10-27
+
+A maintenance release: probes stop tripping over their own version
+checks (MySQL/MariaDB host blocks, PostgreSQL login-only roles), `${VAR}`
+values are taken verbatim, and two `cve update` edge cases are fixed. No
+new probes, inventories are unchanged. One behaviour change: the
+`postgresql` probe now connects to the `postgres` database instead of
+one named after the login user — set
+[`options.database`](/en/configuration/products/postgresql/#database)
+for a server that has no `postgres` database.
+
+### Added
+
+- [`postgresql`](/en/configuration/products/postgresql/#database) targets
+  take `options.database`. The probe now asks for the `postgres` database
+  by default instead of one named after the login user, so a role with
+  nothing but `LOGIN` reveals the version without a database of its own.
+
+### Fixed
+
+- [`mysql`](/en/configuration/products/mysql/#host-blocking-err-1129) and
+  [`mariadb`](/en/configuration/products/mariadb/) no longer risk getting
+  enodia's own host blocked (`ERR 1129`). They read the version from the
+  greeting and hung up, which the server counts as an aborted connection
+  before authentication; enough of those trip `max_connect_errors`. The
+  probes now answer the greeting with a throwaway login, so the
+  connection counts as a failed authentication, which doesn't block the
+  host. The version still comes from the greeting; no credential is used.
+- [`${VAR}`](/en/configuration/#environment-variable-interpolation) in a
+  config or `credentials_file` is expanded after the YAML is parsed, so a
+  variable's value is taken verbatim: a password with a backslash, `#`,
+  `: ` or a leading `*`/`&`/`[` no longer breaks the file or
+  `config validate`.
+- [`enodia cve update`](/en/cve/#enodia-cve-update) with `cve.oval.path` or
+  `cve.alpine.path` set but no release or branch to fetch (none on disk,
+  in `--from` or the flags) succeeded quietly, leaving a directory
+  `check` then refused; it now says so and exits `1`.
+- [`kafka`](/en/configuration/products/kafka/) started `kafka-topics --version` (a JVM start, a few
+  seconds) on every run when it was on `PATH`, even with the broker's jar
+  found; it now runs only when no jar is.
+
 ## 2.2.0+0 — 2026-10-09
 
 `enodia cve update` downloads the CVE databases itself, vendors' own
