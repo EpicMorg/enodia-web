@@ -19,12 +19,12 @@ irm https://get.enodia.sh/windows | iex      # Windows
 window — the installer patches the current session's `PATH` directly,
 not just the persisted registry value a fresh terminal would pick up.
 
-On Windows, [Chocolatey](https://community.chocolatey.org/packages/enodia)
-works too, if you'd rather your package manager track updates (a winget
-package is on its way, not published yet):
+On Windows, [winget](https://github.com/microsoft/winget-pkgs/tree/master/manifests/e/EpicMorg/Enodia) and [Chocolatey](https://community.chocolatey.org/packages/enodia) work too, if you'd rather your package
+manager track updates:
 
 ```powershell
-choco install enodia
+winget install EpicMorg.Enodia   # winget
+choco install enodia             # Chocolatey
 ```
 
 :::tip[Also works in Termux (Android)]

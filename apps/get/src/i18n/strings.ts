@@ -8,7 +8,7 @@ export const strings: Record<
 	{
 		tagline: string;
 		docs: string;
-		or: string; // between the two Windows install paths
+		or: string; // between the Windows install paths
 		proxy: string;
 	}
 > = {

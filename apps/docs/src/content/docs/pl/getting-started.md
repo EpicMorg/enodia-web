@@ -20,13 +20,12 @@ irm https://get.enodia.sh/windows | iex      # Windows
 instalator modyfikuje `PATH` bieżącej sesji bezpośrednio, a nie tylko
 wartość zapisaną w rejestrze, którą odczytałby dopiero nowy terminal.
 
-W systemie Windows działa również
-[Chocolatey](https://community.chocolatey.org/packages/enodia), jeśli
-aktualizacje ma śledzić menedżer pakietów (pakiet winget jest w
-przygotowaniu, jeszcze nie został opublikowany):
+W systemie Windows działają również [winget](https://github.com/microsoft/winget-pkgs/tree/master/manifests/e/EpicMorg/Enodia) i [Chocolatey](https://community.chocolatey.org/packages/enodia), jeśli
+aktualizacje ma śledzić menedżer pakietów:
 
 ```powershell
-choco install enodia
+winget install EpicMorg.Enodia   # winget
+choco install enodia             # Chocolatey
 ```
 
 :::tip[Działa także w Termux (Android)]

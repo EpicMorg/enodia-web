@@ -20,12 +20,12 @@ O `enodia` pode ser executado imediatamente depois, nessa mesma janela do
 PowerShell — o instalador altera o `PATH` da sessão atual diretamente, e não
 apenas o valor persistido no registro que um terminal novo carregaria.
 
-No Windows, o [Chocolatey](https://community.chocolatey.org/packages/enodia)
-também funciona, se você preferir que o gerenciador de pacotes acompanhe as
-atualizações (um pacote winget está a caminho, ainda não publicado):
+No Windows, o [winget](https://github.com/microsoft/winget-pkgs/tree/master/manifests/e/EpicMorg/Enodia) e o [Chocolatey](https://community.chocolatey.org/packages/enodia) também funcionam, se você
+preferir que o gerenciador de pacotes acompanhe as atualizações:
 
 ```powershell
-choco install enodia
+winget install EpicMorg.Enodia   # winget
+choco install enodia             # Chocolatey
 ```
 
 :::tip[Também funciona no Termux (Android)]
