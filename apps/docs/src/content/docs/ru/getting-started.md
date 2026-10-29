@@ -20,13 +20,13 @@ irm https://get.enodia.sh/windows | iex      # Windows
 патчит `PATH` текущей сессии напрямую, а не только сохранённое значение
 в реестре, которое подхватил бы только новый терминал.
 
-На Windows также можно поставить через
-[Chocolatey](https://community.chocolatey.org/packages/enodia), если
-хотите, чтобы обновления отслеживал пакетный менеджер (пакет для winget
-в пути, пока не опубликован):
+На Windows также можно поставить через [winget](https://github.com/microsoft/winget-pkgs/tree/master/manifests/e/EpicMorg/Enodia) или
+[Chocolatey](https://community.chocolatey.org/packages/enodia), если хотите, чтобы обновления отслеживал пакетный
+менеджер:
 
 ```powershell
-choco install enodia
+winget install EpicMorg.Enodia   # winget
+choco install enodia             # Chocolatey
 ```
 
 :::tip[Работает и в Termux (Android)]

@@ -17,10 +17,11 @@ irm https://get.enodia.sh/windows | iex      # Windows
 
 安装完成后，在同一个 PowerShell 窗口中即可立即运行 `enodia`——安装程序会直接修改当前会话的 `PATH`，而不仅仅是修改新终端才会读取的、持久化在注册表中的值。
 
-在 Windows 上，如果您希望由包管理器跟踪更新，也可以使用[Chocolatey](https://community.chocolatey.org/packages/enodia)（winget 软件包正在准备中，尚未发布）：
+在 Windows 上，如果您希望由包管理器跟踪更新，也可以使用[winget](https://github.com/microsoft/winget-pkgs/tree/master/manifests/e/EpicMorg/Enodia)或[Chocolatey](https://community.chocolatey.org/packages/enodia)：
 
 ```powershell
-choco install enodia
+winget install EpicMorg.Enodia   # winget
+choco install enodia             # Chocolatey
 ```
 
 :::tip[同样适用于 Termux（Android）]

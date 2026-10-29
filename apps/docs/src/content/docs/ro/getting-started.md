@@ -21,12 +21,12 @@ PowerShell — programul de instalare modifică direct `PATH`-ul sesiunii
 curente, nu doar valoarea persistată în registru pe care ar prelua-o un
 terminal nou.
 
-Pe Windows funcționează și [Chocolatey](https://community.chocolatey.org/packages/enodia),
-dacă preferați ca managerul de pachete să urmărească actualizările (un
-pachet winget este pe drum, încă nepublicat):
+Pe Windows funcționează și [winget](https://github.com/microsoft/winget-pkgs/tree/master/manifests/e/EpicMorg/Enodia) și [Chocolatey](https://community.chocolatey.org/packages/enodia), dacă preferați ca
+managerul de pachete să urmărească actualizările:
 
 ```powershell
-choco install enodia
+winget install EpicMorg.Enodia   # winget
+choco install enodia             # Chocolatey
 ```
 
 :::tip[Funcționează și în Termux (Android)]

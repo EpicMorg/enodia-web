@@ -20,12 +20,12 @@ irm https://get.enodia.sh/windows | iex      # Windows
 PowerShell — інсталятор оновлює `PATH` поточного сеансу напряму, а не лише
 збережене значення в реєстрі, яке підхопив би новий термінал.
 
-У Windows також працює [Chocolatey](https://community.chocolatey.org/packages/enodia),
-якщо Ви бажаєте, щоб оновлення відстежував менеджер пакетів (пакет winget
-на підході, але ще не опублікований):
+У Windows також працюють [winget](https://github.com/microsoft/winget-pkgs/tree/master/manifests/e/EpicMorg/Enodia) і [Chocolatey](https://community.chocolatey.org/packages/enodia), якщо Ви
+бажаєте, щоб оновлення відстежував менеджер пакетів:
 
 ```powershell
-choco install enodia
+winget install EpicMorg.Enodia   # winget
+choco install enodia             # Chocolatey
 ```
 
 :::tip[Працює й у Termux (Android)]
