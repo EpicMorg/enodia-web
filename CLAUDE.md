@@ -467,6 +467,11 @@ this blindly if it's been a while. As of writing:
   `choco install enodia`, `.alt`/`.or` styles in `Get.astro`,
   [PR #23](https://github.com/EpicMorg/enodia-web/pull/23)) — winget
   goes into **both** panels, landing and get.
+  **Update, 2026-10-29**: winget is live (`EpicMorg.Enodia`, 1.0.0–2.2.1
+  in `microsoft/winget-pkgs`, checked via the GitHub API; relayed by the
+  "[emg] chocolatey" session) — added as a third block (`irm` / or /
+  `winget install EpicMorg.Enodia` / or / `choco install enodia`) on
+  landing and get, and to `getting-started.md` in all 8 locales.
 - **Homebrew tap / MacPorts port**: investigated, both paused/parked, not
   started:
   - Homebrew: a personal tap (`homebrew-tap` repo, no review needed,
